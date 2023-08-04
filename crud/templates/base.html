@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWCAT</title>
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            {% if not logged_in %}
+            <li>
+                <a href="/">Inicio</a>
+            </li>
+            <li>
+                <a href="{% url 'registro_tutor' %}">Registro Tutor</a>
+            </li>
+            <li>
+                <a href="{% url 'inicio_sesion_tutor' %}">Inicio Sesión Tutor</a>
+            </li>
+            {% else %}
+            <!-- Mostrar enlace de Cerrar Sesión solo si el usuario ha iniciado sesión o se ha registrado -->
+            <li class="nav-item">
+                <a href="{% url 'cerrar_sesion_tutor' %}" class="nav-link">Cerrar Sesión</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+
+    {% block content %}
+
+    {% endblock %}
+
+</body>
+
+</html>
