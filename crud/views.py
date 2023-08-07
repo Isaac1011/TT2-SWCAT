@@ -17,20 +17,16 @@ def inicio(request):
 
 
 # Si la clave 'logged_in' no está presente en request.session, se asignará el valor False por defecto a la variable logged_in
-def menu_tutor(request):
+def menu(request):
     logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
 
-    if logged_in:
-        return render(request, 'menuTutor.html', {'logged_in': logged_in})
-    else:
-        return redirect('inicio')
-
-
-def menu_tutorado(request):
-    logged_in = request.session.get('logged_in', False)
-
-    if logged_in:
-        return render(request, 'menuTutorado.html', {'logged_in': logged_in})
+    if logged_in and rol == 'Tutor':
+        return render(request, 'menuTutor.html', {'logged_in': logged_in,
+                                                  'rol': rol})
+    elif logged_in and rol == 'Tutorado':
+        return render(request, 'menuTutorado.html', {'logged_in': logged_in,
+                                                     'rol': rol})
     else:
         return redirect('inicio')
 
@@ -43,8 +39,9 @@ def registro_tutor(request):
             form.save()
             # Inicio de sesión exitoso
             request.session['logged_in'] = True
+            request.session['rol'] = 'Tutor'
             request.session['numero_empleado'] = numero_empleado
-            return redirect('menu_tutor')
+            return redirect('menu')
     else:  # GET
         form = TutorRegistroForm()
     return render(request, 'registroTutor.html', {
@@ -60,8 +57,9 @@ def registro_tutorado(request):
             form.save()
             # Inicio de sesión exitoso
             request.session['logged_in'] = True
+            request.session['rol'] = 'Tutorado'
             request.session['boleta_tutorado'] = boleta_tutorado
-            return redirect('menu_tutorado')
+            return redirect('menu')
     else:  # GET
         form = TutoradoRegistroForm()
     return render(request, 'registroTutorado.html', {
@@ -82,10 +80,11 @@ def inicio_sesion_tutor(request):
                 if check_password(password, tutor.password):
                     # Inicio de sesión exitoso
                     request.session['logged_in'] = True
+                    request.session['rol'] = 'Tutor'
                     request.session['numero_empleado'] = numero_empleado
 
                     # Reemplaza con la URL que deseas redireccionar
-                    return redirect('menu_tutor')
+                    return redirect('menu')
                 else:
                     # Credenciales inválidas
                     messages.error(
@@ -113,10 +112,11 @@ def inicio_sesion_tutorado(request):
                 if check_password(password, tutorado.password):
                     # Inicio de sesión exitoso
                     request.session['logged_in'] = True
+                    request.session['rol'] = 'Tutorado'
                     request.session['boleta_tutorado'] = boleta_tutorado
 
                     # Reemplaza con la URL que deseas redireccionar
-                    return redirect('menu_tutorado')
+                    return redirect('menu')
                 else:
                     # Credenciales inválidas
                     messages.error(
@@ -135,6 +135,7 @@ def inicio_sesion_tutorado(request):
 def cerrar_sesion(request):
     if 'logged_in' in request.session:
         del request.session['logged_in']
+        del request.session['rol']
     if 'numero_empleado' in request.session:
         del request.session['numero_empleado']
     if 'boleta_tutorado' in request.session:

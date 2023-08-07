@@ -32,6 +32,17 @@
             <li class="nav-item">
                 <a href="{% url 'cerrar_sesion' %}" class="nav-link">Cerrar Sesión</a>
             </li>
+
+            {% if rol == 'Tutor' %}
+            <li class="nav-item">
+                <a href="#" class="nav-link">Soy un Tutor</a>
+            </li>
+            {% elif rol == 'Tutorado' %}
+            <li class="nav-item">
+                <a href="#" class="nav-link">Soy un Tutorado</a>
+            </li>
+            {% endif %}
+
             {% endif %}
         </ul>
     </nav>

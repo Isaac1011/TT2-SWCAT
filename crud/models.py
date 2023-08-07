@@ -37,7 +37,7 @@ class Tutorado(models.Model):
     apellidoPaterno = models.CharField(max_length=45)
     apellidoMaterno = models.CharField(max_length=45)
     semestre = models.CharField(max_length=15, default=None)
-    telefono = models.CharField(max_length=45, default=None)
+    telefono = models.CharField(max_length=10, default=None)
     numTutoresAsignados = models.IntegerField(
         default=0, validators=[MinValueValidator(0), MaxValueValidator(3)])
 
