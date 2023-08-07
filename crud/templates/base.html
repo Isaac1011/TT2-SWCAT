@@ -21,10 +21,16 @@
             <li>
                 <a href="{% url 'inicio_sesion_tutor' %}">Inicio Sesión Tutor</a>
             </li>
+            <li>
+                <a href="{% url 'registro_tutorado' %}">Registro Tutorado</a>
+            </li>
+            <li>
+                <a href="{% url 'inicio_sesion_tutorado' %}">Inicio Sesión Tutorado</a>
+            </li>
             {% else %}
             <!-- Mostrar enlace de Cerrar Sesión solo si el usuario ha iniciado sesión o se ha registrado -->
             <li class="nav-item">
-                <a href="{% url 'cerrar_sesion_tutor' %}" class="nav-link">Cerrar Sesión</a>
+                <a href="{% url 'cerrar_sesion' %}" class="nav-link">Cerrar Sesión</a>
             </li>
             {% endif %}
         </ul>

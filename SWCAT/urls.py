@@ -28,7 +28,10 @@ urlpatterns = [
     path('menuTutor/', views.menu_tutor, name='menu_tutor'),
     path('inicioSesionTutor/', views.inicio_sesion_tutor,
          name='inicio_sesion_tutor'),
-    path('cerrarSesionTutor/', views.cerrar_sesion_tutor,
-         name='cerrar_sesion_tutor'),
-
+    path('cerrarSesion/', views.cerrar_sesion,
+         name='cerrar_sesion'),
+    path('registroTutorado/', views.registro_tutorado, name='registro_tutorado'),
+    path('menuTutorado/', views.menu_tutorado, name='menu_tutorado'),
+    path('inicioSesionTutorado/', views.inicio_sesion_tutorado,
+         name='inicio_sesion_tutorado')
 ]
