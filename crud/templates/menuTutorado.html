@@ -4,6 +4,24 @@
 
 <main>
     <h1>Menú principal del Tutorado</h1>
+    <h2>Tutorías Individuales Inscritas</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tutor</th>
+                <th>Nombre de Tutoría</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tutoria in tutorias_inscritas %}
+            <tr>
+                <td>{{ tutoria.idTutor }}</td>
+                <td>{{ tutoria.nombreTutoriaIndividual }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </main>
 
 {% endblock %}

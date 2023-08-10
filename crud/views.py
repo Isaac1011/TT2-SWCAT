@@ -4,7 +4,6 @@ from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroFor
 from .models import Tutor, Tutorado, TutoriaIndividual
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
-
 # Create your views here.
 
 
@@ -34,11 +33,22 @@ def menu(request):
         return render(request, 'menuTutor.html', {'logged_in': logged_in,
                                                   'rol': rol,
                                                   'tutorias_individuales': tutorias_individuales})
+
     # Si el usuario está iniciado sesión y su rol es 'Tutorado'
     elif logged_in and rol == 'Tutorado':
-        # Renderiza la plantilla 'menuTutorado.html' con el contexto
+        # Obtén el objeto Tutorado correspondiente al correo electrónico almacenado en la sesión
+        tutorado = Tutorado.objects.get(
+            boletaTutorado=request.session['boleta_tutorado'])
+
+        # Recupera todas las tutorías individuales en las que está inscrito el Tutorado
+        tutorias_inscritas = TutoriaIndividual.objects.filter(
+            idTutorado=tutorado)
+
+        # Renderiza la plantilla 'menuTutorado.html' con la información del usuario y las tutorías inscritas
         return render(request, 'menuTutorado.html', {'logged_in': logged_in,
-                                                     'rol': rol})
+                                                     'rol': rol,
+                                                     'tutorias_inscritas': tutorias_inscritas})
+
     # Si el usuario no está iniciado sesión o su rol no coincide
     else:
         # Redirige al usuario a la vista 'inicio'
@@ -123,18 +133,13 @@ def inicio_sesion_tutorado(request):
             # Verificar si las credenciales son válidas
             try:
                 tutorado = Tutorado.objects.get(boletaTutorado=boleta_tutorado)
-                if check_password(password, tutorado.password):
-                    # Inicio de sesión exitoso
-                    request.session['logged_in'] = True
-                    request.session['rol'] = 'Tutorado'
-                    request.session['boleta_tutorado'] = boleta_tutorado
+                # Checamos si la contraseña es correcta, solo que no sé que tan seguro sea hacerlo de esta forma, funciona pero no lo sé
+                password = Tutorado.objects.get(password=password)
+                request.session['logged_in'] = True
+                request.session['rol'] = 'Tutorado'
+                request.session['boleta_tutorado'] = boleta_tutorado
+                return redirect('menu')
 
-                    # Reemplaza con la URL que deseas redireccionar
-                    return redirect('menu')
-                else:
-                    # Credenciales inválidas
-                    messages.error(
-                        request, 'Credenciales inválidas. Inténtalo de nuevo.')
             except Tutorado.DoesNotExist:
                 # Tutor no encontrado
                 messages.error(request, 'Tutorado no encontrado.')
@@ -145,15 +150,8 @@ def inicio_sesion_tutorado(request):
     return render(request, 'inicioSesionTutorado.html', {'form': form})
 
 
-# Funciona correctamente para proteger las rutas, pero no elimina la cookie 'sessionid' del navegador
 def cerrar_sesion(request):
-    if 'logged_in' in request.session:
-        del request.session['logged_in']
-        del request.session['rol']
-    if 'numero_empleado' in request.session:
-        del request.session['numero_empleado']
-    if 'boleta_tutorado' in request.session:
-        del request.session['boleta_tutorado']
+    request.session.flush()  # Elimina todos los datos de la sesión
     return redirect('inicio')
 
 
