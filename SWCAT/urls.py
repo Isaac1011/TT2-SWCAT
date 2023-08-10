@@ -32,5 +32,7 @@ urlpatterns = [
          name='cerrar_sesion'),
     path('registroTutorado/', views.registro_tutorado, name='registro_tutorado'),
     path('inicioSesionTutorado/', views.inicio_sesion_tutorado,
-         name='inicio_sesion_tutorado')
+         name='inicio_sesion_tutorado'),
+    path('menu/crearTutoriaIndividual/', views.crear_tutoria_individual,
+         name='crear_tutoria_individual')
 ]

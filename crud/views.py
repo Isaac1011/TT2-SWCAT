@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm
-from .models import Tutor, Tutorado
+from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm
+from .models import Tutor, Tutorado, TutoriaIndividual
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 
@@ -18,16 +18,30 @@ def inicio(request):
 
 # Si la clave 'logged_in' no está presente en request.session, se asignará el valor False por defecto a la variable logged_in
 def menu(request):
+    # Obtiene el valor de 'logged_in' de la sesión, si no existe, se asigna False por defecto
     logged_in = request.session.get('logged_in', False)
+    # Obtiene el valor de 'rol' de la sesión
     rol = request.session.get('rol')
 
+    # Si el usuario está iniciado sesión y su rol es 'Tutor'
     if logged_in and rol == 'Tutor':
+        # Obtiene el tutor que corresponde al número de empleado almacenado en la sesión
+        tutor = Tutor.objects.get(
+            numeroEmpleado=request.session['numero_empleado'])
+        # Obtiene todas las tutorías individuales que tiene a su cargo el tutor
+        tutorias_individuales = TutoriaIndividual.objects.filter(idTutor=tutor)
+        # Renderiza la plantilla 'menuTutor.html' con el contexto
         return render(request, 'menuTutor.html', {'logged_in': logged_in,
-                                                  'rol': rol})
+                                                  'rol': rol,
+                                                  'tutorias_individuales': tutorias_individuales})
+    # Si el usuario está iniciado sesión y su rol es 'Tutorado'
     elif logged_in and rol == 'Tutorado':
+        # Renderiza la plantilla 'menuTutorado.html' con el contexto
         return render(request, 'menuTutorado.html', {'logged_in': logged_in,
                                                      'rol': rol})
+    # Si el usuario no está iniciado sesión o su rol no coincide
     else:
+        # Redirige al usuario a la vista 'inicio'
         return redirect('inicio')
 
 
@@ -141,3 +155,51 @@ def cerrar_sesion(request):
     if 'boleta_tutorado' in request.session:
         del request.session['boleta_tutorado']
     return redirect('inicio')
+
+
+def crear_tutoria_individual(request):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/crearTutoriaIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    if request.method == 'POST':
+        form = TutoriaIndividualForm(request.POST)
+        if form.is_valid():
+            # Obtiene el tutor de la sesión
+            tutor = Tutor.objects.get(
+                numeroEmpleado=request.session['numero_empleado'])
+            tutoria_individual = form.save(commit=False)
+
+            # Verifica si el Tutorado tiene menos de 3 tutores asignados
+            tutorado = tutoria_individual.idTutorado
+            if tutorado.numTutoresAsignados < 3:
+                # Asigna el tutor a la instancia de tutoría individual
+                tutoria_individual.idTutor = tutor
+                # Guarda la instancia de tutoría individual en la BD
+                tutoria_individual.save()
+
+                # Incrementa el campo numTutoresAsignados del Tutorado en una unidad
+                tutorado.numTutoresAsignados += 1
+                tutorado.save()
+
+                # Redirige a la vista 'menu'
+                return redirect('menu')
+            else:
+                # Muestra un mensaje de error si el Tutorado ya tiene 3 tutores asignados
+                messages.error(
+                    request, 'El Tutorado ya está inscrito en 3 tutorías.')
+    else:  # GET
+        form = TutoriaIndividualForm()
+
+    # Agrega las variables logged_in y rol al contexto
+
+    # Estamos creando un diccionario llamado context que contiene varias variables que se pasarán como contexto a la plantilla crearTutoriaIndividual.html cuando se renderice
+
+    # El contexto es simplemente un conjunto de variables que se utilizan para mostrar información en la plantilla.
+    context = {'form': form, 'logged_in': logged_in, 'rol': rol}
+    return render(request, 'crearTutoriaIndividual.html', context)

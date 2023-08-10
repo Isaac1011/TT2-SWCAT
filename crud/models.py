@@ -17,15 +17,15 @@ class Tutor(models.Model):
     telefono = models.CharField(max_length=10, default=None)
 
     def save(self, *args, **kwargs):
-        # Llama al método save() de la clase padre para manejar el guardado del objeto
-        super(Tutor, self).save(*args, **kwargs)
-
-        # Después del guardado, convierte la contraseña en un hash seguro
+        # Antes de guardar, convierte la contraseña en un hash seguro
         if self.password:
             self.password = make_password(self.password)
 
+        # Llama al método save() de la clase padre para manejar el guardado del objeto
+        super(Tutor, self).save(*args, **kwargs)
+
     def __str__(self):
-        return f'{self.nombre} {self.apellidoPaterno} {self.apellidoMaterno}'
+        return f'{self.numeroEmpleado} - {self.nombre} {self.apellidoPaterno} {self.apellidoMaterno}'
 
 
 class Tutorado(models.Model):
@@ -50,12 +50,11 @@ class Tutorado(models.Model):
         super(Tutorado, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.nombre} {self.apellidoPaterno} {self.apellidoMaterno}'
+        return f'{self.boletaTutorado} - {self.nombre} {self.apellidoPaterno} {self.apellidoMaterno}'
 
 
 class TutoriaIndividual(models.Model):
-    idTutoriaIndividual = models.IntegerField(
-        primary_key=True, auto_created=True)
+    idTutoriaIndividual = models.AutoField(primary_key=True)
     idTutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     idTutorado = models.ForeignKey(Tutorado, on_delete=models.CASCADE)
     nombreTutoriaIndividual = models.CharField(max_length=45)

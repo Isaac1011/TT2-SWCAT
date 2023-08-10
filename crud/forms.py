@@ -1,5 +1,5 @@
 from django import forms
-from .models import Tutor, Tutorado
+from .models import Tutor, Tutorado, TutoriaIndividual
 
 
 class TutorRegistroForm(forms.ModelForm):
@@ -35,3 +35,9 @@ class TutoradoInicioSesionForm(forms.Form):
     boletaTutorado = forms.CharField(max_length=10)
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'placeholder': "Escribe la contraseña"}))
+
+
+class TutoriaIndividualForm(forms.ModelForm):
+    class Meta:
+        model = TutoriaIndividual
+        fields = ['idTutorado', 'nombreTutoriaIndividual']
