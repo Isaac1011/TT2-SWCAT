@@ -35,6 +35,10 @@ urlpatterns = [
          name='inicio_sesion_tutorado'),
     path('menu/crearTutoriaIndividual/', views.crear_tutoriaIndividual,
          name='crear_tutoriaIndividual'),
-    path('menu/<int:tutoria_id>/',
-         views.detalle_tutoriaIndividual, name='detalle_tutoriaIndividual')
+    path('menu/tutoriaIndividual/<int:tutoria_id>/',
+         views.detalle_tutoriaIndividual, name='detalle_tutoriaIndividual'),
+    path('menu/tutoriaIndividual/crearBitacora/<int:tutoria_id>/',
+         views.bitacora_tutor_tutoriaIndividual, name='crear_bitacora_tutoriaIndividual'),
+    path('menu/tutoriaIndividual/crearNota/<int:tutoria_id>/',
+         views.nota_tutorado_tutoriaIndividual, name='crear_nota_tutoriaIndividual')
 ]

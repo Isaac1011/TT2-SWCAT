@@ -1,7 +1,10 @@
+from .forms import BitacoraIndividualTutorForm
+from .models import BitacoraIndividualTutor
+from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm, BitacoraIndividualTutorForm
-from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor
+from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm, BitacoraIndividualTutorForm, NotasIndividualesTutoradoForm
+from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 # Create your views here.
@@ -203,35 +206,6 @@ def crear_tutoriaIndividual(request):
     return render(request, 'crearTutoriaIndividual.html', context)
 
 
-def nota_tutor_tutoriaIndividual(request):
-    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
-    logged_in = request.session.get('logged_in', False)
-    rol = request.session.get('rol')
-
-    # Si no estás logeado o no eres un Tutor, redirige al inicio.
-    # Con esto protejo la ruta menu/notaTutorIndividual/
-    if not logged_in or rol != 'Tutor':
-        return redirect('inicio')
-
-    if request.method == 'POST':
-        form = BitacoraIndividualTutorForm(request.POST)
-        if form.is_valid():
-            # Obtener la instancia de TutoriaIndividual basada en su ID
-            # tutoria_individual = TutoriaIndividual.objects.get(
-            #     pk=tutoria_individual_id)
-            # Crear una instancia de BitacoraIndividualTutor con los datos del formulario y la instancia de TutoriaIndividual
-            bitacora = form.save(commit=False)
-            # bitacora.idTutoriaIndividual = tutoria_individual
-            bitacora.save()
-
-            # Redireccionar a alguna vista después de guardar exitosamente
-            return redirect('alguna_vista')
-    else:
-        form = BitacoraIndividualTutorForm()
-
-    return render(request, 'crear_bitacora_individual.html', {'form': form})
-
-
 def detalle_tutoriaIndividual(request, tutoria_id):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
@@ -247,10 +221,104 @@ def detalle_tutoriaIndividual(request, tutoria_id):
         tutoria_individual = get_object_or_404(
             TutoriaIndividual, pk=tutoria_id)
 
+        # Obtener las notas de la bitácora asociadas a esta tutoría individual
+        notas_tutor = BitacoraIndividualTutor.objects.filter(
+            idTutoriaIndividual=tutoria_individual)
+
+        # Obtener las notas del tutorado asociadas a esta tutoría individual
+        notas_tutorado = NotasIndividualesTutorado.objects.filter(
+            idTutoriaIndividual=tutoria_individual)
+
         # Renderizar el template de detalle_tutoria.html con la instancia de tutoría individual
         context = {
             'tutoria_individual': tutoria_individual,
+            'notas_tutor': notas_tutor,
+            'notas_tutorado': notas_tutorado,
             'logged_in': logged_in,
             'rol': rol
         }
         return render(request, 'detalleTutoriaIndividual.html', context)
+
+
+def bitacora_tutor_tutoriaIndividual(request, tutoria_id):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/notaTutorIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Obtén la instancia de la tutoría individual usando el ID proporcionado
+    try:
+        # Obtener la instancia de TutoriaIndividual según el ID proporcionado
+        tutoria_individual = get_object_or_404(
+            TutoriaIndividual, pk=tutoria_id)
+    except TutoriaIndividual.DoesNotExist:
+        # Manejo si la tutoría no existe
+        messages.error(
+            request, 'Tutor no encontrado.')
+        # return redirect('inicio')
+
+    if request.method == 'POST':
+        form = BitacoraIndividualTutorForm(request.POST)
+        if form.is_valid():
+            # Crea una nueva instancia de BitacoraIndividualTutor, pero aún no la guarda en la base de datos
+            bitacora = form.save(commit=False)
+            bitacora.idTutoriaIndividual = tutoria_individual  # Asigna la tutoría individual
+            bitacora.save()  # Ahora sí, guarda en la base de datos
+
+            # Redirige a donde quieras después de registrar la nota
+            # Cambia esto por la ruta adecuada
+            return redirect('detalle_tutoriaIndividual', tutoria_id=tutoria_id)
+    else:
+        form = BitacoraIndividualTutorForm()
+
+    context = {
+        'form': form,
+        'tutoria_individual': tutoria_individual,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'crearBitacoraTutoriaIndividual.html', context)
+
+
+def nota_tutorado_tutoriaIndividual(request, tutoria_id):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/notaTutorIndividual/
+    if not logged_in or rol != 'Tutorado':
+        return redirect('inicio')
+
+    try:
+        # Obtener la instancia de la tutoría individual según el ID proporcionado
+        tutoria_individual = get_object_or_404(
+            TutoriaIndividual, pk=tutoria_id)
+    except TutoriaIndividual.DoesNotExist:
+        # Manejo si la tutoría no existe
+        messages.error(
+            request, 'Tutoría no encontrada.')
+        # return redirect('inicio')
+
+    if request.method == 'POST':
+        form = NotasIndividualesTutoradoForm(request.POST)
+        if form.is_valid():
+            # Crear una instancia de NotasIndividualesTutorado pero no guardarla aún
+            nota = form.save(commit=False)
+            nota.idTutoriaIndividual = tutoria_individual
+            nota.save()
+            return redirect('detalle_tutoriaIndividual', tutoria_id=tutoria_id)
+    else:
+        form = NotasIndividualesTutoradoForm()
+
+    context = {
+        'form': form,
+        'tutoria_individual': tutoria_individual,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'crearNotaTutoriaIndividual.html', context)

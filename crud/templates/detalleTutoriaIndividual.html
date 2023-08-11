@@ -8,6 +8,35 @@
     <p>Tutor: {{tutoria_individual.idTutor.nombre}}</p>
     <p>Tutorado: {{ tutoria_individual.idTutorado.nombre }}</p>
     <!-- Otros detalles de la tutoría individual -->
+
+
+    <!-- Mostrar las notas del tutor -->
+    {% if rol == 'Tutor' %}
+    <h3>Bitacora del Tutor:</h3>
+    <ul>
+        {% for nota in notas_tutor %}
+        <li>{{ nota.nota }}</li>
+        <p>{{nota.fecha}}</p>
+        {% endfor %}
+    </ul>
+    <!--Para crear una bitacora-->
+    <a href="{% url 'crear_bitacora_tutoriaIndividual' tutoria_individual.idTutoriaIndividual%}" class="nav-link">Crear
+        Bitacora</a>
+
+    <!-- Mostrar las notas del tutorado -->
+    {% elif rol == 'Tutorado' %}
+    <h3>Notas del Tutorado:</h3>
+    <ul>
+        {% for nota in notas_tutorado %}
+        <li>{{ nota.nota }}</li>
+        <p>{{ nota.fecha }}</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'crear_nota_tutoriaIndividual' tutoria_individual.idTutoriaIndividual%}" class="nav-link">Crear
+        Nota</a>
+
+    {% endif %}
+
 </main>
 
 {% endblock %}
