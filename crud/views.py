@@ -155,7 +155,7 @@ def cerrar_sesion(request):
     return redirect('inicio')
 
 
-def crear_tutoria_individual(request):
+def crear_tutoriaIndividual(request):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
@@ -203,7 +203,7 @@ def crear_tutoria_individual(request):
     return render(request, 'crearTutoriaIndividual.html', context)
 
 
-def nota_Tutor_TutoriaIndividual(request):
+def nota_tutor_tutoriaIndividual(request):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
@@ -232,14 +232,14 @@ def nota_Tutor_TutoriaIndividual(request):
     return render(request, 'crear_bitacora_individual.html', {'form': form})
 
 
-def detalle_tutoriaIndividual_tutor(request, tutoria_id):
+def detalle_tutoriaIndividual(request, tutoria_id):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
 
-    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    # Si NO estás logeado Y  no eres un Tutor or un Tutorado, redirige al inicio.
     # Con esto protejo la ruta menu/notaTutorIndividual/
-    if not logged_in or rol != 'Tutor':
+    if (not logged_in) and (rol != 'Tutor' or rol != 'Tutorado'):
         return redirect('inicio')
 
     else:
@@ -253,4 +253,4 @@ def detalle_tutoriaIndividual_tutor(request, tutoria_id):
             'logged_in': logged_in,
             'rol': rol
         }
-        return render(request, 'detalleTutoriaIndividual_Tutor.html', context)
+        return render(request, 'detalleTutoriaIndividual.html', context)
