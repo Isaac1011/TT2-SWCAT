@@ -9,7 +9,11 @@
     <h2>Tutorías a cargo:</h2>
     <ul>
         {% for tutoria in tutorias_individuales %}
-        <li>Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}</li>
+        <li>
+            <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}">
+                Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
+            </a>
+        </li>
         {% endfor %}
     </ul>
     {% else %}

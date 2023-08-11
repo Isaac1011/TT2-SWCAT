@@ -34,5 +34,7 @@ urlpatterns = [
     path('inicioSesionTutorado/', views.inicio_sesion_tutorado,
          name='inicio_sesion_tutorado'),
     path('menu/crearTutoriaIndividual/', views.crear_tutoria_individual,
-         name='crear_tutoria_individual')
+         name='crear_tutoria_individual'),
+    path('menu/<int:tutoria_id>/',
+         views.detalle_tutoriaIndividual_tutor, name='detalle_tutoriaIndividual')
 ]

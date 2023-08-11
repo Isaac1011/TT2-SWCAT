@@ -1,5 +1,5 @@
 from django import forms
-from .models import Tutor, Tutorado, TutoriaIndividual
+from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor
 
 
 class TutorRegistroForm(forms.ModelForm):
@@ -41,3 +41,9 @@ class TutoriaIndividualForm(forms.ModelForm):
     class Meta:
         model = TutoriaIndividual
         fields = ['idTutorado', 'nombreTutoriaIndividual']
+
+
+class BitacoraIndividualTutorForm(forms.ModelForm):
+    class Meta:
+        model = BitacoraIndividualTutor
+        fields = ['nota']

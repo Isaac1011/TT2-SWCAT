@@ -61,3 +61,17 @@ class TutoriaIndividual(models.Model):
 
     def __str__(self):
         return f"Tutoría Individual de {self.idTutor} a {self.idTutorado}"
+
+
+class BitacoraIndividualTutor(models.Model):
+    idBitacoraIndividual = models.AutoField(primary_key=True)
+    # Relación con el modelo TutoriaIndividual
+    idTutoriaIndividual = models.ForeignKey(
+        TutoriaIndividual, on_delete=models.CASCADE)
+    # Notas o contenido de la bitácora
+    nota = models.CharField(max_length=400)
+    # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Bitácora {self.idTutoriaIndividual} - Tutoría: {self.fecha}"
