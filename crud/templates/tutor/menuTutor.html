@@ -6,7 +6,7 @@
     <h1>Menú principal del Tutor</h1>
 
     {% if tutorias_individuales %}
-    <h2>Tutorías a cargo:</h2>
+    <h2>Tutorías Individuales a cargo:</h2>
     <ul>
         {% for tutoria in tutorias_individuales %}
         <li>
@@ -16,6 +16,18 @@
         </li>
         {% endfor %}
     </ul>
+
+    <h2>Tutorías Grupales a cargo:</h2>
+    <ul>
+        {%for tutoria in tutorias_grupales %}
+        <li>
+            <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal%}">
+                Tutoría: {{tutoria.nombreGrupo}} -
+                Salón: {{tutoria.salon}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+
     {% else %}
     <p>No tienes tutorías a cargo.</p>
     {% endif %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h1>Detalle de Tutoría Grupal</h1>
+    <h2>Nombre de la tutoría: {{ tutoria_grupal.nombreGrupo }}</h2>
+    <p>Tutor: {{tutoria_grupal.idTutor.nombre}}</p>
+    <p>Salón: {{ tutoria_grupal.salon }}</p>
+    <!-- Otros detalles de la tutoría individual -->
+</main>
+
+{% endblock %}

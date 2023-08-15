@@ -40,5 +40,9 @@ urlpatterns = [
     path('menu/tutoriaIndividual/crearBitacora/<int:tutoria_id>/',
          views.bitacora_tutor_tutoriaIndividual, name='crear_bitacora_tutoriaIndividual'),
     path('menu/tutoriaIndividual/crearNota/<int:tutoria_id>/',
-         views.nota_tutorado_tutoriaIndividual, name='crear_nota_tutoriaIndividual')
+         views.nota_tutorado_tutoriaIndividual, name='crear_nota_tutoriaIndividual'),
+    path('menu/crearTutoriaGrupal', views.crear_tutoriaGrupal,
+         name='crear_tutoriaGrupal'),
+    path('menu/tutoriaGrupal/<int:tutoria_id>',
+         views.detalle_tutoriaGrupal, name='detalle_tutoriaGrupal')
 ]

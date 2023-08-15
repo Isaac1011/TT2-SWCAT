@@ -86,3 +86,21 @@ class NotasIndividualesTutorado(models.Model):
     nota = models.CharField(max_length=400)
     # Fecha y hora de la entrada de la bitácora
     fecha = models.DateTimeField(auto_now_add=True)
+
+
+class TutoriaGrupal(models.Model):
+    idTutoriaGrupal = models.AutoField(primary_key=True)
+    # Relación con el modelo Tutor
+    idTutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    nombreGrupo = models.CharField(max_length=45, default=None)
+    cupoDisponible = models.IntegerField(default=45)
+    salon = models.CharField(max_length=20, default=None)
+
+
+class ListaTutoriaGrupal(models.Model):
+    idListaTutoriaGrupal = models.AutoField(primary_key=True)
+    # Relación con el modelo TutoriaGrupal
+    idTutoriaGrupal = models.ForeignKey(
+        TutoriaGrupal, on_delete=models.CASCADE)
+    # Relación con el modelo Tutorado
+    idTutorado = models.ForeignKey(Tutorado, on_delete=models.CASCADE)

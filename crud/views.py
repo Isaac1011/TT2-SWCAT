@@ -3,8 +3,8 @@ from .models import BitacoraIndividualTutor
 from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm, BitacoraIndividualTutorForm, NotasIndividualesTutoradoForm
-from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado
+from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm, BitacoraIndividualTutorForm, NotasIndividualesTutoradoForm, TutoriaGrupalForm
+from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 # Create your views here.
@@ -32,10 +32,15 @@ def menu(request):
             numeroEmpleado=request.session['numero_empleado'])
         # Obtiene todas las tutorías individuales que tiene a su cargo el tutor
         tutorias_individuales = TutoriaIndividual.objects.filter(idTutor=tutor)
+        # Obtiene todas las tutorías grupales que tiene a su cargo el tutor
+        tutorias_grupales = TutoriaGrupal.objects.filter(idTutor=tutor)
         # Renderiza la plantilla 'menuTutor.html' con el contexto
-        return render(request, 'menuTutor.html', {'logged_in': logged_in,
-                                                  'rol': rol,
-                                                  'tutorias_individuales': tutorias_individuales})
+        return render(request, 'tutor/menuTutor.html',
+                      {'logged_in': logged_in,
+                       'rol': rol,
+                       'tutorias_individuales': tutorias_individuales,
+                       'tutorias_grupales': tutorias_grupales}
+                      )
 
     # Si el usuario está iniciado sesión y su rol es 'Tutorado'
     elif logged_in and rol == 'Tutorado':
@@ -48,9 +53,11 @@ def menu(request):
             idTutorado=tutorado)
 
         # Renderiza la plantilla 'menuTutorado.html' con la información del usuario y las tutorías inscritas
-        return render(request, 'menuTutorado.html', {'logged_in': logged_in,
-                                                     'rol': rol,
-                                                     'tutorias_inscritas': tutorias_inscritas})
+        return render(request, 'tutorado/menuTutorado.html',
+                      {'logged_in': logged_in,
+                       'rol': rol,
+                       'tutorias_inscritas': tutorias_inscritas}
+                      )
 
     # Si el usuario no está iniciado sesión o su rol no coincide
     else:
@@ -71,7 +78,7 @@ def registro_tutor(request):
             return redirect('menu')
     else:  # GET
         form = TutorRegistroForm()
-    return render(request, 'registroTutor.html', {
+    return render(request, 'tutor/registroTutor.html', {
         'form': form
     })
 
@@ -89,7 +96,7 @@ def registro_tutorado(request):
             return redirect('menu')
     else:  # GET
         form = TutoradoRegistroForm()
-    return render(request, 'registroTutorado.html', {
+    return render(request, 'tutorado/registroTutorado.html', {
         'form': form
     })
 
@@ -123,7 +130,7 @@ def inicio_sesion_tutor(request):
     else:
         form = TutorInicioSesionForm()
 
-    return render(request, 'inicioSesionTutor.html', {'form': form})
+    return render(request, 'tutor/inicioSesionTutor.html', {'form': form})
 
 
 def inicio_sesion_tutorado(request):
@@ -150,7 +157,7 @@ def inicio_sesion_tutorado(request):
     else:
         form = TutoradoInicioSesionForm()
 
-    return render(request, 'inicioSesionTutorado.html', {'form': form})
+    return render(request, 'tutorado/inicioSesionTutorado.html', {'form': form})
 
 
 def cerrar_sesion(request):
@@ -203,7 +210,7 @@ def crear_tutoriaIndividual(request):
 
     # El contexto es simplemente un conjunto de variables que se utilizan para mostrar información en la plantilla.
     context = {'form': form, 'logged_in': logged_in, 'rol': rol}
-    return render(request, 'crearTutoriaIndividual.html', context)
+    return render(request, 'tutor/tutoriaIndividual/crearTutoriaIndividual.html', context)
 
 
 def detalle_tutoriaIndividual(request, tutoria_id):
@@ -281,7 +288,7 @@ def bitacora_tutor_tutoriaIndividual(request, tutoria_id):
         'logged_in': logged_in,
         'rol': rol
     }
-    return render(request, 'crearBitacoraTutoriaIndividual.html', context)
+    return render(request, 'tutor/tutoriaIndividual/crearBitacoraTutoriaIndividual.html', context)
 
 
 def nota_tutorado_tutoriaIndividual(request, tutoria_id):
@@ -321,4 +328,56 @@ def nota_tutorado_tutoriaIndividual(request, tutoria_id):
         'logged_in': logged_in,
         'rol': rol
     }
-    return render(request, 'crearNotaTutoriaIndividual.html', context)
+    return render(request, 'tutorado/tutoriaIndividual/crearNotaTutoriaIndividual.html', context)
+
+
+def crear_tutoriaGrupal(request):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    if request.method == 'POST':
+        form = TutoriaGrupalForm(request.POST)
+        if form.is_valid():
+            # Obtiene el tutor de la sesión
+            tutor = Tutor.objects.get(
+                numeroEmpleado=request.session['numero_empleado'])
+            tutoria_grupal = form.save(commit=False)
+            tutoria_grupal.idTutor = tutor
+            tutoria_grupal.save()
+            return redirect('menu')
+    else:  # GET
+        form = TutoriaGrupalForm()
+
+    context = {'form': form, 'logged_in': logged_in, 'rol': rol}
+    return render(request, 'tutor/tutoriaGrupal/crearTutoriaGrupal.html', context)
+
+
+def detalle_tutoriaGrupal(request, tutoria_id):
+    # Para proteger la ruta
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si NO estás logeado Y  no eres un Tutor or un Tutorado, redirige al inicio.
+    if (not logged_in) and (rol != 'Tutor' or rol != 'Tutorado'):
+        return redirect('inicio')
+
+    else:
+        # Obtener la instancia de TutoriaIndividual según el ID proporcionado
+        tutoria_grupal = get_object_or_404(
+            TutoriaGrupal, pk=tutoria_id)
+
+        # Podemos obtener los detalles que queramos, como los anuncios del tutor
+        # ...
+
+        # Renderizar el template de detalle_tutoria.html con la instancia de tutoría individual
+        context = {
+            'tutoria_grupal': tutoria_grupal,
+            'logged_in': logged_in,
+            'rol': rol
+        }
+        return render(request, 'detalleTutoriaGrupal.html', context)
