@@ -104,3 +104,21 @@ class ListaTutoriaGrupal(models.Model):
         TutoriaGrupal, on_delete=models.CASCADE)
     # Relación con el modelo Tutorado
     idTutorado = models.ForeignKey(Tutorado, on_delete=models.CASCADE)
+
+
+class BitacoraGrupalTutor(models.Model):
+    idBitacoraGrupalTutor = models.AutoField(primary_key=True)
+    idTutoriaGrupal = models.ForeignKey(
+        TutoriaGrupal, on_delete=models.CASCADE)
+    nota = models.CharField(max_length=400)
+    # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+
+class AnunciosGrupalesTutor(models.Model):
+    idAnunciosGrupalesTutor = models.AutoField(primary_key=True)
+    idTutoriaGrupal = models.ForeignKey(
+        TutoriaGrupal, on_delete=models.CASCADE)
+    nota = models.CharField(max_length=400)
+    # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
+    fecha = models.DateTimeField(auto_now_add=True)

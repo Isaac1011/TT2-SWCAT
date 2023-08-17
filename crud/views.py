@@ -1,10 +1,10 @@
 from .forms import BitacoraIndividualTutorForm
-from .models import BitacoraIndividualTutor
+from .models import BitacoraIndividualTutor, BitacoraGrupalTutor, AnunciosGrupalesTutor
 from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm, BitacoraIndividualTutorForm, NotasIndividualesTutoradoForm, TutoriaGrupalForm
-from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal
+from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm, BitacoraIndividualTutorForm, NotasIndividualesTutoradoForm, TutoriaGrupalForm, BitacoraGrupalTutorForm, AnunciosGrupalesTutorForm
+from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal, ListaTutoriaGrupal
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 # Create your views here.
@@ -49,14 +49,18 @@ def menu(request):
             boletaTutorado=request.session['boleta_tutorado'])
 
         # Recupera todas las tutorías individuales en las que está inscrito el Tutorado
-        tutorias_inscritas = TutoriaIndividual.objects.filter(
+        tutorias_individuales = TutoriaIndividual.objects.filter(
             idTutorado=tutorado)
+        # Recupera todas las tutorías grupales en las que está inscrito el Tutorado
+        tutorias_grupales = ListaTutoriaGrupal.objects.filter(
+            idTutorado=tutorado.idTutorado)
 
         # Renderiza la plantilla 'menuTutorado.html' con la información del usuario y las tutorías inscritas
         return render(request, 'tutorado/menuTutorado.html',
                       {'logged_in': logged_in,
                        'rol': rol,
-                       'tutorias_inscritas': tutorias_inscritas}
+                       'tutorias_individuales': tutorias_individuales,
+                       'tutorias_grupales': tutorias_grupales}
                       )
 
     # Si el usuario no está iniciado sesión o su rol no coincide
@@ -370,14 +374,196 @@ def detalle_tutoriaGrupal(request, tutoria_id):
         # Obtener la instancia de TutoriaIndividual según el ID proporcionado
         tutoria_grupal = get_object_or_404(
             TutoriaGrupal, pk=tutoria_id)
-
+        # Obtener los Tutorados que pertenecen a esta tutoría grupal
+        tutorados_pertenecientes = ListaTutoriaGrupal.objects.filter(
+            idTutoriaGrupal=tutoria_grupal)
+        # Obtener las bitácoras
+        bitacoras_grupales = BitacoraGrupalTutor.objects.filter(
+            idTutoriaGrupal=tutoria_grupal)
+        # Obtener los anuncios de la tutoría grupal
+        anuncios_grupales = AnunciosGrupalesTutor.objects.filter(
+            idTutoriaGrupal=tutoria_grupal)
         # Podemos obtener los detalles que queramos, como los anuncios del tutor
         # ...
 
         # Renderizar el template de detalle_tutoria.html con la instancia de tutoría individual
         context = {
             'tutoria_grupal': tutoria_grupal,
+            'tutorados_pertenecientes': tutorados_pertenecientes,
+            'bitacoras_grupales': bitacoras_grupales,
+            'anuncios_grupales': anuncios_grupales,
             'logged_in': logged_in,
             'rol': rol
         }
         return render(request, 'detalleTutoriaGrupal.html', context)
+
+
+def tutorias_grupales_disponibles(request):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/crearTutoriaIndividual/
+    if not logged_in or rol != 'Tutorado':
+        return redirect('inicio')
+
+    # Obtener todas las instancias de TutoriaGrupal que tengan cupo disponible
+    tutorias_grupales_disponibles = TutoriaGrupal.objects.filter(
+        cupoDisponible__gt=0)
+
+    # Renderizar el template de detalle_tutoria.html con la instancia de tutoría individual
+    context = {
+        'tutorias_grupales_disponibles': tutorias_grupales_disponibles,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'tutorado/tutoriaGrupal/inscribirseTutoriaGrupal.html', context)
+
+
+def inscribirse_tutoria_grupal(request, tutoria_id):
+    # Verificar que el tutorado esté autenticado y sea un tutorado
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    if not logged_in or rol != 'Tutorado':
+        return redirect('inicio')
+
+    # Obtener la tutoría grupal a la que se quiere inscribir el tutorado
+    tutoria_grupal = get_object_or_404(
+        TutoriaGrupal, idTutoriaGrupal=tutoria_id)
+    # Verificar si hay cupo disponible en la tutoría grupal
+    if tutoria_grupal.cupoDisponible <= 0:
+        # Manejar el caso en que no haya cupo disponible
+        messages.error(request, 'Tutoría Grupal llena')
+
+    else:
+        # Crear una nueva instancia de ListaTutoriaGrupal para la inscripción
+        tutorado_id = get_object_or_404(
+            Tutorado, boletaTutorado=request.session['boleta_tutorado'])
+        # Verifica si el Tutorado tiene menos de 3 tutores asignados
+        if tutorado_id.numTutoresAsignados >= 3:
+            # Muestra un mensaje de error si el Tutorado ya tiene 3 tutores asignados
+            messages.error(
+                request, 'El Tutorado ya está inscrito en 3 tutorías.')
+
+        else:
+            # Verificar si el tutor ya está inscrito en la tutoría grupal
+            tutor_esta_inscrito = ListaTutoriaGrupal.objects.filter(
+                idTutoriaGrupal=tutoria_grupal,
+                idTutorado=tutorado_id
+            ).exists()
+
+            if tutor_esta_inscrito:
+                messages.error(
+                    request, 'El Tutor ya está inscrito en esta Tutoría Grupal.')
+
+            else:
+                nueva_inscripcion = ListaTutoriaGrupal.objects.create(
+                    idTutoriaGrupal=tutoria_grupal,
+                    idTutorado=tutorado_id
+                )
+                # Reducir el cupo disponible en la tutoría grupal
+                tutoria_grupal.cupoDisponible -= 1
+                tutoria_grupal.save()
+                # Incrementa el campo numTutoresAsignados del Tutorado en una unidad
+                tutorado_id.numTutoresAsignados += 1
+                tutorado_id.save()
+                return redirect('menu')
+
+    # Obtener todas las instancias de TutoriaGrupal que tengan cupo disponible
+    tutorias_grupales_disponibles = TutoriaGrupal.objects.filter(
+        cupoDisponible__gt=0)
+
+    context = {
+        'tutorias_grupales_disponibles': tutorias_grupales_disponibles,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'tutorado/tutoriaGrupal/inscribirseTutoriaGrupal.html', context)
+
+
+def bitacora_tutor_tutoriaGrupal(request, tutoria_id):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/notaTutorIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Obtén la instancia de la tutoría individual usando el ID proporcionado
+    try:
+        # Obtener la instancia de TutoriaIndividual según el ID proporcionado
+        tutoria_grupal = get_object_or_404(
+            TutoriaGrupal, pk=tutoria_id)
+
+    except TutoriaGrupal.DoesNotExist:
+        # Manejo si la tutoría no existe
+        messages.error(
+            request, 'Tutoría no encontrada.')
+        # return redirect('inicio')
+
+    if request.method == 'POST':
+        form = BitacoraGrupalTutorForm(request.POST)
+        if form.is_valid():
+            # Crea una nueva instancia de BitacoraGrupalTutor, pero aún no la guarda en la base de datos
+            bitacora = form.save(commit=False)
+            # Asigna la tutoría grupal
+            bitacora.idTutoriaGrupal = tutoria_grupal
+            bitacora.save()  # Ahora sí, guarda en la base de datos
+
+            # Redirige a donde quieras después de registrar la nota
+            # Cambia esto por la ruta adecuada
+            return redirect('detalle_tutoriaGrupal', tutoria_id=tutoria_id)
+    else:
+        form = BitacoraIndividualTutorForm()
+
+    context = {
+        'form': form,
+        'tutoria_grupal': tutoria_grupal,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'tutor/tutoriaGrupal/crearBitacoraTutoriaGrupal.html', context)
+
+
+def anuncio_tutor_tutoriaGrupal(request, tutoria_id):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/notaTutorIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    try:
+        # Obtener la instancia de la tutoría individual según el ID proporcionado
+        tutoria_grupal = get_object_or_404(
+            TutoriaGrupal, pk=tutoria_id)
+    except TutoriaGrupal.DoesNotExist:
+        # Manejo si la tutoría no existe
+        messages.error(
+            request, 'Tutoría Grupal no encontrada.')
+        # return redirect('inicio')
+
+    if request.method == 'POST':
+        form = AnunciosGrupalesTutorForm(request.POST)
+        if form.is_valid():
+            # Crear una instancia de NotasIndividualesTutorado pero no guardarla aún
+            anuncio = form.save(commit=False)
+            anuncio.idTutoriaGrupal = tutoria_grupal
+            anuncio.save()
+            return redirect('detalle_tutoriaGrupal', tutoria_id=tutoria_id)
+    else:
+        form = NotasIndividualesTutoradoForm()
+
+    context = {
+        'form': form,
+        'tutoria_grupal': tutoria_grupal,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'tutor/tutoriaGrupal/crearAnucionTutoriaGrupal.html', context)

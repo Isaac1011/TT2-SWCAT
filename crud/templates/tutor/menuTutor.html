@@ -21,7 +21,7 @@
     <ul>
         {%for tutoria in tutorias_grupales %}
         <li>
-            <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal%}">
+            <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal %}">
                 Tutoría: {{tutoria.nombreGrupo}} -
                 Salón: {{tutoria.salon}}</a>
         </li>

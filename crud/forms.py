@@ -1,5 +1,5 @@
 from django import forms
-from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal
+from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal, BitacoraGrupalTutor, AnunciosGrupalesTutor
 
 
 class TutorRegistroForm(forms.ModelForm):
@@ -59,3 +59,15 @@ class TutoriaGrupalForm(forms.ModelForm):
     class Meta:
         model = TutoriaGrupal
         fields = ['nombreGrupo', 'salon']
+
+
+class BitacoraGrupalTutorForm(forms.ModelForm):
+    class Meta:
+        model = BitacoraGrupalTutor
+        fields = ['nota']
+
+
+class AnunciosGrupalesTutorForm(forms.ModelForm):
+    class Meta:
+        model = AnunciosGrupalesTutor
+        fields = ['nota']

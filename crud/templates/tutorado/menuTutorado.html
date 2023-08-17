@@ -4,12 +4,11 @@
 
 <main>
     <h1>Menú principal del Tutorado</h1>
-    <h2>Tutorías Individuales Inscritas</h2>
 
-    {% if tutorias_inscritas %}
-    <h2>Tutorías inscritas:</h2>
+    {% if tutorias_individuales %}
+    <h2>Tutorías Individuales inscritas:</h2>
     <ul>
-        {% for tutoria in tutorias_inscritas %}
+        {% for tutoria in tutorias_individuales %}
         <li>
             <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}">
                 Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
@@ -18,8 +17,29 @@
         {% endfor %}
     </ul>
     {% else %}
-    <p>No tienes tutorías inscritas</p>
+    <p>No tienes Tutorías individuales inscritas</p>
     {% endif %}
+
+
+    {% if tutorias_grupales %}
+    <h2>Tutorías Grupales inscritas: </h2>
+    <ul>
+        {% for tutoria in tutorias_grupales %}
+        <li>
+            <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal.idTutoriaGrupal %}">
+                Tutoría Grupal: {{ tutoria.idTutoriaGrupal.nombreGrupo }}<br>
+                Tutor: {{ tutoria.idTutoriaGrupal.idTutor.nombre}}
+                {{tutoria.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                {{tutoria.idTutoriaGrupal.idTutor.apellidoMaterno}}<br>
+                Salón: {{ tutoria.idTutoriaGrupal.salon }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No tienes Tutorías Grupales inscritas</p>
+    {% endif %}
+
 </main>
 
 {% endblock %}

@@ -7,7 +7,54 @@
     <h2>Nombre de la tutoría: {{ tutoria_grupal.nombreGrupo }}</h2>
     <p>Tutor: {{tutoria_grupal.idTutor.nombre}}</p>
     <p>Salón: {{ tutoria_grupal.salon }}</p>
+    <p>ID: {{tutoria_grupal.idTutoriaGrupal}}</p>
     <!-- Otros detalles de la tutoría individual -->
+
+    <h2>Tutorados inscritos:</h2>
+    {% for tutorado in tutorados_pertenecientes %}
+    <!-- Mostrar información del tutorado aquí -->
+    <p>{{ tutorado.idTutorado.nombre }} {{ tutorado.idTutorado.apellidoPaterno }}</p>
+    <!-- Otros campos del tutorado -->
+    {% endfor %}
+
+
+    <!-- Mostrar las bitácoras del tutor -->
+    {% if rol == 'Tutor' %}
+    <h3>Bitacora del Tutor:</h3>
+    <ul>
+        {% for bitacora in bitacoras_grupales %}
+        <li>{{ bitacora.nota }}</li>
+        <p>{{bitacora.fecha}}</p>
+        {% endfor %}
+    </ul>
+    <!--Para crear una bitacora-->
+    <a href="{% url 'bitacora_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}">Crear Bitácora
+        Grupal</a>
+
+
+    <h3>Anuncios Grupales del Tutor:</h3>
+    <ul>
+        {% for anuncio in anuncios_grupales %}
+        <li>{{ anuncio.nota }}</li>
+        <p>{{anuncio.fecha}}</p>
+        {% endfor %}
+    </ul>
+    <!--Para crear un anuncio al grupo-->
+    <a href="{% url 'anuncio_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}">Crear Anuncio Grupal</a>
+
+    <!-- Mostrar las notas del tutorado -->
+    {% elif rol == 'Tutorado' %}
+    <h3>Anuncios Grupales del Tutor:</h3>
+    <ul>
+        {% for anuncio in anuncios_grupales %}
+        <li>{{ anuncio.nota }}</li>
+        <p>{{anuncio.fecha}}</p>
+        {% endfor %}
+    </ul>
+
+    {% endif %}
+
+
 </main>
 
 {% endblock %}

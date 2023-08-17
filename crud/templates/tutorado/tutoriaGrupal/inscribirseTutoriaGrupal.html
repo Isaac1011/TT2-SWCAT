@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+
+    <h1>Inscribirse a una Tutoría Grupal</h1>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if tutorias_grupales_disponibles %}
+    <h2>Tutorías Grupales disponibles:</h2>
+    <ul>
+        {% for tutoria in tutorias_grupales_disponibles %}
+        <li>
+            <a href="{% url 'inscribirse_tutoria_grupal' tutoria.idTutoriaGrupal %}">
+                Tutoría: {{ tutoria.nombreGrupo }} - Tutor: {{ tutoria.idTutor.nombre }} - Salón: {{tutoria.salon}} -
+                Cupo
+                disponible: {{tutoria.cupoDisponible}}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h2>No hay Tutorías Gruaples disponibles</h2>
+    {% endif %}
+</main>
+
+{% endblock %}
