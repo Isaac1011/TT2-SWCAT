@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crud'
+    'crud',
+    'zoom'
 ]
 
 MIDDLEWARE = [
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'SWCAT.urls'
@@ -132,3 +134,13 @@ LOGIN_URL = '/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SOCIAL_AUTH_ZOOM_KEY = 'rAbzdBQoSfieaFyUQf2gBA'
+SOCIAL_AUTH_ZOOM_SECRET = 'HUCoLXp4bqTYofGgIMTqeMSLYoq0BGDU'
+SOCIAL_AUTH_ZOOM_AUTH_EXTRA_ARGUMENTS = {
+    'access_type': 'offline',  # Esto solicita un token de actualización
+}
+
+CORS_ALLOW_ORIGIN = [
+    'https://tu-dominio.com',  # Agrega tu dominio aquí
+]

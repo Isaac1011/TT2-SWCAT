@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from crud import views
-from django.contrib.auth import views as auth_views
+from zoom import views as viewsZoom
 
 
 urlpatterns = [
@@ -53,4 +53,7 @@ urlpatterns = [
          views.bitacora_tutor_tutoriaGrupal, name='bitacora_tutor_tutoriaGrupal'),
     path('menu/tutoriaGrupal/crearAnuncio/<int:tutoria_id>/',
          views.anuncio_tutor_tutoriaGrupal, name='anuncio_tutor_tutoriaGrupal'),
+    path('verReuniones/', viewsZoom.zoom_meetings,
+         name='create_zoom_meeting')
+
 ]

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Lista de Reuniones</title>
+</head>
+
+<body>
+    <h1>Lista de Reuniones Programadas</h1>
+    <ul>
+        {% for meeting in meetings %}
+        <li>
+            <strong>Nombre de la Reunión:</strong> {{ meeting.topic }}<br>
+            <strong>ID de la Reunión:</strong> {{ meeting.id }}<br>
+            <strong>Fecha y Hora:</strong> {{ meeting.start_time }}<br>
+        </li>
+        <ul>
+            {% endfor %}
+        </ul>
+</body>
+
+</html>
