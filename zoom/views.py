@@ -1,36 +1,28 @@
 import requests
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 
-def zoom_meetings(request):
-    # Datos de autenticación
-    client_id = 'rAbzdBQoSfieaFyUQf2gBA'
-    client_secret = 'HUCoLXp4bqTYofGgIMTqeMSLYoq0BGDU'
-    redirect_uri = 'https://oauth.pstmn.io/v1/callback'
-    code = 'eyJzdiI6IjAwMDAwMSIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6ImYyMzc5NjBmLTg0ZjItNDQ3Mi1iY2M4LTc4OTMwMDJmZTgxOSJ9.eyJ2ZXIiOjksImF1aWQiOiJiOWU3N2EwOWQ0ZTBiMmRlYWY0NmMwZTAyNjE1MTdiNSIsImNvZGUiOiJZYldpM3BtUXhic2VqeGNwaDYzU0hTZGJzd3JfUjZvVWciLCJpc3MiOiJ6bTpjaWQ6ckFiemRCUW9TZmllYUZ5VVFmMmdCQSIsImdubyI6MCwidHlwZSI6MCwidGlkIjowLCJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiJiRHFmVXJ3bFJtS2IwNHRJbDg2QmtnIiwibmJmIjoxNjkyNjYyMDMyLCJleHAiOjE2OTI2NjU2MzIsImlhdCI6MTY5MjY2MjAzMiwiYWlkIjoiMXNrUV9RUmVUZXFjbjJlRUJwdFV4ZyJ9.T2I0ujwp8sESxOzAE3L4GANZsU9V2KXev8E47jpi-Run-cdNjmmgRMbQv2RZVEp1sgRzGqqps9cuCrm7fOgTFw'
+import requests
 
-    # Intercambiar el código por un token de acceso
-    token_url = 'https://zoom.us/oauth/token'
-    token_params = {
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': redirect_uri,
-    }
-    token_response = requests.post(token_url, auth=(
-        client_id, client_secret), data=token_params)
-    token_data = token_response.json()
-    access_token = token_data.get('access_token')
 
-    # Obtener la lista de reuniones programadas
-    meetings_url = 'https://api.zoom.us/v2/users/me/meetings'
+def get_scheduled_meetings(access_token):
     headers = {
-        'Authorization': f'Bearer {access_token}'
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
     }
-    meetings_response = requests.get(meetings_url, headers=headers)
-    meetings_data = meetings_response.json()
 
-    # Procesar y mostrar las reuniones en la plantilla
-    meetings = meetings_data.get('meetings', [])
-    print(meetings)
-    return render(request, 'meetings.html', {'meetings': meetings})
+    meetings_url = 'https://api.zoom.us/v2/users/me/meetings'
+
+    response = requests.get(meetings_url, headers=headers)
+    response_data = response.json()
+
+    return response_data  # Retorna los datos de la reunión
+
+
+def zoom_meetings(request):
+    # Debes obtener el token aquí, por ejemplo, a través de OAuth 2.0
+    access_token = 'eyJzdiI6IjAwMDAwMSIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjQ4ODkzNzEyLWNmNDMtNGFhZC04N2Q0LTRlMTAwZTA0YzMzNSJ9.eyJ2ZXIiOjksImF1aWQiOiJiOWU3N2EwOWQ0ZTBiMmRlYWY0NmMwZTAyNjE1MTdiNSIsImNvZGUiOiJZYldpM3BtUXhic2VqeGNwaDYzU0hTZGJzd3JfUjZvVWciLCJpc3MiOiJ6bTpjaWQ6ckFiemRCUW9TZmllYUZ5VVFmMmdCQSIsImdubyI6MCwidHlwZSI6MCwidGlkIjoyLCJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiJiRHFmVXJ3bFJtS2IwNHRJbDg2QmtnIiwibmJmIjoxNjkyODMzNTg0LCJleHAiOjE2OTI4MzcxODQsImlhdCI6MTY5MjgzMzU4NCwiYWlkIjoiMXNrUV9RUmVUZXFjbjJlRUJwdFV4ZyJ9.dPbWm42at57jLXd4EqRLyroi40BU7bF-GuOiyNm2L6p7nXRqLd3Ll0vZVDLf98PqETh8r0-Vczs676C7R9-v9A'
+    scheduled_meetings = get_scheduled_meetings(access_token)
+
+    return render(request, 'meetings.html', {'meetings': scheduled_meetings})

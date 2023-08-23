@@ -8,16 +8,18 @@
 
 <body>
     <h1>Lista de Reuniones Programadas</h1>
+
+    <h1>Total de reuniones: {{meetings.total_records}}</h1>
     <ul>
-        {% for meeting in meetings %}
+        {% for reunion in meetings.meetings %}
         <li>
-            <strong>Nombre de la Reunión:</strong> {{ meeting.topic }}<br>
-            <strong>ID de la Reunión:</strong> {{ meeting.id }}<br>
-            <strong>Fecha y Hora:</strong> {{ meeting.start_time }}<br>
+            <p><strong>Nombre: </strong>{{reunion.topic}}</p>
+            <p><strong>Hora de inicio: </strong>{{reunion.start_time}}</p>
+            <p><strong>Duración: </strong>{{reunion.duration}}</p>
+            <a href={{reunion.join_url}} target="_blank"><strong>Enlace para unirse: </strong>{{reunion.join_url}}</a>
         </li>
-        <ul>
-            {% endfor %}
-        </ul>
+        {% endfor %}
+    </ul>
 </body>
 
-</html>
+</ul>
