@@ -1,0 +1,11 @@
+<main>
+    <h1>Crear Reunión de Zoom</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{response_data}}
+        {{ form.as_p }}
+        <input type="submit" value="Crear Reunión">
+    </form>
+
+</main>

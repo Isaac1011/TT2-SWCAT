@@ -54,6 +54,16 @@ urlpatterns = [
     path('menu/tutoriaGrupal/crearAnuncio/<int:tutoria_id>/',
          views.anuncio_tutor_tutoriaGrupal, name='anuncio_tutor_tutoriaGrupal'),
     path('verReuniones/', viewsZoom.zoom_meetings,
-         name='create_zoom_meeting')
+         name='zoom_meetings'),
+    path('crearReunion/', viewsZoom.crear_reunion, name='crear_reunion'),
+    path('eliminar/<int:reunion_id>/',
+         viewsZoom.eliminar_reunion, name='eliminar_reunion'),
+    # URL para modificar una reunión
+    path('modificar-reunion/<int:reunion_id>/',
+         viewsZoom.modificar_reunion, name='modificar_reunion'),
+    # URL para guardar la modificación de una reunión
+    path('guardar-modificacion-reunion/<int:reunion_id>/',
+         viewsZoom.guardar_modificacion_reunion, name='guardar_modificacion_reunion'),
+
 
 ]

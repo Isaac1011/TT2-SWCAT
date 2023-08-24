@@ -7,8 +7,10 @@
 </head>
 
 <body>
-    <h1>Lista de Reuniones Programadas</h1>
 
+    <!-- <h1>Hoooola: {{meetings}}</h1> -->
+
+    <h1>Lista de Reuniones Programadas</h1>
     <h1>Total de reuniones: {{meetings.total_records}}</h1>
     <ul>
         {% for reunion in meetings.meetings %}
@@ -17,6 +19,12 @@
             <p><strong>Hora de inicio: </strong>{{reunion.start_time}}</p>
             <p><strong>Duración: </strong>{{reunion.duration}}</p>
             <a href={{reunion.join_url}} target="_blank"><strong>Enlace para unirse: </strong>{{reunion.join_url}}</a>
+            <br>
+            <a href="{% url 'modificar_reunion' reunion.id %}">Modificar</a>
+            <form method="POST" action="{% url 'eliminar_reunion' reunion.id %}">
+                {% csrf_token %}
+                <button type="submit">Eliminar</button>
+            </form>
         </li>
         {% endfor %}
     </ul>
