@@ -3,7 +3,7 @@ import requests
 import json
 from django.conf import settings
 from django.shortcuts import render, redirect
-from .forms import CrearReunionZoomForm
+from .forms import CrearReunionZoomForm, ModificarReunionZoomForm
 from django.http import HttpResponse
 
 
@@ -116,34 +116,104 @@ def eliminar_reunion(request, reunion_id):
             return render(request, 'error.html', {'error_message': error_message})
 
 
-def modificar_reunion(request, reunion_id):
-    try:
-        # Lógica para obtener los datos de la reunión en base al reunion_id
-        reunion_data = {
-            "topic": "Nombre de la reunión",
-            "start_time": "2023-08-22T12:10:10Z",
-            "duration": "3",
-            # ... otros datos ...
-        }
-
-        return render(request, 'modificar_reunion.html', {'reunion_data': reunion_data})
-
-    except Exception as e:
-        error_message = f"An error occurred: {e}"
-        return render(request, 'error.html', {'error_message': error_message})
+# No tengo permiso de modificar la reunión
 
 
-# views.py
+# # Función para obtener los detalles de una reunión
+# def obtener_datos_reunion(reunion_id, access_token):
+#     # Realiza una solicitud GET a la API de Zoom para obtener los datos de la reunión
+#     headers = {
+#         'Authorization': f'Bearer {access_token}',
+#         'Content-Type': 'application/json'
+#     }
+#     reunion_url = f'https://api.zoom.us/v2/meetings/{reunion_id}'
+#     response = requests.get(reunion_url, headers=headers)
+#     reunion_data = response.json()
+#     return reunion_data
 
-def guardar_modificacion_reunion(request, reunion_id):
+
+# def modificar_reunion(request, reunion_id):
+#     access_token = settings.TU_ACCESS_TOKEN
+
+#     # Obtén los datos de la reunión
+#     reunion_data = obtener_datos_reunion(reunion_id, access_token)
+
+#     # Puebla el formulario con los datos de la reunión
+#     form = ModificarReunionZoomForm(initial={
+#         'topic': reunion_data['topic'],
+
+#         'start_time': reunion_data['start_time'],
+#         "duration": "3",
+#         "settings": {
+#                     "host_video": True,
+#                     "participant_video": True,
+#                     "join_before_host": True,
+#                     "mute_upon_entry": "true",
+#                     "watermark": "true",
+#                     "    ": "voip",
+#                     "auto_recording": "cloud"
+#         }
+#     })
+
+#     return render(request, 'modificar_reunion.html', {'form': form,
+#                                                       'reunion_id': reunion_id})
+
+# # Vista para guardar la modificación de la reunión
+
+
+# def guardar_modificacion_reunion(request, reunion_id):
+
+    access_token = settings.TU_ACCESS_TOKEN
+    form = ModificarReunionZoomForm(request.POST)
+
     if request.method == 'POST':
-        try:
-            # Lógica para guardar los cambios en la reunión en base al reunion_id
-            # Realiza la solicitud PUT a la API de Zoom para actualizar la reunión
 
-            # Después de guardar los cambios, redirige a la lista de reuniones
-            return redirect('zoom_meetings')
+        form = ModificarReunionZoomForm(request.POST)
 
-        except Exception as e:
-            error_message = f"An error occurred: {e}"
-            return render(request, 'error.html', {'error_message': error_message})
+        if form.is_valid():
+            # Obtén los datos modificados del formulario
+            topic = form.cleaned_data['topic']
+            start_time = form.cleaned_data['start_time']
+            # Obtiene otros campos aquí
+
+            # Formatear la fecha y hora en el formato requerido
+            # formatted_start_time = start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+            print("Start")
+            print(start_time)
+
+            # Realiza una solicitud PUT a la API de Zoom para actualizar los datos
+            headers = {
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json'
+            }
+            reunion_url = f'https://api.zoom.us/v2/meetings/{reunion_id}'
+            payload = {
+                'topic': topic,
+                'start_time': start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                "duration": "3",
+                "settings": {
+                    "host_video": True,
+                    "participant_video": True,
+                    "join_before_host": True,
+                    "mute_upon_entry": "true",
+                    "watermark": "true",
+                    "audio": "voip",
+                    "auto_recording": "cloud"
+                }
+            }
+            response = requests.put(reunion_url, json=payload, headers=headers)
+
+            print("AAAAAAAAAA")
+            print(response.content)
+            print(response.status_code)
+
+            if response.status_code == 204:
+                # La reunión se modificó exitosamente
+                return redirect('zoom_meetings')
+            else:
+                # Hubo un error al modificar la reunión
+                error_message = "Error al modificar la reunión"
+                return render(request, 'error.html', {'error_message': error_message})
+
+    return render(request, 'modificar_reunion.html', {'form': form})
