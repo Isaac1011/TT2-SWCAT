@@ -46,7 +46,7 @@ def crear_reunion(request):
                 # Datos de la nueva reunión
                 meeting_data = {
                     "topic": topic,
-                    "type": 2,
+                    "type": 1,
                     "start_time": start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
                     "duration": "3",
                     "settings": {
@@ -156,7 +156,11 @@ def eliminar_reunion(request, reunion_id):
 #     })
 
 #     return render(request, 'modificar_reunion.html', {'form': form,
-#                                                       'reunion_id': reunion_id})
+#
+#                                                   'reunion_id': reunion_id})
+# LO SIGUIENTE IRÍA EN meetings.html
+            # <!-- <a href="{% url 'modificar_reunion' reunion.id %}">Modificar</a> -->
+
 
 # # Vista para guardar la modificación de la reunión
 
@@ -217,3 +221,27 @@ def eliminar_reunion(request, reunion_id):
                 return render(request, 'error.html', {'error_message': error_message})
 
     return render(request, 'modificar_reunion.html', {'form': form})
+
+
+def crear_reunion_instantanea(request):
+    access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso
+
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+
+    create_meeting_url = 'https://api.zoom.us/v2/users/me/meetings'
+    payload = {
+        "topic": "Reunión Instantánea",
+        "type": 1  # Tipo de reunión: 1 para instantánea
+    }
+
+    response = requests.post(create_meeting_url, json=payload, headers=headers)
+    response_data = response.json()
+
+    join_url = response_data.get('join_url')
+    print("Hola")
+    print(join_url)
+
+    return render(request, 'instant_meeting.html', {'join_url': join_url})

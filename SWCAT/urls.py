@@ -64,5 +64,6 @@ urlpatterns = [
     #     # Vista para guardar la modificación de la reunión
     #     path('guardar-modificacion/<int:reunion_id>/',
     #          viewsZoom.guardar_modificacion_reunion, name='guardar_modificacion_reunion'),
-
+    path('crear_reunion_instantanea/', viewsZoom.crear_reunion_instantanea,
+         name='crear_reunion_instantanea'),
 ]
