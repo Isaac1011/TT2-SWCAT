@@ -10,15 +10,21 @@ from django.http import HttpResponse
 import requests
 
 
+'''Para obtener mi USER_ID, hago una petición GET en Postman con:
+https://api.zoom.us/v2/users/me
+'''
+
+
 def get_scheduled_meetings(access_token):
     headers = {
         'Authorization': f'Bearer {access_token}',
         'Content-Type': 'application/json'
     }
+    user_id = "bDqfUrwlRmKb04tIl86Bkg"
+    create_meeting_url = f'https://api.zoom.us/v2/users/{user_id}/meetings'
+    # meetings_url = 'https://api.zoom.us/v2/users/me/meetings'
 
-    meetings_url = 'https://api.zoom.us/v2/users/me/meetings'
-
-    response = requests.get(meetings_url, headers=headers)
+    response = requests.get(create_meeting_url, headers=headers)
     response_data = response.json()
 
     return response_data  # Retorna los datos de la reunión
@@ -44,24 +50,30 @@ def crear_reunion(request):
                 start_time = form.cleaned_data['start_time']
 
                 # Datos de la nueva reunión
+                # Configuración de la información de la reunión
                 meeting_data = {
-                    "topic": topic,
-                    "type": 1,
+                    "topic": topic,  # Título de la reunión
+                    "type": 2,  # Tipo de reunión (programada)
+                    # Hora de inicio en formato ISO 8601
                     "start_time": start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    "duration": "3",
+                    "duration": "60",  # Duración de la reunión en minutos
+
+                    # Configuración adicional de la reunión
                     "settings": {
-                        "host_video": True,
-                        "participant_video": True,
-                        "join_before_host": True,
-                        "mute_upon_entry": "true",
-                        "watermark": "true",
-                        "audio": "voip",
-                        "auto_recording": "cloud"
+                        "host_video": True,  # Anfitrión puede iniciar su video
+                        "participant_video": True,  # Participantes pueden iniciar su video
+                        "join_before_host": True,  # Los participantes pueden unirse antes del anfitrión
+                        "mute_upon_entry": "true",  # Silenciar a los participantes al unirse
+                        "watermark": "true",  # Agregar marca de agua a la grabación
+                        "audio": "voip",  # Participantes se unen con audio a través de Internet
+                        "auto_recording": "cloud"  # Grabación automática en la nube de Zoom
                     }
                 }
 
                 # URL para crear la reunión
-                create_meeting_url = 'https://api.zoom.us/v2/users/me/meetings'
+                user_id = "bDqfUrwlRmKb04tIl86Bkg"
+                create_meeting_url = f'https://api.zoom.us/v2/users/{user_id}/meetings'
+                # create_meeting_url = 'https://api.zoom.us/v2/users/me/meetings'
 
                 headers = {
                     'Authorization': f'Bearer {access_token}',
@@ -167,60 +179,60 @@ def eliminar_reunion(request, reunion_id):
 
 # def guardar_modificacion_reunion(request, reunion_id):
 
-    access_token = settings.TU_ACCESS_TOKEN
-    form = ModificarReunionZoomForm(request.POST)
+    # access_token = settings.TU_ACCESS_TOKEN
+    # form = ModificarReunionZoomForm(request.POST)
 
-    if request.method == 'POST':
+    # if request.method == 'POST':
 
-        form = ModificarReunionZoomForm(request.POST)
+    #     form = ModificarReunionZoomForm(request.POST)
 
-        if form.is_valid():
-            # Obtén los datos modificados del formulario
-            topic = form.cleaned_data['topic']
-            start_time = form.cleaned_data['start_time']
-            # Obtiene otros campos aquí
+    #     if form.is_valid():
+    #         # Obtén los datos modificados del formulario
+    #         topic = form.cleaned_data['topic']
+    #         start_time = form.cleaned_data['start_time']
+    #         # Obtiene otros campos aquí
 
-            # Formatear la fecha y hora en el formato requerido
-            # formatted_start_time = start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+    #         # Formatear la fecha y hora en el formato requerido
+    #         # formatted_start_time = start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-            print("Start")
-            print(start_time)
+    #         print("Start")
+    #         print(start_time)
 
-            # Realiza una solicitud PUT a la API de Zoom para actualizar los datos
-            headers = {
-                'Authorization': f'Bearer {access_token}',
-                'Content-Type': 'application/json'
-            }
-            reunion_url = f'https://api.zoom.us/v2/meetings/{reunion_id}'
-            payload = {
-                'topic': topic,
-                'start_time': start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                "duration": "3",
-                "settings": {
-                    "host_video": True,
-                    "participant_video": True,
-                    "join_before_host": True,
-                    "mute_upon_entry": "true",
-                    "watermark": "true",
-                    "audio": "voip",
-                    "auto_recording": "cloud"
-                }
-            }
-            response = requests.put(reunion_url, json=payload, headers=headers)
+    #         # Realiza una solicitud PUT a la API de Zoom para actualizar los datos
+    #         headers = {
+    #             'Authorization': f'Bearer {access_token}',
+    #             'Content-Type': 'application/json'
+    #         }
+    #         reunion_url = f'https://api.zoom.us/v2/meetings/{reunion_id}'
+    #         payload = {
+    #             'topic': topic,
+    #             'start_time': start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+    #             "duration": "3",
+    #             "settings": {
+    #                 "host_video": True,
+    #                 "participant_video": True,
+    #                 "join_before_host": True,
+    #                 "mute_upon_entry": "true",
+    #                 "watermark": "true",
+    #                 "audio": "voip",
+    #                 "auto_recording": "cloud"
+    #             }
+    #         }
+    #         response = requests.put(reunion_url, json=payload, headers=headers)
 
-            print("AAAAAAAAAA")
-            print(response.content)
-            print(response.status_code)
+    #         print("AAAAAAAAAA")
+    #         print(response.content)
+    #         print(response.status_code)
 
-            if response.status_code == 204:
-                # La reunión se modificó exitosamente
-                return redirect('zoom_meetings')
-            else:
-                # Hubo un error al modificar la reunión
-                error_message = "Error al modificar la reunión"
-                return render(request, 'error.html', {'error_message': error_message})
+    #         if response.status_code == 204:
+    #             # La reunión se modificó exitosamente
+    #             return redirect('zoom_meetings')
+    #         else:
+    #             # Hubo un error al modificar la reunión
+    #             error_message = "Error al modificar la reunión"
+    #             return render(request, 'error.html', {'error_message': error_message})
 
-    return render(request, 'modificar_reunion.html', {'form': form})
+    # return render(request, 'modificar_reunion.html', {'form': form})
 
 
 def crear_reunion_instantanea(request):
@@ -231,7 +243,9 @@ def crear_reunion_instantanea(request):
         'Content-Type': 'application/json'
     }
 
-    create_meeting_url = 'https://api.zoom.us/v2/users/me/meetings'
+    # Reemplaza con el ID del usuario para el que deseas crear la reunión
+    user_id = "bDqfUrwlRmKb04tIl86Bkg"
+    create_meeting_url = f'https://api.zoom.us/v2/users/{user_id}/meetings'
     payload = {
         "topic": "Reunión Instantánea",
         "type": 1  # Tipo de reunión: 1 para instantánea
