@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 
@@ -122,3 +124,12 @@ class AnunciosGrupalesTutor(models.Model):
     nota = models.CharField(max_length=400)
     # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
     fecha = models.DateTimeField(auto_now_add=True)
+
+
+class Mensaje(models.Model):
+    autor = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='mensajes_enviados')
+    receptor = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='mensajes_recibidos')
+    contenido = models.TextField()
+    fecha_envio = models.DateTimeField(auto_now_add=True)

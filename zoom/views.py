@@ -9,6 +9,7 @@ from django.http import HttpResponse
 
 import requests
 
+# Color hexadecimal #2856FF
 
 '''Para obtener mi USER_ID, hago una petición GET en Postman con:
 https://api.zoom.us/v2/users/me

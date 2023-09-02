@@ -8,7 +8,14 @@ class TutorRegistroForm(forms.ModelForm):
         fields = ['numeroEmpleado', 'email', 'password', 'nombre',
                   'apellidoPaterno', 'apellidoMaterno', 'cubiculo', 'telefono']
         widgets = {
-            'password': forms.TextInput(attrs={'placeholder': "Escribe la constraseña", 'type': "password"})
+            'password': forms.TextInput(attrs={'placeholder': "Escribe la constraseña", 'type': "password"}),
+            'numeroEmpleado': forms.TextInput(attrs={'class': 'black-label'}),
+            'email': forms.TextInput(attrs={'class': 'black-label'}),
+            'nombre': forms.TextInput(attrs={'class': 'black-label'}),
+            'apellidoPaterno': forms.TextInput(attrs={'class': 'black-label'}),
+            'apellidoMaterno': forms.TextInput(attrs={'class': 'black-label'}),
+            'cubiculo': forms.TextInput(attrs={'class': 'black-label'}),
+            'telefono': forms.TextInput(attrs={'class': 'black-label'}),
         }
 
 
