@@ -198,8 +198,14 @@ def crear_tutoriaIndividual(request):
                 tutoria_individual.save()
 
                 # Incrementa el campo numTutoresAsignados del Tutorado en una unidad
-                tutorado.numTutoresAsignados += 1
-                tutorado.save()
+                # tutorado.numTutoresAsignados += 1
+                # tutorado.save()
+
+                num = tutorado.numTutoresAsignados
+                #  Actualizar el campo numTutoresAsignados incrementadndo en una unidad
+                Tutorado.objects.filter(idTutorado=tutorado.idTutorado).update(
+                    numTutoresAsignados=num + 1
+                )
 
                 # Redirige a la vista 'menu'
                 return redirect('menu')
@@ -434,6 +440,7 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
     # Obtener la tutoría grupal a la que se quiere inscribir el tutorado
     tutoria_grupal = get_object_or_404(
         TutoriaGrupal, idTutoriaGrupal=tutoria_id)
+
     # Verificar si hay cupo disponible en la tutoría grupal
     if tutoria_grupal.cupoDisponible <= 0:
         # Manejar el caso en que no haya cupo disponible
@@ -444,8 +451,8 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
         tutorado_id = get_object_or_404(
             Tutorado, boletaTutorado=request.session['boleta_tutorado'])
 
-        contra = tutorado_id.password
-        print(contra)
+        # contra = tutorado_id.password
+        # print(contra)
 
         # Verifica si el Tutorado tiene menos de 3 tutores asignados
         if tutorado_id.numTutoresAsignados >= 3:
@@ -472,12 +479,13 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
                 # Reducir el cupo disponible en la tutoría grupal
                 tutoria_grupal.cupoDisponible -= 1
                 tutoria_grupal.save()
-                # Incrementa el campo numTutoresAsignados del Tutorado en una unidad
-                tutorado_id.numTutoresAsignados += 1
-                # Le pongo la contraseña que está desde un inicio
-                tutorado_id.password = contra
-                tutorado_id.save()
-                # Parece que después de hacer el save la contraseña se vuelve a encriptar
+
+                num = tutorado_id.numTutoresAsignados
+                #  Actualizar el campo numTutoresAsignados incrementadndo en una unidad
+                Tutorado.objects.filter(boletaTutorado=request.session['boleta_tutorado']).update(
+                    numTutoresAsignados=num + 1
+                )
+
                 return redirect('menu')
 
     # Obtener todas las instancias de TutoriaGrupal que tengan cupo disponible
