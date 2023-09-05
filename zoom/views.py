@@ -2,10 +2,10 @@ from django.shortcuts import render
 import requests
 import json
 from django.conf import settings
-from django.shortcuts import render, redirect
-from .forms import CrearReunionZoomForm, ModificarReunionZoomForm
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-
+from .forms import VideoconferenciasIndividualesForm
+from crud.models import TutoriaIndividual
 
 import requests
 
@@ -32,19 +32,47 @@ def get_scheduled_meetings(access_token):
 
 
 def zoom_meetings(request):
-    # Debes obtener el token aquí, por ejemplo, a través de OAuth 2.0
-    access_token = settings.TU_ACCESS_TOKEN
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
 
-    scheduled_meetings = get_scheduled_meetings(access_token)
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
 
-    return render(request, 'meetings.html', {'meetings': scheduled_meetings})
+    else:
+        # Debes obtener el token aquí, por ejemplo, a través de OAuth 2.0
+        access_token = settings.TU_ACCESS_TOKEN
+
+        scheduled_meetings = get_scheduled_meetings(access_token)
+
+        context = {'meetings': scheduled_meetings,
+                   'logged_in': logged_in,
+                   'rol': rol}
+        return render(request, 'meetings.html', context)
 
 
-def crear_reunion(request):
+def crear_reunion(request, tutoria_id):
+
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
     if request.method == 'POST':
-        form = CrearReunionZoomForm(request.POST)
+        form = VideoconferenciasIndividualesForm(request.POST)
         if form.is_valid():
             try:
+
+                # Obtener la instancia de TutoriaIndividual según el ID proporcionado
+                tutoria_individual = get_object_or_404(
+                    TutoriaIndividual, pk=tutoria_id)
+                videoconferencia_individual = form.save(commit=False)
+                videoconferencia_individual.idTutoriaIndividual = tutoria_individual
+
                 # Datos de autenticación y formulario
                 access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso previamente
                 topic = form.cleaned_data['topic']
@@ -57,7 +85,7 @@ def crear_reunion(request):
                     "type": 2,  # Tipo de reunión (programada)
                     # Hora de inicio en formato ISO 8601
                     "start_time": start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                    "duration": "60",  # Duración de la reunión en minutos
+                    "duration": "40",  # Duración de la reunión en minutos
 
                     # Configuración adicional de la reunión
                     "settings": {
@@ -86,19 +114,62 @@ def crear_reunion(request):
                 # Estos son los datos de la reunión que se acaba de crear
                 response_data = response.json()
 
-                # return render(request, 'crearReunion.html', {'form': form, 'response_data': response_data})
-                return redirect('zoom_meetings')
+                if response.status_code == 201:
+                    # La reunión se creó correctamente
+                    # Estos son los datos de la reunión que se acaba de crear
+                    response_data = response.json()
+
+                    # Guardamos en la base de datos
+
+                    # Supongamos que el enlace de la reunión está en el campo 'join_url' de la respuesta
+                    created_at = response_data.get('created_at', '')
+                    start_url = response_data.get('start_url', '')
+                    join_url = response_data.get('join_url', '')
+                    # Supongamos que el código de la reunión está en el campo 'meeting_code' y la contraseña en 'meeting_password'
+                    meeting_code = response_data.get('id', '')
+                    meeting_password = response_data.get('password', '')
+
+                    videoconferencia_individual.topic = topic
+                    videoconferencia_individual.start_time = start_time
+                    videoconferencia_individual.created_at = created_at
+                    videoconferencia_individual.start_url = start_url
+                    videoconferencia_individual.join_url = join_url
+                    videoconferencia_individual.meeting_code = meeting_code
+                    videoconferencia_individual.meeting_password = meeting_password
+                    videoconferencia_individual.save()
+
+                    # Retornamos exitosamente
+                    return redirect('zoom_meetings')
+
+                else:
+                    # Hubo un error al crear la reunión
+                    error_message = f"Error al crear la reunión. Código de estado: {response.status_code}"
+                    context = {
+                        'error_message': error_message,
+                        'logged_in': logged_in,
+                        'rol': rol
+                    }
+                    return render(request, 'error.html', context)
 
             except requests.exceptions.RequestException as e:
                 error_message = f"Error making a request: {e}"
-                return render(request, 'error.html', {'error_message': error_message})
+                context = {'error_message': error_message,
+                           'logged_in': logged_in,
+                           'rol': rol}
+                return render(request, 'error.html', context)
             except Exception as e:
                 error_message = f"An error occurred: {e}"
-                return render(request, 'error.html', {'error_message': error_message})
+                context = {'error_message': error_message,
+                           'logged_in': logged_in,
+                           'rol': rol}
+                return render(request, 'error.html', context)
     else:
-        form = CrearReunionZoomForm()
+        form = VideoconferenciasIndividualesForm()
 
-    return render(request, 'crearReunion.html', {'form': form})
+    context = {'form': form,
+               'logged_in': logged_in,
+               'rol': rol}
+    return render(request, 'crearReunion.html', context)
 
 
 def eliminar_reunion(request, reunion_id):

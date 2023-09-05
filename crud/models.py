@@ -126,10 +126,35 @@ class AnunciosGrupalesTutor(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
 
 
-class Mensaje(models.Model):
-    autor = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='mensajes_enviados')
-    receptor = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='mensajes_recibidos')
-    contenido = models.TextField()
-    fecha_envio = models.DateTimeField(auto_now_add=True)
+class VideoconferenciasIndividuales(models.Model):
+    idVideoconferenciaIndivual = models.AutoField(primary_key=True)
+    idTutoriaIndividual = models.ForeignKey(
+        TutoriaIndividual, on_delete=models.CASCADE)
+    topic = models.CharField(max_length=80)
+    start_time = models.DateTimeField(default=None)
+    created_at = models.DateTimeField(default=None)
+    start_url = models.URLField(max_length=300, default=None)
+    join_url = models.URLField(max_length=200, default=None)
+    meeting_code = models.CharField(max_length=30, default=None)
+    meeting_password = models.CharField(max_length=30, default=None)
+
+
+class VideoconferenciasGrupales(models.Model):
+    idVideoconferenciaGrupal = models.AutoField(primary_key=True)
+    idTutoriaGrupal = models.ForeignKey(
+        TutoriaGrupal, on_delete=models.CASCADE)
+    topic = models.CharField(max_length=80)
+    start_time = models.DateTimeField(default=None)
+    created_at = models.DateTimeField(default=None)
+    start_url = models.URLField(max_length=300, default=None)
+    join_url = models.URLField(max_length=200, default=None)
+    meeting_code = models.CharField(max_length=30, default=None)
+    meeting_password = models.CharField(max_length=30, default=None)
+
+# class Mensaje(models.Model):
+#     autor = models.ForeignKey(
+#         User, on_delete=models.CASCADE, related_name='mensajes_enviados')
+#     receptor = models.ForeignKey(
+#         User, on_delete=models.CASCADE, related_name='mensajes_recibidos')
+#     contenido = models.TextField()
+#     fecha_envio = models.DateTimeField(auto_now_add=True)

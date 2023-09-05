@@ -55,7 +55,8 @@ urlpatterns = [
          views.anuncio_tutor_tutoriaGrupal, name='anuncio_tutor_tutoriaGrupal'),
     path('verReuniones/', viewsZoom.zoom_meetings,
          name='zoom_meetings'),
-    path('crearReunion/', viewsZoom.crear_reunion, name='crear_reunion'),
+    path('crearReunion/<int:tutoria_id>/',
+         viewsZoom.crear_reunion, name='crear_reunion'),
     path('eliminar/<int:reunion_id>/',
          viewsZoom.eliminar_reunion, name='eliminar_reunion'),
     #     # Vista para mostrar el formulario de modificación de reunión

@@ -12,6 +12,12 @@
 
     <!-- Mostrar las notas del tutor -->
     {% if rol == 'Tutor' %}
+
+    <h3>Reunión:</h3>
+
+    <a href="{% url 'crear_reunion'  tutoria_individual.idTutoriaIndividual %}">Crear Reunión</a>
+
+
     <h3>Bitacora del Tutor:</h3>
     <ul>
         {% for nota in notas_tutor %}

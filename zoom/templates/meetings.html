@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <title>Lista de Reuniones</title>
-</head>
+{% block content %}
 
-<body>
-
+<main>
     <!-- <h1>Hoooola: {{meetings}}</h1> -->
 
     <h1>Lista de Reuniones Programadas</h1>
@@ -19,14 +14,14 @@
             <p><strong>Hora de inicio: </strong>{{reunion.start_time}}</p>
             <p><strong>Duración: </strong>{{reunion.duration}}</p>
             <a href={{reunion.join_url}} target="_blank"><strong>Enlace para unirse: </strong>{{reunion.join_url}}</a>
-            <br>
+        <li>
             <form method="POST" action="{% url 'eliminar_reunion' reunion.id %}">
                 {% csrf_token %}
                 <button type="submit">Eliminar</button>
             </form>
+            </br>
+            {% endfor %}
         </li>
-        {% endfor %}
     </ul>
-</body>
-
-</ul>
+</main>
+{% endblock %}

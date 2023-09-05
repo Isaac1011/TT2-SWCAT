@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <title>Reunión Instantánea</title>
-</head>
+{% block content %}
 
-<body>
+<main>
     <h1>Reunión Instantánea</h1>
     <p>Haz clic en el siguiente enlace para unirte a la reunión:</p>
     <a href="{{ join_url }}" target="_blank">{{ join_url }}</a>
-</body>
+</main>
 
-</html>
+{% endblock %}

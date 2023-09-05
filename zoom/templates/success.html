@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <title>Éxito</title>
-</head>
+{% block content %}
 
-<body>
+<main>
     <h1>Operación Exitosa</h1>
     <p>{{ success_message }}</p>
-</body>
+</main>
 
-</html>
+{% endblock %}
