@@ -1,5 +1,5 @@
 from django import forms
-from crud.models import VideoconferenciasIndividuales
+from crud.models import VideoconferenciasIndividuales, VideoconferenciasGrupales
 
 
 # Creo un formulario para que se puedan crear Reuniones
@@ -12,6 +12,15 @@ from crud.models import VideoconferenciasIndividuales
 class VideoconferenciasIndividualesForm(forms.ModelForm):
     class Meta:
         model = VideoconferenciasIndividuales
+        fields = ['topic', 'start_time']
+        widgets = {
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+
+class VideoconferenciasGrupalesForm(forms.ModelForm):
+    class Meta:
+        model = VideoconferenciasGrupales
         fields = ['topic', 'start_time']
         widgets = {
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),

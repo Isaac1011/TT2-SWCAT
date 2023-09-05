@@ -13,10 +13,22 @@
     <!-- Mostrar las notas del tutor -->
     {% if rol == 'Tutor' %}
 
-    <h3>Reunión:</h3>
+    <h3>Reunión '{{ videoconferencia_individual.first.topic }}':</h3>
 
-    <a href="{% url 'crear_reunion'  tutoria_individual.idTutoriaIndividual %}">Crear Reunión</a>
+    {% if videoconferencia_individual %}
 
+    <a href="{{ videoconferencia_individual.first.start_url }}" target="_blank">Iniciar reunión</a>
+
+    <form method="POST" action="{% url 'eliminar_reunion_individual' videoconferencia_individual.first.meeting_code %}">
+        {% csrf_token %}
+        <button type="submit">Eliminar</button>
+    </form>
+
+    {% else %}
+
+    <a href="{% url 'crear_reunion_individual'  tutoria_individual.idTutoriaIndividual %}">Crear Reunión</a>
+
+    {% endif %}
 
     <h3>Bitacora del Tutor:</h3>
     <ul>
@@ -31,6 +43,19 @@
 
     <!-- Mostrar las notas del tutorado -->
     {% elif rol == 'Tutorado' %}
+
+    <h3>Reunión '{{ videoconferencia_individual.first.topic }}':</h3>
+
+    {% if videoconferencia_individual %}
+
+    <a href="{{ videoconferencia_individual.first.join_url }}" target="_blank">Unirse a la reunión</a>
+
+    {% else %}
+
+    <p>Aún no hay enlace para que te puedas unir</p>
+
+    {% endif %}
+
     <h3>Notas del Tutorado:</h3>
     <ul>
         {% for nota in notas_tutorado %}

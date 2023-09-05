@@ -15,7 +15,7 @@
             <p><strong>Duración: </strong>{{reunion.duration}}</p>
             <a href={{reunion.join_url}} target="_blank"><strong>Enlace para unirse: </strong>{{reunion.join_url}}</a>
         <li>
-            <form method="POST" action="{% url 'eliminar_reunion' reunion.id %}">
+            <form method="POST" action="{% url 'eliminar_reunion_individual' reunion.id %}">
                 {% csrf_token %}
                 <button type="submit">Eliminar</button>
             </form>

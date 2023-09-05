@@ -20,6 +20,26 @@
 
     <!-- Mostrar las bitácoras del tutor -->
     {% if rol == 'Tutor' %}
+
+    <h3>Reunión '{{ videoconferencia_grupal.first.topic }}':</h3>
+
+    {% if videoconferencia_grupal %}
+
+    <a href="{{ videoconferencia_grupal.first.start_url }}" target="_blank">Iniciar reunión</a>
+
+    <form method="POST" action="{% url 'eliminar_reunion_grupal' videoconferencia_grupal.first.meeting_code %}">
+        {% csrf_token %}
+        <button type="submit">Eliminar</button>
+    </form>
+
+    {% else %}
+
+    <a href="{% url 'crear_reunion_grupal'  tutoria_grupal.idTutoriaGrupal %}">Crear Reunión</a>
+
+    {% endif %}
+
+
+
     <h3>Bitacora del Tutor:</h3>
     <ul>
         {% for bitacora in bitacoras_grupales %}
@@ -44,6 +64,20 @@
 
     <!-- Mostrar las notas del tutorado -->
     {% elif rol == 'Tutorado' %}
+
+    <h3>Reunión '{{ videoconferencia_grupal.first.topic }}':</h3>
+
+    {% if videoconferencia_grupal %}
+
+    <a href="{{ videoconferencia_grupal.first.join_url }}" target="_blank">Unirse a la reunión</a>
+
+    {% else %}
+
+    <p>Aún no hay enlace para que te puedas unir</p>
+
+    {% endif %}
+
+
     <h3>Anuncios Grupales del Tutor:</h3>
     <ul>
         {% for anuncio in anuncios_grupales %}

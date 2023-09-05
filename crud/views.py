@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm, BitacoraIndividualTutorForm, NotasIndividualesTutoradoForm, TutoriaGrupalForm, BitacoraGrupalTutorForm, AnunciosGrupalesTutorForm
-from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal, ListaTutoriaGrupal
+from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal, ListaTutoriaGrupal, VideoconferenciasIndividuales, VideoconferenciasGrupales
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 # Create your views here.
@@ -248,11 +248,16 @@ def detalle_tutoriaIndividual(request, tutoria_id):
         notas_tutorado = NotasIndividualesTutorado.objects.filter(
             idTutoriaIndividual=tutoria_individual)
 
+        # Obtener la VideoconferenciaIndividual según el ID proporcionado
+        videoconferencia_individual = VideoconferenciasIndividuales.objects.filter(
+            idTutoriaIndividual=tutoria_individual)
+
         # Renderizar el template de detalle_tutoria.html con la instancia de tutoría individual
         context = {
             'tutoria_individual': tutoria_individual,
             'notas_tutor': notas_tutor,
             'notas_tutorado': notas_tutorado,
+            'videoconferencia_individual': videoconferencia_individual,
             'logged_in': logged_in,
             'rol': rol
         }
@@ -394,12 +399,17 @@ def detalle_tutoriaGrupal(request, tutoria_id):
         # Podemos obtener los detalles que queramos, como los anuncios del tutor
         # ...
 
+        # Obtener la VideoconferenciaIndividual según el ID proporcionado
+        videoconferencia_grupal = VideoconferenciasGrupales.objects.filter(
+            idTutoriaGrupal=tutoria_grupal)
+
         # Renderizar el template de detalle_tutoria.html con la instancia de tutoría individual
         context = {
             'tutoria_grupal': tutoria_grupal,
             'tutorados_pertenecientes': tutorados_pertenecientes,
             'bitacoras_grupales': bitacoras_grupales,
             'anuncios_grupales': anuncios_grupales,
+            'videoconferencia_grupal': videoconferencia_grupal,
             'logged_in': logged_in,
             'rol': rol
         }
