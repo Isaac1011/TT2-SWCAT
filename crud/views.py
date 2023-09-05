@@ -148,11 +148,13 @@ def inicio_sesion_tutorado(request):
             try:
                 tutorado = Tutorado.objects.get(boletaTutorado=boleta_tutorado)
                 # Checamos si la contraseña es correcta, solo que no sé que tan seguro sea hacerlo de esta forma, funciona pero no lo sé
-                password = Tutorado.objects.get(password=password)
-                request.session['logged_in'] = True
-                request.session['rol'] = 'Tutorado'
-                request.session['boleta_tutorado'] = boleta_tutorado
-                return redirect('menu')
+                # password = Tutorado.objects.get(password=password)
+                if check_password(password, tutorado.password):
+                    # Inicio de sesión exitoso
+                    request.session['logged_in'] = True
+                    request.session['rol'] = 'Tutorado'
+                    request.session['boleta_tutorado'] = boleta_tutorado
+                    return redirect('menu')
 
             except Tutorado.DoesNotExist:
                 # Tutor no encontrado
@@ -441,6 +443,10 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
         # Crear una nueva instancia de ListaTutoriaGrupal para la inscripción
         tutorado_id = get_object_or_404(
             Tutorado, boletaTutorado=request.session['boleta_tutorado'])
+
+        contra = tutorado_id.password
+        print(contra)
+
         # Verifica si el Tutorado tiene menos de 3 tutores asignados
         if tutorado_id.numTutoresAsignados >= 3:
             # Muestra un mensaje de error si el Tutorado ya tiene 3 tutores asignados
@@ -468,7 +474,10 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
                 tutoria_grupal.save()
                 # Incrementa el campo numTutoresAsignados del Tutorado en una unidad
                 tutorado_id.numTutoresAsignados += 1
+                # Le pongo la contraseña que está desde un inicio
+                tutorado_id.password = contra
                 tutorado_id.save()
+                # Parece que después de hacer el save la contraseña se vuelve a encriptar
                 return redirect('menu')
 
     # Obtener todas las instancias de TutoriaGrupal que tengan cupo disponible

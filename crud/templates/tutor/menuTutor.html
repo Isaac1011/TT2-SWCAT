@@ -5,7 +5,7 @@
 <main>
     <h1>Menú principal del Tutor</h1>
 
-    {% if tutorias_individuales %}
+    {% if tutorias_individuales or tutorias_grupales %}
     <h2>Tutorías Individuales a cargo:</h2>
     <ul>
         {% for tutoria in tutorias_individuales %}

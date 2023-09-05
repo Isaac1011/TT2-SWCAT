@@ -123,7 +123,6 @@ def crear_reunion(request, tutoria_id):
 
                     # Supongamos que el enlace de la reunión está en el campo 'join_url' de la respuesta
                     created_at = response_data.get('created_at', '')
-                    start_url = response_data.get('start_url', '')
                     join_url = response_data.get('join_url', '')
                     # Supongamos que el código de la reunión está en el campo 'meeting_code' y la contraseña en 'meeting_password'
                     meeting_code = response_data.get('id', '')
@@ -132,7 +131,6 @@ def crear_reunion(request, tutoria_id):
                     videoconferencia_individual.topic = topic
                     videoconferencia_individual.start_time = start_time
                     videoconferencia_individual.created_at = created_at
-                    videoconferencia_individual.start_url = start_url
                     videoconferencia_individual.join_url = join_url
                     videoconferencia_individual.meeting_code = meeting_code
                     videoconferencia_individual.meeting_password = meeting_password
