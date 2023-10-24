@@ -1,0 +1,63 @@
+<head>
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #chat {
+            width: 80%;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        form {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Chatbot</h1>
+
+    <div id="chat">
+        {% if bot_response %}
+        <p><strong>Bot:</strong> {{ bot_response }}</p>
+        {% endif %}
+    </div>
+
+    <form method="post" action="{% url 'chatbot' %}">
+        {% csrf_token %}
+        <input type="text" name="user_input" placeholder="Escribe tu mensaje..." required>
+        <button type="submit">Enviar</button>
+    </form>
+</body>

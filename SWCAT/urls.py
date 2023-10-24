@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from crud import views
 from zoom import views as viewsZoom
+from chatbot import views as viewsChatbot
 
 
 urlpatterns = [
@@ -71,4 +72,6 @@ urlpatterns = [
     #          viewsZoom.guardar_modificacion_reunion, name='guardar_modificacion_reunion'),
     path('crear_reunion_instantanea/', viewsZoom.crear_reunion_instantanea,
          name='crear_reunion_instantanea'),
+
+    path('chatbot/', viewsChatbot.chatbot, name='chatbot')
 ]

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import openai
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crud',
-    'zoom'
+    'zoom',
+    'chatbot'
 ]
 
 MIDDLEWARE = [
@@ -146,4 +148,7 @@ CORS_ALLOW_ORIGIN = [
 ]
 
 
-TU_ACCESS_TOKEN = 'eyJzdiI6IjAwMDAwMSIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjZmNGZkYzIxLTQzNDctNDQ5Zi05NmYwLWY0YTY2ZDZjNWUwOSJ9.eyJ2ZXIiOjksImF1aWQiOiJiOWU3N2EwOWQ0ZTBiMmRlYWY0NmMwZTAyNjE1MTdiNSIsImNvZGUiOiJZYldpM3BtUXhic2VqeGNwaDYzU0hTZGJzd3JfUjZvVWciLCJpc3MiOiJ6bTpjaWQ6ckFiemRCUW9TZmllYUZ5VVFmMmdCQSIsImdubyI6MCwidHlwZSI6MCwidGlkIjoyMCwiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoiYkRxZlVyd2xSbUtiMDR0SWw4NkJrZyIsIm5iZiI6MTY5Mzk1Mjg4NCwiZXhwIjoxNjkzOTU2NDg0LCJpYXQiOjE2OTM5NTI4ODQsImFpZCI6IjFza1FfUVJlVGVxY24yZUVCcHRVeGcifQ.E0BPyYEAN005pXgbnOm2H1yVg9cD4FMAYNMT8ctXceXD_YjlZ9e0eguc9Pwc2WPZkBP9DxZwo5gfT7bEEFXZAw'
+TU_ACCESS_TOKEN = 'eyJzdiI6IjAwMDAwMSIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjMyMzMyMTU3LTQzODktNDhmNS05YmM1LTIyNmMwODZhOTYxMSJ9.eyJ2ZXIiOjksImF1aWQiOiJiOWU3N2EwOWQ0ZTBiMmRlYWY0NmMwZTAyNjE1MTdiNSIsImNvZGUiOiJZYldpM3BtUXhic2VqeGNwaDYzU0hTZGJzd3JfUjZvVWciLCJpc3MiOiJ6bTpjaWQ6ckFiemRCUW9TZmllYUZ5VVFmMmdCQSIsImdubyI6MCwidHlwZSI6MCwidGlkIjoyMSwiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoiYkRxZlVyd2xSbUtiMDR0SWw4NkJrZyIsIm5iZiI6MTY5NDQ3Mzg4NSwiZXhwIjoxNjk0NDc3NDg1LCJpYXQiOjE2OTQ0NzM4ODUsImFpZCI6IjFza1FfUVJlVGVxY24yZUVCcHRVeGcifQ.CO5s_uMWPMAL1pKGjx3Hg-yt56_D7eTee3cVA3hYZ1et8N3wFily7VqG3If7niQo8DYzE9t5NUVNlKDJqXk4wg'
+
+
+openai.api_key = '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'
