@@ -21,9 +21,18 @@ class TutorRegistroForm(forms.ModelForm):
 
 # Crea un nuevo formulario para el inicio de sesión sin estar basado en el modelo Tutor poder realizar el inicio de sesión correctamente sin que se genere el error de unicidad al verificar las credenciales.
 class TutorInicioSesionForm(forms.Form):
-    numeroEmpleado = forms.CharField(max_length=7)
-    password = forms.CharField(widget=forms.PasswordInput(
-        attrs={'placeholder': "Escribe la contraseña"}))
+    numeroEmpleado = forms.CharField(
+        max_length=7,
+        label='Número de Empleado',
+        widget=forms.TextInput(attrs={'class': 'form-control dark-mode-input'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control dark-mode-input',
+                   'placeholder': "Escribe la contraseña"}
+        ),
+        label='Contraseña'
+    )
 
 
 class TutoradoRegistroForm(forms.ModelForm):

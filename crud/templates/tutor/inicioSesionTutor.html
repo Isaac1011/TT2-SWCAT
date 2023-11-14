@@ -1,25 +1,36 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
+<main class="container mt-5">
 
-<main>
-
-    <h1>Iniciar Sesión Tutor</h1>
+    <h1 class="text-center mb-4">Iniciar Sesión Tutor</h1>
 
     {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li>{{ message }}</li>
             {% endfor %}
-    </ul>
+        </ul>
+    </div>
     {% endif %}
 
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Iniciar Sesión</button>
-    </form>
-</main>
 
+        {{ form.as_p }}
+
+        <!-- {{ form.numeroEmpleado.label_tag }}
+                        {{ form.numeroEmpleado }}
+
+                        {{ form.password.label_tag }}
+                        {{ form.password }} -->
+
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary btn-block" style="width: 100%; text-align: center;">Iniciar
+                Sesión</button>
+        </div>
+    </form>
+
+</main>
 {% endblock %}
