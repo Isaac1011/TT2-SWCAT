@@ -3,15 +3,18 @@
 
 {% block content %}
 
-<main>
+<main class="container mt-5">
 
-    <h1>Registrar Tutor</h1>
+    <h1 class="text-center mb-4">Registrar Tutor</h1>
 
 
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Registrarse</button>
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary btn-block"
+                style="width: 100%; text-align: center;">Registrarse</button>
+        </div>
     </form>
 </main>
 

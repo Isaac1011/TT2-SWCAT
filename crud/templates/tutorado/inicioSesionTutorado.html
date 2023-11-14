@@ -3,23 +3,32 @@
 
 {% block content %}
 
-<main>
+<main class="container mt-5">
 
-    <h1>Iniciar Sesión Tutorado</h1>
+    <h1 class="text-center mb-4">Iniciar Sesión Tutorado</h1>
 
     {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li>{{ message }}</li>
             {% endfor %}
-    </ul>
+        </ul>
+    </div>
     {% endif %}
 
     <form method="POST">
+
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Iniciar Sesión</button>
+
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary btn-block" style="width: 100%; text-align: center;">Iniciar
+                Sesión</button>
+        </div>
+
     </form>
+
 </main>
 
 {% endblock %}

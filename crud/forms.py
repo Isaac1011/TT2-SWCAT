@@ -7,15 +7,23 @@ class TutorRegistroForm(forms.ModelForm):
         model = Tutor
         fields = ['numeroEmpleado', 'email', 'password', 'nombre',
                   'apellidoPaterno', 'apellidoMaterno', 'cubiculo', 'telefono']
+        labels = {
+            'password': 'Contraseña',
+            'numeroEmpleado': 'Número de Empleado',
+            'apellidoPaterno': 'Apellido paterno',
+            'apellidoMaterno': 'Apellido materno',
+            'cubiculo': 'Cubículo',
+            'telefono': 'Número de teléfono'
+        }
         widgets = {
-            'password': forms.TextInput(attrs={'placeholder': "Escribe la constraseña", 'type': "password"}),
-            'numeroEmpleado': forms.TextInput(attrs={'class': 'black-label'}),
-            'email': forms.TextInput(attrs={'class': 'black-label'}),
-            'nombre': forms.TextInput(attrs={'class': 'black-label'}),
-            'apellidoPaterno': forms.TextInput(attrs={'class': 'black-label'}),
-            'apellidoMaterno': forms.TextInput(attrs={'class': 'black-label'}),
-            'cubiculo': forms.TextInput(attrs={'class': 'black-label'}),
-            'telefono': forms.TextInput(attrs={'class': 'black-label'}),
+            'password': forms.TextInput(attrs={'placeholder': "", 'type': "password", 'class': 'form-control dark-mode-input'}),
+            'numeroEmpleado': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'email': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'cubiculo': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
         }
 
 
@@ -27,11 +35,12 @@ class TutorInicioSesionForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-control dark-mode-input'})
     )
     password = forms.CharField(
+        label='Contraseña',
         widget=forms.PasswordInput(
             attrs={'class': 'form-control dark-mode-input',
-                   'placeholder': "Escribe la contraseña"}
-        ),
-        label='Contraseña'
+                   'placeholder': ""}
+        )
+
     )
 
 
@@ -40,17 +49,43 @@ class TutoradoRegistroForm(forms.ModelForm):
         model = Tutorado
         fields = ['boletaTutorado', 'email', 'password', 'nombre',
                   'apellidoPaterno', 'apellidoMaterno', 'semestre', 'telefono']
+        labels = {
+            'password': 'Contraseña',
+            'boletaTutorado': 'Número de Boleta',
+            'apellidoPaterno': 'Apellido paterno',
+            'apellidoMaterno': 'Apellido materno',
+            'semestre': 'Número de semestre',
+            'telefono': 'Número de teléfono',
+        }
         widgets = {
-            'password': forms.TextInput(attrs={'placeholder': "Escribe la constraseña", 'type': "password"})
+            'password': forms.TextInput(attrs={'placeholder': "", 'type': "password", 'class': 'form-control dark-mode-input'}),
+            'boletaTutorado': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'email': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'semestre': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+
+
         }
 
 # Crea un nuevo formulario para el inicio de sesión sin estar basado en el modelo Tutorado poder realizar el inicio de sesión correctamente sin que se genere el error de unicidad al verificar las credenciales.
 
 
 class TutoradoInicioSesionForm(forms.Form):
-    boletaTutorado = forms.CharField(max_length=10)
-    password = forms.CharField(widget=forms.PasswordInput(
-        attrs={'placeholder': "Escribe la contraseña"}))
+    boletaTutorado = forms.CharField(
+        max_length=10,
+        label='Número de Boleta',
+        widget=forms.TextInput(attrs={'class': 'form-control dark-mode-input'})
+    )
+    password = forms.CharField(
+        label='Contraseña',
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control dark-mode-input',
+                   'placeholder': ""}
+        )
+    )
 
 
 class TutoriaIndividualForm(forms.ModelForm):
