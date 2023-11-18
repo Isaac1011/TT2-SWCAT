@@ -2,40 +2,45 @@
 
 {% block content %}
 
-<main>
-    <h1>Menú principal del Tutorado</h1>
+<main class="container mt-5">
+    <h1 class="text-center">Menú principal del Tutorado</h1>
 
     {% if tutorias_individuales %}
-    <h2>Tutorías Individuales inscritas:</h2>
-    <ul>
-        {% for tutoria in tutorias_individuales %}
-        <li>
-            <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}">
-                Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="mt-4">
+        <h2>Tutorías Individuales inscritas:</h2>
+        <ul class="list-group">
+            {% for tutoria in tutorias_individuales %}
+            <li class="list-group-item">
+                <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}" class="tutoria-link">
+                    Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
     {% else %}
     <p>No tienes Tutorías individuales inscritas</p>
     {% endif %}
 
 
     {% if tutorias_grupales %}
-    <h2>Tutorías Grupales inscritas: </h2>
-    <ul>
-        {% for tutoria in tutorias_grupales %}
-        <li>
-            <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal.idTutoriaGrupal %}">
-                Tutoría Grupal: {{ tutoria.idTutoriaGrupal.nombreGrupo }}<br>
-                Tutor: {{ tutoria.idTutoriaGrupal.idTutor.nombre}}
-                {{tutoria.idTutoriaGrupal.idTutor.apellidoPaterno}}
-                {{tutoria.idTutoriaGrupal.idTutor.apellidoMaterno}}<br>
-                Salón: {{ tutoria.idTutoriaGrupal.salon }}
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="mt-4">
+        <h2>Tutorías Grupales inscritas: </h2>
+        <ul class="list-group">
+            {% for tutoria in tutorias_grupales %}
+            <li class="list-group-item">
+                <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal.idTutoriaGrupal %}"
+                    class="tutoria-link">
+                    Tutoría Grupal: {{ tutoria.idTutoriaGrupal.nombreGrupo }}
+                    Tutor: {{ tutoria.idTutoriaGrupal.idTutor.nombre}}
+                    {{tutoria.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                    {{tutoria.idTutoriaGrupal.idTutor.apellidoMaterno}}
+                    Salón: {{ tutoria.idTutoriaGrupal.salon }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
     {% else %}
     <p>No tienes Tutorías Grupales inscritas</p>
     {% endif %}

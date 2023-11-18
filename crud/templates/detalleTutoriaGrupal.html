@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<main>
-    <h1>Detalle de Tutoría Grupal</h1>
+<main class="container mt-5">
+    <h1 class="text-center">Detalle de Tutoría Grupal</h1>
     <h2>Nombre de la tutoría: {{ tutoria_grupal.nombreGrupo }}</h2>
     <p>Tutor: {{tutoria_grupal.idTutor.nombre}}</p>
     <p>Salón: {{ tutoria_grupal.salon }}</p>
@@ -25,42 +25,46 @@
 
     {% if videoconferencia_grupal %}
 
-    <a href="{{ videoconferencia_grupal.first.start_url }}" target="_blank">Iniciar reunión</a>
+    <a href="{{ videoconferencia_grupal.first.start_url }}" target="_blank"
+        class="btn btn-success mb-2 boton-exito">Iniciar reunión</a>
 
     <form method="POST" action="{% url 'eliminar_reunion_grupal' videoconferencia_grupal.first.meeting_code %}">
         {% csrf_token %}
-        <button type="submit">Eliminar</button>
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar</button>
     </form>
 
     {% else %}
 
-    <a href="{% url 'crear_reunion_grupal'  tutoria_grupal.idTutoriaGrupal %}">Crear Reunión</a>
+    <a href="{% url 'crear_reunion_grupal'  tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-button-small">Crear Reunión</a>
 
     {% endif %}
 
 
 
     <h3>Bitacora del Tutor:</h3>
-    <ul>
+    <ul class="list-group">
         {% for bitacora in bitacoras_grupales %}
-        <li>{{ bitacora.nota }}</li>
-        <p>{{bitacora.fecha}}</p>
+        <li class="list-group-item">{{ bitacora.nota }}</li>
+        <p class="list-group-item">{{bitacora.fecha}}</p>
         {% endfor %}
     </ul>
     <!--Para crear una bitacora-->
-    <a href="{% url 'bitacora_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}">Crear Bitácora
+    <a href="{% url 'bitacora_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Crear Bitácora
         Grupal</a>
 
 
     <h3>Anuncios Grupales del Tutor:</h3>
-    <ul>
+    <ul class="list-group">
         {% for anuncio in anuncios_grupales %}
-        <li>{{ anuncio.nota }}</li>
-        <p>{{anuncio.fecha}}</p>
+        <li class="list-group-item">{{ anuncio.nota }}</li>
+        <p class="list-group-item">{{anuncio.fecha}}</p>
         {% endfor %}
     </ul>
     <!--Para crear un anuncio al grupo-->
-    <a href="{% url 'anuncio_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}">Crear Anuncio Grupal</a>
+    <a href="{% url 'anuncio_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Crear Anuncio Grupal</a>
 
     <!-- Mostrar las notas del tutorado -->
     {% elif rol == 'Tutorado' %}
@@ -69,7 +73,8 @@
 
     {% if videoconferencia_grupal %}
 
-    <a href="{{ videoconferencia_grupal.first.join_url }}" target="_blank">Unirse a la reunión</a>
+    <a href="{{ videoconferencia_grupal.first.join_url }}" target="_blank"
+        class="btn btn-success mb-2 boton-exito">Unirse a la reunión</a>
 
     {% else %}
 
@@ -79,16 +84,29 @@
 
 
     <h3>Anuncios Grupales del Tutor:</h3>
-    <ul>
+    <ul class="list-group">
         {% for anuncio in anuncios_grupales %}
-        <li>{{ anuncio.nota }}</li>
-        <p>{{anuncio.fecha}}</p>
+        <li class="list-group-item">{{ anuncio.nota }}</li>
+        <p class="list-group-item">{{anuncio.fecha}}</p>
         {% endfor %}
     </ul>
 
     {% endif %}
 
 
+    <br>
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
 </main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
 
 {% endblock %}

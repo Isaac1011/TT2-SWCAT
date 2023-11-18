@@ -2,72 +2,83 @@
 
 {% block content %}
 
-<main>
-    <h1>Detalle de Tutoría Individual</h1>
+<main class="container mt-5">
+    <h1 class="text-center">Detalle de Tutoría Individual</h1>
     <h2>Nombre de la tutoría: {{ tutoria_individual.nombreTutoriaIndividual }}</h2>
-    <p>Tutor: {{tutoria_individual.idTutor.nombre}}</p>
+    <p>Tutor: {{ tutoria_individual.idTutor.nombre }}</p>
     <p>Tutorado: {{ tutoria_individual.idTutorado.nombre }}</p>
     <!-- Otros detalles de la tutoría individual -->
 
-
-    <!-- Mostrar las notas del tutor -->
     {% if rol == 'Tutor' %}
-
     <h3>Reunión '{{ videoconferencia_individual.first.topic }}':</h3>
 
     {% if videoconferencia_individual %}
-
-    <a href="{{ videoconferencia_individual.first.start_url }}" target="_blank">Iniciar reunión</a>
+    <a href="{{ videoconferencia_individual.first.start_url }}" target="_blank"
+        class="btn btn-success mb-2 boton-exito">
+        Iniciar reunión
+    </a>
 
     <form method="POST" action="{% url 'eliminar_reunion_individual' videoconferencia_individual.first.meeting_code %}">
         {% csrf_token %}
-        <button type="submit">Eliminar</button>
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar</button>
     </form>
-
     {% else %}
-
-    <a href="{% url 'crear_reunion_individual'  tutoria_individual.idTutoriaIndividual %}">Crear Reunión</a>
-
+    <a href="{% url 'crear_reunion_individual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-button-small">
+        Crear Reunión
+    </a>
     {% endif %}
 
-    <h3>Bitacora del Tutor:</h3>
-    <ul>
+    <h3>Bitácora del Tutor:</h3>
+    <ul class="list-group">
         {% for nota in notas_tutor %}
-        <li>{{ nota.nota }}</li>
-        <p>{{nota.fecha}}</p>
+        <li class="list-group-item">{{ nota.nota }}</li>
+        <p class="list-group-item">{{ nota.fecha }}</p>
         {% endfor %}
     </ul>
-    <!--Para crear una bitacora-->
-    <a href="{% url 'crear_bitacora_tutoriaIndividual' tutoria_individual.idTutoriaIndividual%}" class="nav-link">Crear
-        Bitacora</a>
 
-    <!-- Mostrar las notas del tutorado -->
+    <a href="{% url 'crear_bitacora_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-link">
+        Crear Bitácora
+    </a>
     {% elif rol == 'Tutorado' %}
-
     <h3>Reunión '{{ videoconferencia_individual.first.topic }}':</h3>
 
     {% if videoconferencia_individual %}
-
-    <a href="{{ videoconferencia_individual.first.join_url }}" target="_blank">Unirse a la reunión</a>
-
+    <a href="{{ videoconferencia_individual.first.join_url }}" target="_blank" class="btn btn-success mb-2 boton-exito">
+        Unirse a la reunión
+    </a>
     {% else %}
-
     <p>Aún no hay enlace para que te puedas unir</p>
-
     {% endif %}
 
     <h3>Notas del Tutorado:</h3>
-    <ul>
+    <ul class="list-group">
         {% for nota in notas_tutorado %}
-        <li>{{ nota.nota }}</li>
-        <p>{{ nota.fecha }}</p>
+        <li class="list-group-item">{{ nota.nota }}</li>
+        <p class="list-group-item">{{ nota.fecha }}</p>
         {% endfor %}
     </ul>
-    <a href="{% url 'crear_nota_tutoriaIndividual' tutoria_individual.idTutoriaIndividual%}" class="nav-link">Crear
-        Nota</a>
 
+    <a href="{% url 'crear_nota_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary custom-button-small">
+        Crear Nota
+    </a>
     {% endif %}
 
+    <br>
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
 </main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
 
 {% endblock %}

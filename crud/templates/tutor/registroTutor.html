@@ -12,10 +12,22 @@
         {% csrf_token %}
         {{ form.as_p }}
         <div class="form-group mt-4">
-            <button type="submit" class="btn btn-primary btn-block"
-                style="width: 100%; text-align: center;">Registrarse</button>
+            <button type="submit" class="btn btn-primary btn-block custom-button">Registrarse</button>
         </div>
     </form>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
 </main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
 
 {% endblock %}

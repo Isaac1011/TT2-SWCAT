@@ -19,6 +19,8 @@
             background-color: #f7f7f7;
             margin: 0;
             padding: 0;
+            transition: background-color 0.5s, color 0.5s;
+            /* Transición de fondo y color */
         }
 
         /* Estilos para el modo oscuro */
@@ -45,13 +47,14 @@
 
         /* Estilos para el botón de Modo Oscuro */
         #dark-mode-toggle {
-            background-color: #003488;
+            background-color: #AAAAAA;
             color: white;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
             border-radius: 5px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* Transiciones añadidas */
         }
 
         #dark-mode-toggle:hover {
@@ -64,6 +67,8 @@
             background-color: #0047B6;
             color: white;
             padding: 10px;
+            transition: background-color 0.5s, color 0.5s;
+            /* Transición de fondo y color */
         }
 
         nav ul {
@@ -102,7 +107,146 @@
             background-color: rgb(255, 255, 255);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Boton "Regresar" */
+        .back-button {
+            background-color: #595959;
+            color: #ffffff;
+            transition: background-color 0.5s, color 0.5s;
+            /* Agregar transiciones suaves */
+        }
+
+        .back-button:hover {
+            background-color: #2E2E2E;
+            /* Cambiar el color de fondo al pasar el cursor */
+            color: #ffffff;
+            /* Mantener el color del texto en blanco */
+        }
+
+        /* 
+        Enlaces personalizados */
+        .custom-link {
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            width: 100%;
+            text-align: center;
+            background-color: #0047B6;
+            color: #ffffff;
+            /* Color del texto */
+            padding: 10px;
+            /* Ajusta el relleno según tus preferencias */
+            border-radius: 5px;
+            /* Añade esquinas redondeadas si lo deseas */
+            transition: background-color 0.3s;
+            /* Transición suave al cambiar el color de fondo */
+        }
+
+        .custom-link:hover,
+        .custom-link:focus {
+            background-color: #003366;
+            /* Cambia el color al pasar el cursor */
+        }
+
+        /* Botones personalizados */
+        .custom-button {
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            background-color: #0047B6;
+            color: #ffffff;
+            /* Color del texto */
+            padding: 10px;
+            /* Ajusta el relleno según tus preferencias */
+            border-radius: 5px;
+            /* Añade esquinas redondeadas si lo deseas */
+            transition: background-color 0.3s;
+            /* Transición suave al cambiar el color de fondo */
+        }
+
+        .custom-button:hover,
+        .custom-button:focus {
+            background-color: #003366;
+            /* Cambia el color al pasar el cursor */
+        }
+
+
+
+        .custom-button-small {
+            text-align: center;
+            font-size: 18px;
+            background-color: #0047B6;
+            color: #ffffff;
+            /* Color del texto */
+            padding: 10px;
+            /* Ajusta el relleno según tus preferencias */
+            border-radius: 5px;
+            /* Añade esquinas redondeadas si lo deseas */
+            transition: background-color 0.3s;
+            /* Transición suave al cambiar el color de fondo */
+        }
+
+        .custom-button-small:hover,
+        .custom-button-small:focus {
+            background-color: #003366;
+            /* Cambia el color al pasar el cursor */
+        }
+
+
+
+        /* Para los botones avanzar */
+        .boton-exito {
+            font-size: 18px;
+            background-color: #006400;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .boton-exito:hover,
+        .boton-exito:focus {
+            background-color: #004D00;
+            /* Cambiar a un verde más oscuro al hacer hover o focus */
+            transition: background-color 0.3s;
+            /* Agregar transición para suavizar el cambio de color */
+            outline: none;
+            /* Evitar que aparezca un contorno al hacer focus (puedes ajustarlo según tus preferencias de diseño y accesibilidad) */
+        }
+
+        .tutoria-link {
+            background-color: #000000;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .tutoria-link:hover,
+        .tutoria-link:focus {
+            background-color: #0047B6;
+        }
+
+        /* Para los botones de eliminar */
+        .boton-eliminar {
+            font-size: 18px;
+            background-color: #8B0000;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .boton-eliminar:hover,
+        .boton-eliminar:focus {
+            background-color: #5C0000;
+            /* Color diferente al hacer hover y focus */
+        }
     </style>
+
 </head>
 
 <body>
@@ -157,7 +301,7 @@
             {% endif %}
         </ul>
 
-        <button id="dark-mode-toggle">Modo Oscuro</button>
+        <!-- <button id="dark-mode-toggle">Modo Oscuro</button> -->
     </nav>
 
     <div class="container">
@@ -165,6 +309,7 @@
 
         {% endblock %}
     </div>
+
 
     <!-- JS de Bootstrap (jQuery y Popper.js son requeridos) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -176,37 +321,57 @@
 
 
     <script>
-        const darkModeToggle = document.getElementById("dark-mode-toggle");
-        let isDarkMode = localStorage.getItem("darkMode") === "true";
+        // // Obtener referencia al botón de cambio de modo
+        // const darkModeToggle = document.getElementById("dark-mode-toggle");
 
-        // Función para activar o desactivar el modo oscuro
-        function toggleDarkMode() {
-            isDarkMode = !isDarkMode;
-            if (isDarkMode) {
-                document.body.classList.add("dark-mode");
-                darkModeToggle.classList.remove("btn-light");
-                darkModeToggle.classList.add("btn-dark");
-                darkModeToggle.textContent = "Modo Claro"; // Cambiar texto del botón a "Modo Claro"
-                localStorage.setItem("darkMode", "true"); // Almacenar preferencia
-            } else {
-                document.body.classList.remove("dark-mode");
-                darkModeToggle.classList.remove("btn-dark");
-                darkModeToggle.classList.add("btn-light");
-                darkModeToggle.textContent = "Modo Oscuro"; // Cambiar texto del botón a "Modo Oscuro"
-                localStorage.setItem("darkMode", "false"); // Almacenar preferencia
-            }
-        }
+        // // Verificar si el modo oscuro está activado
+        // let isDarkMode = localStorage.getItem("darkMode") === "true";
 
-        // Verificar y aplicar el modo oscuro al cargar la página
-        if (isDarkMode) {
-            document.body.classList.add("dark-mode");
-            darkModeToggle.classList.remove("btn-light");
-            darkModeToggle.classList.add("btn-dark");
-            darkModeToggle.textContent = "Modo Claro"; // Cambiar texto del botón a "Modo Claro"
-        }
+        // // Función para actualizar los estilos del botón
+        // function updateButtonStyles() {
+        //     // Actualizar estilos del botón basado en el modo actual
+        //     if (isDarkMode) {
+        //         darkModeToggle.style.backgroundColor = "#7593FF";
+        //         darkModeToggle.style.color = "#000000";
+        //         darkModeToggle.textContent = "Modo Claro";
+        //     } else {
+        //         darkModeToggle.style.backgroundColor = "#FFFFFF";
+        //         darkModeToggle.style.color = "#000000";
+        //         darkModeToggle.textContent = "Modo Oscuro";
+        //     }
+        // }
 
-        darkModeToggle.addEventListener("click", toggleDarkMode);
+        // // Función para activar o desactivar el modo oscuro
+        // function toggleDarkMode() {
+        //     // Cambiar el estado del modo oscuro
+        //     isDarkMode = !isDarkMode;
+
+        //     // Toggle de la clase 'dark-mode' en el cuerpo del documento
+        //     document.body.classList.toggle("dark-mode", isDarkMode);
+
+        //     // Almacenar el estado del modo oscuro en el almacenamiento local
+        //     localStorage.setItem("darkMode", isDarkMode.toString());
+
+        //     // Actualizar los estilos del botón
+        //     updateButtonStyles();
+        // }
+
+        // // Verificar y aplicar el modo oscuro al cargar la página
+        // if (isDarkMode) {
+        //     document.body.classList.add("dark-mode");
+        // }
+
+        // // Actualizar estilos del botón al cargar la página
+        // updateButtonStyles();
+
+        // // Agregar transiciones a propiedades de estilo del botón
+        // darkModeToggle.style.transition = "background-color 0.5s, color 0.5s";
+
+        // // Agregar un event listener al botón para manejar clics
+        // darkModeToggle.addEventListener("click", toggleDarkMode);
+
     </script>
+
 
 </body>
 

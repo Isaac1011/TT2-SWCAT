@@ -15,12 +15,26 @@
         <h2>Iniciar Sesión</h2>
         <p>Selecciona tu rol para iniciar sesión:</p>
 
-        <a href="{% url 'inicio_sesion_tutor' %}" class="btn btn-primary btn-lg btn-block mb-2"
-            style="text-decoration: none; display: inline-block; width: 100%; text-align: center;">Iniciar Sesión como
+        <a href="{% url 'inicio_sesion_tutor' %}" class="btn btn-primary btn-lg btn-block mb-2 custom-link">Iniciar
+            Sesión como Tutor</a>
+
+
+        <a href="{% url 'inicio_sesion_tutorado' %}" class="btn btn-primary btn-lg btn-block mb-2 custom-link">Iniciar
+            Sesión como
+            Tutorado</a>
+    </section>
+
+
+    <section class="mt-5">
+        <h2>Registrarse</h2>
+        <p>Selecciona tu rol para registrarte:</p>
+
+        <a href="{% url 'registro_tutor' %}" class="btn btn-primary btn-lg btn-block mb-2 custom-link">Registrarse como
             Tutor</a>
 
-        <a href="{% url 'inicio_sesion_tutorado' %}" class="btn btn-primary btn-lg btn-block"
-            style="text-decoration: none; display: inline-block; width: 100%; text-align: center;">Iniciar Sesión como
+
+        <a href="{% url 'registro_tutorado' %}" class="btn btn-primary btn-lg btn-block mb-2 custom-link">Registrarse
+            como
             Tutorado</a>
     </section>
 

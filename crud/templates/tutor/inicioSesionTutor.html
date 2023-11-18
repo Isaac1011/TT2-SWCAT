@@ -20,17 +20,23 @@
 
         {{ form.as_p }}
 
-        <!-- {{ form.numeroEmpleado.label_tag }}
-                        {{ form.numeroEmpleado }}
-
-                        {{ form.password.label_tag }}
-                        {{ form.password }} -->
-
         <div class="form-group mt-4">
-            <button type="submit" class="btn btn-primary btn-block" style="width: 100%; text-align: center;">Iniciar
-                Sesión</button>
+            <button type="submit" class="btn btn-primary btn-block custom-button">Iniciar Sesión</button>
         </div>
     </form>
 
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
 </main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
 {% endblock %}

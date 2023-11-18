@@ -2,35 +2,51 @@
 
 {% block content %}
 
-<main>
-    <h1>Menú principal del Tutor</h1>
+<main class="container mt-5">
+    <h1 class="text-center">Menú principal del Tutor</h1>
 
     {% if tutorias_individuales or tutorias_grupales %}
-    <h2>Tutorías Individuales a cargo:</h2>
-    <ul>
-        {% for tutoria in tutorias_individuales %}
-        <li>
-            <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}">
-                Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="mt-4">
+        <h2>Tutorías Individuales a cargo:</h2>
+        <ul class="list-group">
+            {% for tutoria in tutorias_individuales %}
+            <li class="list-group-item">
+                <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}" class="tutoria-link">
+                    Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 
-    <h2>Tutorías Grupales a cargo:</h2>
-    <ul>
-        {%for tutoria in tutorias_grupales %}
-        <li>
-            <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal %}">
-                Tutoría: {{tutoria.nombreGrupo}} -
-                Salón: {{tutoria.salon}}</a>
-        </li>
-        {% endfor %}
-    </ul>
+    <div class="mt-4">
+        <h2>Tutorías Grupales a cargo:</h2>
+        <ul class="list-group">
+            {%for tutoria in tutorias_grupales %}
+            <li class="list-group-item">
+                <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal %}" class="tutoria-link">
+                    Tutoría: {{ tutoria.nombreGrupo }} - Salón: {{ tutoria.salon }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 
     {% else %}
-    <p>No tienes tutorías a cargo.</p>
+    <p class="mt-4">No tienes tutorías a cargo.</p>
     {% endif %}
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
 </main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
 
 {% endblock %}

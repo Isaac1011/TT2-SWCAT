@@ -8,15 +8,17 @@ class TutorRegistroForm(forms.ModelForm):
         fields = ['numeroEmpleado', 'email', 'password', 'nombre',
                   'apellidoPaterno', 'apellidoMaterno', 'cubiculo', 'telefono']
         labels = {
-            'password': 'Contraseña',
-            'numeroEmpleado': 'Número de Empleado',
-            'apellidoPaterno': 'Apellido paterno',
-            'apellidoMaterno': 'Apellido materno',
+            'password': 'Contraseña *',
+            'numeroEmpleado': 'Número de Empleado *',
+            'email': 'Email *',
+            'nombre': 'Nombre *',
+            'apellidoPaterno': 'Apellido paterno *',
+            'apellidoMaterno': 'Apellido materno *',
             'cubiculo': 'Cubículo',
             'telefono': 'Número de teléfono'
         }
         widgets = {
-            'password': forms.TextInput(attrs={'placeholder': "", 'type': "password", 'class': 'form-control dark-mode-input'}),
+            'password': forms.TextInput(attrs={'placeholder': "", 'type': "password", 'class': 'form-control dark-mode-input', 'style': 'color: #ec0000'}),
             'numeroEmpleado': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'email': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
@@ -31,11 +33,11 @@ class TutorRegistroForm(forms.ModelForm):
 class TutorInicioSesionForm(forms.Form):
     numeroEmpleado = forms.CharField(
         max_length=7,
-        label='Número de Empleado',
+        label='Número de Empleado *',
         widget=forms.TextInput(attrs={'class': 'form-control dark-mode-input'})
     )
     password = forms.CharField(
-        label='Contraseña',
+        label='Contraseña *',
         widget=forms.PasswordInput(
             attrs={'class': 'form-control dark-mode-input',
                    'placeholder': ""}
@@ -50,10 +52,12 @@ class TutoradoRegistroForm(forms.ModelForm):
         fields = ['boletaTutorado', 'email', 'password', 'nombre',
                   'apellidoPaterno', 'apellidoMaterno', 'semestre', 'telefono']
         labels = {
-            'password': 'Contraseña',
-            'boletaTutorado': 'Número de Boleta',
-            'apellidoPaterno': 'Apellido paterno',
-            'apellidoMaterno': 'Apellido materno',
+            'password': 'Contraseña *',
+            'boletaTutorado': 'Número de Boleta *',
+            'email': 'Correo electrónico *',
+            'nombre': 'Nombre *',
+            'apellidoPaterno': 'Apellido paterno *',
+            'apellidoMaterno': 'Apellido materno *',
             'semestre': 'Número de semestre',
             'telefono': 'Número de teléfono',
         }
@@ -76,11 +80,11 @@ class TutoradoRegistroForm(forms.ModelForm):
 class TutoradoInicioSesionForm(forms.Form):
     boletaTutorado = forms.CharField(
         max_length=10,
-        label='Número de Boleta',
+        label='Número de Boleta *',
         widget=forms.TextInput(attrs={'class': 'form-control dark-mode-input'})
     )
     password = forms.CharField(
-        label='Contraseña',
+        label='Contraseña *',
         widget=forms.PasswordInput(
             attrs={'class': 'form-control dark-mode-input',
                    'placeholder': ""}
