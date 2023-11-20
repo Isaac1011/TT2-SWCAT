@@ -24,24 +24,31 @@ from chatbot import views as viewsChatbot
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.inicio, name='inicio'),
-    path('registroTutor/', views.registro_tutor, name='registro_tutor'),
-    # Vista principal Tutor
+
     path('menu/', views.menu, name='menu'),
+
+    path('registroTutor/', views.registro_tutor, name='registro_tutor'),
+    path('registroTutorado/', views.registro_tutorado, name='registro_tutorado'),
+
     path('inicioSesionTutor/', views.inicio_sesion_tutor,
          name='inicio_sesion_tutor'),
-    path('cerrarSesion/', views.cerrar_sesion,
-         name='cerrar_sesion'),
-    path('registroTutorado/', views.registro_tutorado, name='registro_tutorado'),
     path('inicioSesionTutorado/', views.inicio_sesion_tutorado,
          name='inicio_sesion_tutorado'),
+
+    path('cerrarSesion/', views.cerrar_sesion,
+         name='cerrar_sesion'),
+
     path('menu/crearTutoriaIndividual/', views.crear_tutoriaIndividual,
          name='crear_tutoriaIndividual'),
-    path('menu/tutoriaIndividual/<int:tutoria_id>/',
+    path('menu/detalleTutoriaIndividual/<int:tutoria_id>/',
          views.detalle_tutoriaIndividual, name='detalle_tutoriaIndividual'),
-    path('menu/tutoriaIndividual/crearBitacora/<int:tutoria_id>/',
+    path('menu/detalleTutoriaIndividual/detalleBitacoraIndividual/<int:id_tutoria>/',
+         views.detalle_bitacora_individual, name='detalle_bitacora_individual'),
+    path('menu/detalleTutoriaIndividual/detalleBitacoraIndividual/crearBitacoraIndividual/<int:tutoria_id>/',
          views.bitacora_tutor_tutoriaIndividual, name='crear_bitacora_tutoriaIndividual'),
-    path('menu/tutoriaIndividual/crearNota/<int:tutoria_id>/',
+    path('menu/detalleTutoriaIndividual/crearNota/<int:tutoria_id>/',
          views.nota_tutorado_tutoriaIndividual, name='crear_nota_tutoriaIndividual'),
+
     path('menu/crearTutoriaGrupal', views.crear_tutoriaGrupal,
          name='crear_tutoriaGrupal'),
     path('menu/tutoriaGrupal/<int:tutoria_id>',
@@ -54,6 +61,7 @@ urlpatterns = [
          views.bitacora_tutor_tutoriaGrupal, name='bitacora_tutor_tutoriaGrupal'),
     path('menu/tutoriaGrupal/crearAnuncio/<int:tutoria_id>/',
          views.anuncio_tutor_tutoriaGrupal, name='anuncio_tutor_tutoriaGrupal'),
+
     path('verReuniones/', viewsZoom.zoom_meetings,
          name='zoom_meetings'),
     path('crearReunionIndividual/<int:tutoria_id>/',
@@ -73,5 +81,7 @@ urlpatterns = [
     path('crear_reunion_instantanea/', viewsZoom.crear_reunion_instantanea,
          name='crear_reunion_instantanea'),
 
-    path('chatbot/', viewsChatbot.chatbot, name='chatbot')
+    path('chatbot/', viewsChatbot.chatbot, name='chatbot'),
+
+
 ]

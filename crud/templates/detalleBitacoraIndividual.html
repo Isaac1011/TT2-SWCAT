@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Bitácoras Individuales Tutor | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container mt-5">
+
+    <h1 class="text-center">Bitácoras de Tutoría Individual</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tutoría</th>
+                <th>Tutor</th>
+                <th>Tutorado</th>
+                <th>Nota</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nota in notas_tutor %}
+            <tr>
+                <td>{{nota.idTutoriaIndividual.nombreTutoriaIndividual}}</td>
+                <td>{{nota.idTutoriaIndividual.idTutor.nombre}} {{nota.idTutoriaIndividual.idTutor.apellidoPaterno}}
+                    {{nota.idTutoriaIndividual.idTutor.apellidoMaterno}}
+                </td>
+                <td>{{nota.idTutoriaIndividual.idTutorado.nombre}}
+                    {{nota.idTutoriaIndividual.idTutorado.apellidoPaterno}}
+                    {{nota.idTutoriaIndividual.idTutorado.apellidoMaterno}} -
+                    {{nota.idTutoriaIndividual.idTutorado.boletaTutorado}}
+                </td>
+                <td>{{nota.nota}}</td>
+                <td>{{nota.fecha}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'crear_bitacora_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-link">
+        Agregar Bitácora
+    </a>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

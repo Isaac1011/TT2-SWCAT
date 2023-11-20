@@ -102,6 +102,12 @@ class BitacoraIndividualTutorForm(forms.ModelForm):
     class Meta:
         model = BitacoraIndividualTutor
         fields = ['nota']
+        labels = {
+            'nota': 'Bitácora: *'
+        }
+        widgets = {
+            'nota': forms.Textarea(attrs={'class': 'form-control dark-mode-input', 'rows': 7}),
+        }
 
 
 class NotasIndividualesTutoradoForm(forms.ModelForm):

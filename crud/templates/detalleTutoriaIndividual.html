@@ -22,7 +22,7 @@
 
     <form method="POST" action="{% url 'eliminar_reunion_individual' videoconferencia_individual.first.meeting_code %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar</button>
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar reunión</button>
     </form>
     {% else %}
     <a href="{% url 'crear_reunion_individual' tutoria_individual.idTutoriaIndividual %}"
@@ -31,7 +31,7 @@
     </a>
     {% endif %}
 
-    <h3>Bitácora del Tutor:</h3>
+    <!-- <h3>Bitácora del Tutor:</h3>
     <ul class="list-group">
         {% for nota in notas_tutor %}
         <li class="list-group-item">{{ nota.nota }}</li>
@@ -42,7 +42,14 @@
     <a href="{% url 'crear_bitacora_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
         class="btn btn-primary mb-2 custom-link">
         Crear Bitácora
+    </a> -->
+
+    <a href="{% url 'detalle_bitacora_individual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-link">
+        Ver Bitácoras
     </a>
+
+
     {% elif rol == 'Tutorado' %}
     <h3>Reunión '{{ videoconferencia_individual.first.topic }}':</h3>
 

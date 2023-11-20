@@ -7,7 +7,55 @@ from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroFor
 from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal, ListaTutoriaGrupal, VideoconferenciasIndividuales, VideoconferenciasGrupales
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
+from django.views.decorators.http import require_http_methods
+
 # Create your views here.
+
+# Esta función utiliza la decoración @require_http_methods(['GET']) para asegurarse de que solo responde a solicitudes GET.
+
+
+@require_http_methods(['GET'])
+def detalle_bitacora_individual(request, id_tutoria):
+
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/crearTutoriaIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    template_name = 'detalleBitacoraIndividual.html'
+
+    tutoria_individual = obtener_tutoria_individual(id_tutoria)
+    notas_tutor = obtener_notas_tutor(tutoria_individual)
+
+    context = {
+        'tutoria_individual': tutoria_individual,
+        'notas_tutor': notas_tutor,
+        'logged_in': logged_in,
+        'rol': rol
+        # ... otras variables de contexto ...
+    }
+
+    return render(request, template_name, context)
+
+
+def obtener_tutoria_individual(id_tutoria):
+    # Aquí debes implementar la lógica para obtener la tutoría individual por su ID
+    # Puedes utilizar el modelo BitacoraIndividualTutor y su correspondiente consulta en la base de datos
+    bitacora_individual = BitacoraIndividualTutor.objects.get(
+        idBitacoraIndividual=id_tutoria)
+    return bitacora_individual.idTutoriaIndividual
+
+
+def obtener_notas_tutor(tutoria_individual):
+    # Aquí debes implementar la lógica para obtener las notas del tutor para una tutoría individual
+    # Puedes utilizar el modelo BitacoraIndividualTutor y su correspondiente consulta en la base de datos
+    notas_tutor = BitacoraIndividualTutor.objects.filter(
+        idTutoriaIndividual=tutoria_individual)
+    return notas_tutor
 
 
 def hello_world(request):
@@ -133,7 +181,7 @@ def inicio_sesion_tutor(request):
 
     else:
         form = TutorInicioSesionForm()
-        
+
     return render(request, 'tutor/inicioSesionTutor.html', {'form': form})
 
 
