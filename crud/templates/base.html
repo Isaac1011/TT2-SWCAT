@@ -4,13 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWCAT</title>
+    <title>{% block title %}SWCAT{% endblock %}</title>
 
     <!-- CSS de Bootstrap -->
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> -->
+    <!-- Enlace al archivo CSS de Bootstrap -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ -->
 
 
     <style>
@@ -97,6 +105,31 @@
             nav ul li {
                 margin: 10px 0;
             }
+        }
+
+        /* Agrega esta regla de estilo personalizada */
+        .navbar {
+            background-color: #0047B6 !important;
+        }
+
+
+
+        /* Ajusta el color del texto de los enlaces primarios*/
+        .navbar .navbar-brand {
+            color: #FFFFFF !important;
+            /* Cambia el color del texto a blanco o el que desees */
+        }
+
+        /* Ajusta el color del texto de los enlaces secundarios*/
+        .navbar-nav .nav-link {
+            color: #FFFFFF !important;
+            /* Cambia el color del texto a blanco o el que desees */
+        }
+
+        /* Agrega esta regla de estilo personalizada */
+        .navbar-toggler {
+            color: #FFFFFF;
+            background-color: #FFFFFF !important;
         }
 
         /* Estilos adicionales para tu contenido */
@@ -227,6 +260,8 @@
         .tutoria-link:hover,
         .tutoria-link:focus {
             background-color: #0047B6;
+            color: #fff;
+            text-decoration: none;
         }
 
         /* Para los botones de eliminar */
@@ -251,58 +286,84 @@
 
 <body>
 
-    <nav>
-        <ul>
-            {% if not logged_in %}
-            <li>
-                <a href="/">Inicio</a>
-            </li>
-            <li>
-                <a href="{% url 'registro_tutor' %}">Registro Tutor</a>
-            </li>
-            <li>
-                <a href="{% url 'inicio_sesion_tutor' %}">Inicio Sesión Tutor</a>
-            </li>
-            <li>
-                <a href="{% url 'registro_tutorado' %}">Registro Tutorado</a>
-            </li>
-            <li>
-                <a href="{% url 'inicio_sesion_tutorado' %}">Inicio Sesión Tutorado</a>
-            </li>
-            {% else %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+        <!-- Si no estás logeado -->
+        {% if not logged_in %}
+        <a class="navbar-brand" href="/">Inicio</a>
+
+        {% else %}
+        {% if rol == 'Tutor' %}
+        <a class="navbar-brand" href="{% url 'menu' %}">Menú principal Tutor</a>
+        {% else %}
+        <a class="navbar-brand" href="{% url 'menu' %}">Menú principal Tutorado</a>
+        {% endif %}
+
+        {% endif %}
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if not logged_in %}
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="{% url 'registro_tutor' %}">Registro Tutor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'inicio_sesion_tutor' %}">Inicio Sesión Tutor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'registro_tutorado' %}">Registro Tutorado</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'inicio_sesion_tutorado' %}">Inicio Sesión Tutorado</a>
+                </li> -->
+                {% else %}
+
+                {% if rol == 'Tutor' %}
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="{% url 'menu' %}">Menú Tutor</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'crear_tutoriaIndividual' %}">Crear Tutoría Individual</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'crear_tutoriaGrupal' %}">Crear Tutoría Grupal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'zoom_meetings' %}">Ver Reuniones</a>
+                </li>
+
+                {% elif rol == 'Tutorado' %}
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="{% url 'menu' %}">Soy un Tutorado</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'tutorias_grupales_disponibles' %}">Inscribirse a Tutoría
+                        Grupal</a>
+                </li>
+                {% endif %}
+
+                {% endif %}
+            </ul>
+
             <!-- Mostrar enlace de Cerrar Sesión solo si el usuario ha iniciado sesión o se ha registrado -->
-            <li class="nav-item">
-                <a href="{% url 'cerrar_sesion' %}" class="nav-link">Cerrar Sesión</a>
-            </li>
-
-            {% if rol == 'Tutor' %}
-            <li class="nav-item">
-                <a href="{% url 'menu' %}" class="nav-link">Menú Tutor</a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'crear_tutoriaIndividual' %}" class="nav-link">Crear Tutoría Individual</a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'crear_tutoriaGrupal' %}">Crear Tutoría Grupal</a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'zoom_meetings' %}">Ver Reuniones</a>
-            </li>
-
-            {% elif rol == 'Tutorado' %}
-            <li class="nav-item">
-                <a href="{% url 'menu' %}" class="nav-link">Soy un Tutorado</a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'tutorias_grupales_disponibles' %}" class="nav-link">Inscribirse a Tutoría Grupal</a>
-            </li>
+            {% if logged_in %}
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar Sesión</a>
+                </li>
+            </ul>
             {% endif %}
 
-            {% endif %}
-        </ul>
-
-        <!-- <button id="dark-mode-toggle">Modo Oscuro</button> -->
+        </div>
     </nav>
+
+
+    <!-- <button id="dark-mode-toggle">Modo Oscuro</button> -->
 
     <div class="container">
         {% block content %}
@@ -310,17 +371,47 @@
         {% endblock %}
     </div>
 
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script> -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
 
     <!-- JS de Bootstrap (jQuery y Popper.js son requeridos) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script> -->
+
+    <!-- Enlace al archivo JavaScript de jQuery (requisito para Bootstrap) -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script> -->
+
+    <!-- Enlace al archivo JavaScript de Popper.js (requisito para Bootstrap) -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script> -->
+
+    <!-- Enlace al archivo JavaScript de Bootstrap -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script> -->
 
 
-    <script>
+    <!-- <script>
         // // Obtener referencia al botón de cambio de modo
         // const darkModeToggle = document.getElementById("dark-mode-toggle");
 
@@ -370,7 +461,7 @@
         // // Agregar un event listener al botón para manejar clics
         // darkModeToggle.addEventListener("click", toggleDarkMode);
 
-    </script>
+    </script> -->
 
 
 </body>
