@@ -84,6 +84,69 @@ def detalle_bitacora_grupal(request, tutoria_id):
     return render(request, 'detalleBitacoraGrupal.html', context)
 
 
+def anuncios_grupales_tutor(request, tutoria_id):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/crearTutoriaIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    tutoria_grupal = get_object_or_404(
+        TutoriaGrupal, idTutoriaGrupal=tutoria_id)
+    anuncios_grupales = AnunciosGrupalesTutor.objects.filter(
+        idTutoriaGrupal=tutoria_grupal)
+
+    context = {
+        'tutoria_grupal': tutoria_grupal,
+        'anuncios_grupales': anuncios_grupales,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+
+    return render(request, 'anunciosGrupalesTutor.html', context)
+
+
+def notas_tutorado_tutoria_individual(request, tutoria_id):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/crearTutoriaIndividual/
+    if not logged_in or rol != 'Tutorado':
+        return redirect('inicio')
+
+    tutoria_individual = get_object_or_404(
+        TutoriaIndividual, idTutoriaIndividual=tutoria_id)
+    notas_tutorado = NotasIndividualesTutorado.objects.filter(
+        idTutoriaIndividual=tutoria_individual)
+
+    # Manejo del formulario para crear nuevas notas
+    if request.method == 'POST':
+        form = NotasIndividualesTutoradoForm(request.POST)
+        if form.is_valid():
+            nueva_nota = form.save(commit=False)
+            nueva_nota.idTutoriaIndividual = tutoria_individual
+            nueva_nota.save()
+            # Puedes agregar un mensaje de éxito o redirigir a otra página si es necesario
+
+    else:
+        form = NotasIndividualesTutoradoForm()
+
+    context = {
+        'notas_tutorado': notas_tutorado,
+        'tutoria_individual': tutoria_individual,
+        'form': form,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+
+    return render(request, 'notasIndividualesTutorado.html', context)
+
+
 def hello_world(request):
     return HttpResponse("Hola mundo")
 

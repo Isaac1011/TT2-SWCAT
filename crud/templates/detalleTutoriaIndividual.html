@@ -61,7 +61,7 @@
     <p>Aún no hay enlace para que te puedas unir</p>
     {% endif %}
 
-    <h3>Notas del Tutorado:</h3>
+    <!-- <h3>Notas del Tutorado:</h3>
     <ul class="list-group">
         {% for nota in notas_tutorado %}
         <li class="list-group-item">{{ nota.nota }}</li>
@@ -72,6 +72,11 @@
     <a href="{% url 'crear_nota_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
         class="btn btn-primary custom-button-small">
         Crear Nota
+    </a> -->
+    <!-- Enlace para ver las notas del tutorado -->
+    <a href="{% url 'notas_tutorado_tutoria_individual' tutoria_id=tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-link">
+        Ver Notas del Tutorado
     </a>
     {% endif %}
 

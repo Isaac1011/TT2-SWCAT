@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Anuncios Grupales del Tutor | SWCAT{% endblock %}
+
+{% block content %}
+
+<main>
+    <h1>Anuncios Grupales del Tutor:</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Tutoría</th>
+                <th>Tutor</th>
+                <th>Nota</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for anuncio in anuncios_grupales %}
+            <tr>
+                <td>{{anuncio.idTutoriaGrupal.nombreGrupo}}</td>
+                <td>{{anuncio.idTutoriaGrupal.idTutor.nombre}} {{anuncio.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                    {{anuncio.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
+                <td>{{anuncio.nota}}</td>
+                <td>{{anuncio.fecha}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Para crear un anuncio al grupo -->
+    <a href="{% url 'anuncio_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Crear Anuncio Grupal</a>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

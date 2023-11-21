@@ -96,6 +96,14 @@ class TutoriaIndividualForm(forms.ModelForm):
     class Meta:
         model = TutoriaIndividual
         fields = ['idTutorado', 'nombreTutoriaIndividual']
+        labels = {
+            'idTutorado': 'Tutorado *',
+            'nombreTutoriaIndividual': 'Nombre de Tutoría Individual *'
+        }
+        widgets = {
+            'idTutorado': forms.Select(attrs={'class': 'form-control'}),
+            'nombreTutoriaIndividual': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 
 class BitacoraIndividualTutorForm(forms.ModelForm):
@@ -103,7 +111,7 @@ class BitacoraIndividualTutorForm(forms.ModelForm):
         model = BitacoraIndividualTutor
         fields = ['nota']
         labels = {
-            'nota': 'Bitácora: *'
+            'nota': 'Bitácora *'
         }
         widgets = {
             'nota': forms.Textarea(attrs={'class': 'form-control dark-mode-input', 'rows': 7}),
@@ -114,12 +122,26 @@ class NotasIndividualesTutoradoForm(forms.ModelForm):
     class Meta:
         model = NotasIndividualesTutorado
         fields = ['nota']
+        labels = {
+            'nota': 'Nota *',
+        }
+        widgets = {
+            'nota': forms.Textarea(attrs={'class': 'form-control', 'rows': 7}),
+        }
 
 
 class TutoriaGrupalForm(forms.ModelForm):
     class Meta:
         model = TutoriaGrupal
         fields = ['nombreGrupo', 'salon']
+        labels = {
+            'nombreGrupo': 'Nombre del Grupo *',
+            'salon': 'Salón *',
+        }
+        widgets = {
+            'nombreGrupo': forms.TextInput(attrs={'class': 'form-control'}),
+            'salon': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 
 class BitacoraGrupalTutorForm(forms.ModelForm):
@@ -127,7 +149,7 @@ class BitacoraGrupalTutorForm(forms.ModelForm):
         model = BitacoraGrupalTutor
         fields = ['nota']
         labels = {
-            'nota': 'Bitácora: *'
+            'nota': 'Bitácora *'
         }
         widgets = {
             'nota': forms.Textarea(attrs={'class': 'form-control dark-mode-input', 'rows': 7}),
@@ -138,3 +160,9 @@ class AnunciosGrupalesTutorForm(forms.ModelForm):
     class Meta:
         model = AnunciosGrupalesTutor
         fields = ['nota']
+        labels = {
+            'nota': 'Nota *'
+        }
+        widgets = {
+            'nota': forms.Textarea(attrs={'class': 'form-control', 'rows': 7}),
+        }

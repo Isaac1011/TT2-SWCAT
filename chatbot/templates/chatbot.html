@@ -1,64 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+    <!-- Agrega la referencia a Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </link>
 
-        #chat {
-            width: 80%;
-            margin: 20px auto;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+<body class="container">
+    <h1 class="text-center text-primary mt-5" style="color: #0047B6;">Chatbot</h1>
 
-        p {
-            margin: 10px 0;
-        }
-
-        form {
-            width: 80%;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        input[type="text"] {
-            width: 70%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-
-<body>
-    <h1>Chatbot</h1>
-
-    <div id="chat">
+    <div id="chat" class="bg-light p-3 my-4 rounded">
         {% if bot_response %}
         <p><strong>Tú:</strong> {{ user_input }}</p>
         <p><strong>ChatBot:</strong> {{ bot_response }}</p>
         {% endif %}
     </div>
 
-    <form method="post" action="{% url 'chatbot' %}">
+    <form method="post" action="{% url 'chatbot' %}" class="mx-auto mb-4">
         {% csrf_token %}
-        <input type="text" name="user_input" placeholder="Escribe tu mensaje..." required>
-        <button type="submit">Enviar</button>
+        <div class="input-group">
+            <input type="text" name="user_input" class="form-control" placeholder="Escribe tu mensaje..." required>
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary" style="background-color: #0047B6;">Enviar</button>
+            </div>
+        </div>
     </form>
+
+    <!-- Agrega la referencia a Bootstrap JS y Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
+</html>

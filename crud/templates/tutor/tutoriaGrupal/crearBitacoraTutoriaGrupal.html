@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
+{% block title %}Crear Bitácora Grupal | SWCAT{% endblock %}
+
 {% block content %}
 
 <main class="container mt-5">
-    <h1 class="text-center mb-4">Agregar Bitacora de Tutoría Grupal para {{tutoria_grupal.nombreGrupo}}</h1>
+    <h1 class="text-center mb-4">Crear Bitácora de Tutoría Grupal para {{tutoria_grupal.nombreGrupo}}</h1>
     {% if messages %}
     <div class="alert alert-danger">
         <ul class="messages list-unstyled">
@@ -18,7 +20,7 @@
         {% csrf_token %}
         {{form.as_p}}
         <div class="form-group mt-4">
-            <button type="submit" class="btn btn-primary btn-block custom-button">Agregar</button>
+            <button type="submit" class="btn btn-primary btn-block custom-button">Crear</button>
         </div>
     </form>
     <!-- Botón de Regresar -->
