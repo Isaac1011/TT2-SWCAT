@@ -49,18 +49,25 @@ urlpatterns = [
     path('menu/detalleTutoriaIndividual/crearNota/<int:tutoria_id>/',
          views.nota_tutorado_tutoriaIndividual, name='crear_nota_tutoriaIndividual'),
 
+
+
+
     path('menu/crearTutoriaGrupal', views.crear_tutoriaGrupal,
          name='crear_tutoriaGrupal'),
-    path('menu/tutoriaGrupal/<int:tutoria_id>',
+    path('menu/detalleTutoriaGrupal/<int:tutoria_id>',
          views.detalle_tutoriaGrupal, name='detalle_tutoriaGrupal'),
-    path('menu/tutoriasGrupales', views.tutorias_grupales_disponibles,
-         name='tutorias_grupales_disponibles'),
+    path('menu/detalleTutoriaGrupal/detalleBitacoraGrupal/<int:tutoria_id>/',
+         views.detalle_bitacora_grupal, name='detalle_bitacora_grupal'),
+
+    path('menu/detalleTutoriaGrupal/detalleBitacoraGrupal/crearBitacoraGrupal/<int:tutoria_id>/',
+         views.bitacora_tutor_tutoriaGrupal, name='bitacora_tutor_tutoriaGrupal'),
     path('menu/inscribirseTutoriaGrupal/<int:tutoria_id>',
          views.inscribirse_tutoria_grupal, name='inscribirse_tutoria_grupal'),
-    path('menu/tutoriaGrupal/crearBitacora/<int:tutoria_id>/',
-         views.bitacora_tutor_tutoriaGrupal, name='bitacora_tutor_tutoriaGrupal'),
+
     path('menu/tutoriaGrupal/crearAnuncio/<int:tutoria_id>/',
          views.anuncio_tutor_tutoriaGrupal, name='anuncio_tutor_tutoriaGrupal'),
+    path('menu/tutoriasGrupales', views.tutorias_grupales_disponibles,
+         name='tutorias_grupales_disponibles'),
 
     path('verReuniones/', viewsZoom.zoom_meetings,
          name='zoom_meetings'),

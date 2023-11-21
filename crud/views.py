@@ -58,6 +58,32 @@ def obtener_notas_tutor(tutoria_individual):
     return notas_tutor
 
 
+def detalle_bitacora_grupal(request, tutoria_id):
+
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/crearTutoriaIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    tutoria_grupal = get_object_or_404(
+        TutoriaGrupal, idTutoriaGrupal=tutoria_id)
+    bitacoras_tutor = BitacoraGrupalTutor.objects.filter(
+        idTutoriaGrupal=tutoria_grupal)
+
+    context = {
+        'tutoria_grupal': tutoria_grupal,
+        'bitacoras_tutor': bitacoras_tutor,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+
+    return render(request, 'detalleBitacoraGrupal.html', context)
+
+
 def hello_world(request):
     return HttpResponse("Hola mundo")
 

@@ -43,19 +43,11 @@
 
     {% endif %}
 
+    <a href="{% url 'detalle_bitacora_grupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Ver Bitácora Grupal</a>
 
 
-    <h3>Bitacora del Tutor:</h3>
-    <ul class="list-group">
-        {% for bitacora in bitacoras_grupales %}
-        <li class="list-group-item">{{ bitacora.nota }}</li>
-        <p class="list-group-item">{{bitacora.fecha}}</p>
-        {% endfor %}
-    </ul>
-    <!--Para crear una bitacora-->
-    <a href="{% url 'bitacora_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
-        class="btn btn-primary mb-2 custom-link">Crear Bitácora
-        Grupal</a>
+
 
 
     <h3>Anuncios Grupales del Tutor:</h3>

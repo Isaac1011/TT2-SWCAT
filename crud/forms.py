@@ -126,6 +126,12 @@ class BitacoraGrupalTutorForm(forms.ModelForm):
     class Meta:
         model = BitacoraGrupalTutor
         fields = ['nota']
+        labels = {
+            'nota': 'Bitácora: *'
+        }
+        widgets = {
+            'nota': forms.Textarea(attrs={'class': 'form-control dark-mode-input', 'rows': 7}),
+        }
 
 
 class AnunciosGrupalesTutorForm(forms.ModelForm):
