@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
+import secrets
 
 
 # Create your models here.
@@ -92,11 +93,11 @@ class NotasIndividualesTutorado(models.Model):
 
 class TutoriaGrupal(models.Model):
     idTutoriaGrupal = models.AutoField(primary_key=True)
-    # Relación con el modelo Tutor
     idTutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     nombreGrupo = models.CharField(max_length=45, default=None)
     cupoDisponible = models.IntegerField(default=45)
     salon = models.CharField(max_length=20, default=None)
+    passwordGrupo = models.CharField(max_length=20, null=True, blank=True)
 
 
 class ListaTutoriaGrupal(models.Model):

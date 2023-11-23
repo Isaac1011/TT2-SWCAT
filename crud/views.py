@@ -8,6 +8,10 @@ from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor,
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.http import require_http_methods
+import secrets
+import string
+from django.http import JsonResponse
+
 
 # Create your views here.
 
@@ -485,6 +489,12 @@ def nota_tutorado_tutoriaIndividual(request, tutoria_id):
     return render(request, 'tutorado/tutoriaIndividual/crearNotaTutoriaIndividual.html', context)
 
 
+def generar_contrasena_aleatoria(longitud):
+    caracteres = string.ascii_letters + string.digits + string.punctuation
+    contrasena = ''.join(secrets.choice(caracteres) for _ in range(longitud))
+    return contrasena
+
+
 def crear_tutoriaGrupal(request):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
@@ -501,6 +511,11 @@ def crear_tutoriaGrupal(request):
             tutor = Tutor.objects.get(
                 numeroEmpleado=request.session['numero_empleado'])
             tutoria_grupal = form.save(commit=False)
+
+            # Genera una contraseña aleatoria de 20 caracteres
+            password_grupo = generar_contrasena_aleatoria(20)
+            tutoria_grupal.passwordGrupo = password_grupo
+
             tutoria_grupal.idTutor = tutor
             tutoria_grupal.save()
             return redirect('menu')
@@ -553,6 +568,43 @@ def detalle_tutoriaGrupal(request, tutoria_id):
         return render(request, 'detalleTutoriaGrupal.html', context)
 
 
+def buscar_tutoria_grupal(request):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/crearTutoriaIndividual/
+    if not logged_in or rol != 'Tutorado':
+        return redirect('inicio')
+
+    tutorias_grupales = []  # Inicializa tutorias_grupales como una lista vacía
+
+    if 'id_tutoria' in request.GET:
+        id_tutoria = request.GET['id_tutoria']
+        try:
+            # Intenta convertir el ID a un número
+            id_tutoria = int(id_tutoria)
+            # Realiza la búsqueda en la base de datos por ID
+            tutorias_grupales = TutoriaGrupal.objects.filter(
+                idTutoriaGrupal=id_tutoria)
+        except ValueError:
+            # Captura la excepción si no se puede convertir a un número
+            messages.error(
+                request, 'Ingrese un número válido para la búsqueda por ID.')
+
+    else:
+        # Si no se proporciona un ID, muestra todas las tutorías disponibles
+        tutorias_grupales = TutoriaGrupal.objects.all()
+
+    # Renderizar el template de detalle_tutoria.html con la instancia de tutoría individual
+    context = {
+        'tutorias_grupales_disponibles': tutorias_grupales,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'tutorado/tutoriaGrupal/inscribirseTutoriaGrupal.html', context)
+
+
 def tutorias_grupales_disponibles(request):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
@@ -592,48 +644,45 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
     if tutoria_grupal.cupoDisponible <= 0:
         # Manejar el caso en que no haya cupo disponible
         messages.error(request, 'Tutoría Grupal llena')
-
     else:
-        # Crear una nueva instancia de ListaTutoriaGrupal para la inscripción
-        tutorado_id = get_object_or_404(
-            Tutorado, boletaTutorado=request.session['boleta_tutorado'])
-
-        # contra = tutorado_id.password
-        # print(contra)
-
-        # Verifica si el Tutorado tiene menos de 3 tutores asignados
-        if tutorado_id.numTutoresAsignados >= 3:
-            # Muestra un mensaje de error si el Tutorado ya tiene 3 tutores asignados
-            messages.error(
-                request, 'El Tutorado ya está inscrito en 3 tutorías.')
-
-        else:
-            # Verificar si el tutor ya está inscrito en la tutoría grupal
-            tutor_esta_inscrito = ListaTutoriaGrupal.objects.filter(
-                idTutoriaGrupal=tutoria_grupal,
-                idTutorado=tutorado_id
-            ).exists()
-
-            if tutor_esta_inscrito:
-                messages.error(
-                    request, 'El Tutor ya está inscrito en esta Tutoría Grupal.')
-
+        if request.method == 'POST':
+            contrasena_grupo = request.POST.get('contrasena_grupo', '')
+            # Verificar si la contraseña ingresada es correcta
+            if contrasena_grupo == tutoria_grupal.passwordGrupo:
+                # Crear una nueva instancia de ListaTutoriaGrupal para la inscripción
+                tutorado_id = get_object_or_404(
+                    Tutorado, boletaTutorado=request.session['boleta_tutorado'])
+                # Verifica si el Tutorado tiene menos de 3 tutores asignados
+                if tutorado_id.numTutoresAsignados >= 3:
+                    # Muestra un mensaje de error si el Tutorado ya tiene 3 tutores asignados
+                    messages.error(
+                        request, 'El Tutorado ya está inscrito en 3 tutorías.')
+                else:
+                    # Verificar si el tutor ya está inscrito en la tutoría grupal
+                    tutor_esta_inscrito = ListaTutoriaGrupal.objects.filter(
+                        idTutoriaGrupal=tutoria_grupal,
+                        idTutorado=tutorado_id
+                    ).exists()
+                    if tutor_esta_inscrito:
+                        messages.error(
+                            request, 'El Tutor ya está inscrito en esta Tutoría Grupal.')
+                    else:
+                        nueva_inscripcion = ListaTutoriaGrupal.objects.create(
+                            idTutoriaGrupal=tutoria_grupal,
+                            idTutorado=tutorado_id
+                        )
+                        # Reducir el cupo disponible en la tutoría grupal
+                        tutoria_grupal.cupoDisponible -= 1
+                        tutoria_grupal.save()
+                        # Actualizar el campo numTutoresAsignados incrementando en una unidad
+                        num = tutorado_id.numTutoresAsignados
+                        Tutorado.objects.filter(boletaTutorado=request.session['boleta_tutorado']).update(
+                            numTutoresAsignados=num + 1
+                        )
+                        return redirect('menu')
             else:
-                nueva_inscripcion = ListaTutoriaGrupal.objects.create(
-                    idTutoriaGrupal=tutoria_grupal,
-                    idTutorado=tutorado_id
-                )
-                # Reducir el cupo disponible en la tutoría grupal
-                tutoria_grupal.cupoDisponible -= 1
-                tutoria_grupal.save()
-
-                num = tutorado_id.numTutoresAsignados
-                #  Actualizar el campo numTutoresAsignados incrementadndo en una unidad
-                Tutorado.objects.filter(boletaTutorado=request.session['boleta_tutorado']).update(
-                    numTutoresAsignados=num + 1
-                )
-
-                return redirect('menu')
+                # Muestra un mensaje de error si la contraseña ingresada es incorrecta
+                messages.error(request, 'Contraseña incorrecta.')
 
     # Obtener todas las instancias de TutoriaGrupal que tengan cupo disponible
     tutorias_grupales_disponibles = TutoriaGrupal.objects.filter(

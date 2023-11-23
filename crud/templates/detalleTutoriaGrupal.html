@@ -11,6 +11,7 @@
     <p>Tutor: {{tutoria_grupal.idTutor.nombre}}</p>
     <p>Salón: {{ tutoria_grupal.salon }}</p>
     <p>ID: {{tutoria_grupal.idTutoriaGrupal}}</p>
+
     <!-- Otros detalles de la tutoría individual -->
 
     <h2>Tutorados inscritos:</h2>
@@ -23,6 +24,7 @@
 
     <!-- Mostrar las bitácoras del tutor -->
     {% if rol == 'Tutor' %}
+    <p> <strong>Contraseña del Grupo:</strong> {{ tutoria_grupal.passwordGrupo }}</p>
 
     <h3>Reunión '{{ videoconferencia_grupal.first.topic }}':</h3>
 

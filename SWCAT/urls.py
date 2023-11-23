@@ -95,5 +95,9 @@ urlpatterns = [
 
     path('chatbot/', viewsChatbot.chatbot, name='chatbot'),
 
+    path('buscar_tutoria_grupal/', views.buscar_tutoria_grupal,
+         name='buscar_tutoria_grupal'),
+
+
 
 ]
