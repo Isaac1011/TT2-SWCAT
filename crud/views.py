@@ -790,3 +790,18 @@ def anuncio_tutor_tutoriaGrupal(request, tutoria_id):
         'rol': rol
     }
     return render(request, 'tutor/tutoriaGrupal/crearAnucionTutoriaGrupal.html', context)
+
+
+def visor_imagenes(request):
+
+    # Obtiene el valor de 'logged_in' de la sesión, si no existe, se asigna False por defecto
+    logged_in = request.session.get('logged_in', False)
+    # Obtiene el valor de 'rol' de la sesión
+    rol = request.session.get('rol')
+
+    # Esto es para saber si está logeada, si es así, se muestra en pantalla
+    context = {
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'visor_imagenes.html', context)

@@ -1,0 +1,60 @@
+<!-- visor_imagenes.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<section id="imageViewer" style="max-width: 100%; margin: 0 auto; position: relative;">
+    <img id="currentImage" src="{% static 'imagen1.png' %}" alt="Material Didáctico"
+        style="width: 100%; height: auto; max-height: 600px;">
+</section>
+
+<button id="prevBtn" class="btn btn-secondary btn-lg"
+    style="position: absolute; bottom: 50%; left: 10px; transform: translateY(-50%);">Anterior</button>
+<button id="nextBtn" class="btn btn-secondary btn-lg"
+    style="position: absolute; bottom: 50%; right: 10px; transform: translateY(-50%);">Siguiente</button>
+
+<!-- Botón de Regresar -->
+<button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+    Regresar
+</button>
+
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        var images = [
+            "{% static 'imagen1.png' %}",
+            "{% static 'imagen2.png' %}",
+            "{% static 'imagen3.png' %}",
+            "{% static 'imagen4.png' %}",
+            "{% static 'imagen5.png' %}",
+        ];
+        var currentIndex = 0;
+
+        function showImage(index) {
+            $('#currentImage').attr('src', images[index]);
+        }
+
+        $('#prevBtn').click(function () {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        });
+
+        $('#nextBtn').click(function () {
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        });
+    });
+</script>
+
+{% endblock %}

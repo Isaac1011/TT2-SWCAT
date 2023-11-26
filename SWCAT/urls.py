@@ -93,4 +93,7 @@ urlpatterns = [
     # Chatbot
     path('menu/chatbot/', viewsChatbot.chatbot, name='chatbot'),
 
+    # Materiales didácticos
+    path('visor-imagenes/', views.visor_imagenes, name='visor_imagenes'),
+
 ]
