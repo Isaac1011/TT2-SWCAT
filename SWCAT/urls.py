@@ -25,19 +25,24 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.inicio, name='inicio'),
 
+    # Menú
     path('menu/', views.menu, name='menu'),
 
+    # Registro
     path('registroTutor/', views.registro_tutor, name='registro_tutor'),
     path('registroTutorado/', views.registro_tutorado, name='registro_tutorado'),
 
+    # Inicio sesión
     path('inicioSesionTutor/', views.inicio_sesion_tutor,
          name='inicio_sesion_tutor'),
     path('inicioSesionTutorado/', views.inicio_sesion_tutorado,
          name='inicio_sesion_tutorado'),
 
+    # Cerrar sesión
     path('cerrarSesion/', views.cerrar_sesion,
          name='cerrar_sesion'),
 
+    # Tutoría Individual
     path('menu/crearTutoriaIndividual/', views.crear_tutoriaIndividual,
          name='crear_tutoriaIndividual'),
     path('menu/detalleTutoriaIndividual/<int:tutoria_id>/',
@@ -51,9 +56,13 @@ urlpatterns = [
     path('menu/detalleTutoriaIndividual/notasTutorado/crearNota/<int:tutoria_id>/',
          views.nota_tutorado_tutoriaIndividual, name='crear_nota_tutoriaIndividual'),
 
-
-
-
+    # Tutoría Grupal
+    path('menu/tutoriasGrupales', views.tutorias_grupales_disponibles,
+         name='tutorias_grupales_disponibles'),
+    path('menu/inscribirseTutoriaGrupal/<int:tutoria_id>',
+         views.inscribirse_tutoria_grupal, name='inscribirse_tutoria_grupal'),
+    path('buscar_tutoria_grupal/', views.buscar_tutoria_grupal,
+         name='buscar_tutoria_grupal'),
     path('menu/crearTutoriaGrupal', views.crear_tutoriaGrupal,
          name='crear_tutoriaGrupal'),
     path('menu/detalleTutoriaGrupal/<int:tutoria_id>',
@@ -67,13 +76,7 @@ urlpatterns = [
     path('menu/detalleTutoriaGrupal/anunciosGrupales/crearAnuncio/<int:tutoria_id>/',
          views.anuncio_tutor_tutoriaGrupal, name='anuncio_tutor_tutoriaGrupal'),
 
-    path('menu/inscribirseTutoriaGrupal/<int:tutoria_id>',
-         views.inscribirse_tutoria_grupal, name='inscribirse_tutoria_grupal'),
-
-
-    path('menu/tutoriasGrupales', views.tutorias_grupales_disponibles,
-         name='tutorias_grupales_disponibles'),
-
+    # Zoom
     path('verReuniones/', viewsZoom.zoom_meetings,
          name='zoom_meetings'),
     path('crearReunionIndividual/<int:tutoria_id>/',
@@ -84,20 +87,10 @@ urlpatterns = [
          viewsZoom.eliminar_reunion_individual, name='eliminar_reunion_individual'),
     path('eliminarReunionGrupal/<int:reunion_id>/',
          viewsZoom.eliminar_reunion_grupal, name='eliminar_reunion_grupal'),
-    #     # Vista para mostrar el formulario de modificación de reunión
-    #     path('modificar/<int:reunion_id>/',
-    #          viewsZoom.modificar_reunion, name='modificar_reunion'),
-    #     # Vista para guardar la modificación de la reunión
-    #     path('guardar-modificacion/<int:reunion_id>/',
-    #          viewsZoom.guardar_modificacion_reunion, name='guardar_modificacion_reunion'),
     path('crear_reunion_instantanea/', viewsZoom.crear_reunion_instantanea,
          name='crear_reunion_instantanea'),
 
-    path('chatbot/', viewsChatbot.chatbot, name='chatbot'),
-
-    path('buscar_tutoria_grupal/', views.buscar_tutoria_grupal,
-         name='buscar_tutoria_grupal'),
-
-
+    # Chatbot
+    path('menu/chatbot/', viewsChatbot.chatbot, name='chatbot'),
 
 ]
