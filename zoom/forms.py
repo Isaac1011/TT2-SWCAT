@@ -1,5 +1,6 @@
 from django import forms
 from crud.models import VideoconferenciasIndividuales, VideoconferenciasGrupales
+from django.forms import DateTimeInput
 
 
 # Creo un formulario para que se puedan crear Reuniones
@@ -13,8 +14,13 @@ class VideoconferenciasIndividualesForm(forms.ModelForm):
     class Meta:
         model = VideoconferenciasIndividuales
         fields = ['topic', 'start_time']
+        labels = {
+            'topic': 'Nombre de la reunión *',
+            'start_time': 'Hora y fecha *'
+        }
         widgets = {
-            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'topic': forms.TextInput(attrs={'class': 'form-control'}),
+            'start_time': DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
         }
 
 

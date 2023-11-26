@@ -1,22 +1,19 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot</title>
-    <!-- Agrega la referencia a Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    </link>
+{% block title %}Crear Reunión Zoom | SWCAT{% endblock %}
 
-<body class="container">
-    <h1 class="text-center text-primary mt-5" style="color: #0047B6;">Chatbot</h1>
+{% block content %}
 
-    <div id="chat" class="bg-light p-3 my-4 rounded">
-        {% if bot_response %}
-        <p><strong>Tú:</strong> {{ user_input }}</p>
-        <p><strong>ChatBot:</strong> {{ bot_response }}</p>
-        {% endif %}
+<main>
+    <h1 class="text-center text-primary mt-5 chatbot-title">Chatbot</h1>
+
+    <div id="chat-container" class="bg-light p-3 my-4 rounded">
+        <div id="chat" style="max-height: 300px; overflow-y: auto;">
+            {% for conversation in conversations %}
+            <p><strong>Tú:</strong> {{ conversation.user_input }}</p>
+            <p><strong>Chatbot:</strong> {{ conversation.bot_response }}</p>
+            {% endfor %}
+        </div>
     </div>
 
     <form method="post" action="{% url 'chatbot' %}" class="mx-auto mb-4">
@@ -28,11 +25,17 @@
             </div>
         </div>
     </form>
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+</main>
 
-    <!-- Agrega la referencia a Bootstrap JS y Popper.js -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
 
-</html>
+{% endblock %}

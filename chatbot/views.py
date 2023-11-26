@@ -1,8 +1,7 @@
 # chatbot/views.py
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import openai
 import spacy
-
 
 # Cargar el modelo en español de spaCy
 nlp = spacy.load("es_core_news_sm")
@@ -28,6 +27,7 @@ faq = {
 
 
 def get_most_similar_question(user_question, faq):
+
     max_similarity = 0.0  # Índice de similitud, va de 0 a 1
     best_match = None  # Va a guardar la pregunta más similar
 
@@ -49,6 +49,11 @@ def get_most_similar_question(user_question, faq):
 
 def chatbot(request):
 
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
     if request.method == 'POST':
         user_input = request.POST.get('user_input')
         bot_response = None
@@ -68,9 +73,34 @@ def chatbot(request):
                 max_tokens=3900
             )
             bot_response = response.choices[0].text
+
+        # Obtener o inicializar la lista de conversaciones desde la sesión
+        conversations = request.session.get('conversations', [])
+
+        # Agregar la pregunta y respuesta actual a la lista de conversaciones
+        conversations.append(
+            {'user_input': user_input, 'bot_response': bot_response})
+
+        # Actualizar la sesión con la nueva lista de conversaciones
+        request.session['conversations'] = conversations
     else:
         user_input = None
         bot_response = None
 
+    # Obtener la lista de conversaciones desde la sesión
+    conversations = request.session.get('conversations', [])
+
+    # Obtener el estado de inicio de sesión
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Verificar si el usuario está cerrando sesión
+    if not logged_in:
+        # Limpiar la lista de conversaciones si el usuario cierra sesión
+        request.session['conversations'] = []
+
     return render(request, 'chatbot.html', {'user_input': user_input,
-                                            'bot_response': bot_response})
+                                            'bot_response': bot_response,
+                                            'logged_in': logged_in,
+                                            'rol': rol,
+                                            'conversations': conversations})
