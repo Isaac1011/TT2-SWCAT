@@ -36,6 +36,13 @@
         Ver Bitácoras
     </a>
 
+    <!-- Agregado: Botón para eliminar tutoría individual -->
+    <form method="POST" action="{% url 'eliminar_tutoria_individual' tutoria_individual.idTutoriaIndividual %}"
+        style="position: fixed; bottom: 20px; right: 20px;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar Tutoría Individual</button>
+    </form>
+
     {% elif rol == 'Tutorado' %}
     {% if videoconferencia_individual %}
     <a href="{{ videoconferencia_individual.first.join_url }}" target="_blank" class="btn btn-success mb-2 boton-exito">

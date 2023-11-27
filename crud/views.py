@@ -11,11 +11,36 @@ from django.views.decorators.http import require_http_methods
 import secrets
 import string
 from django.http import JsonResponse
+from django.db import transaction
+from django.db import models
+from django.db.models import F
 
 
 # Create your views here.
 
 # Esta función utiliza la decoración @require_http_methods(['GET']) para asegurarse de que solo responde a solicitudes GET.
+
+
+def eliminar_bitacora_tutoria_individual(request, id_bitacora):
+    # Verifica si el usuario está logeado y es un tutor
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Obtén la bitácora o devuelve un error 404 si no existe
+    bitacora = get_object_or_404(
+        BitacoraIndividualTutor, idBitacoraIndividual=id_bitacora)
+
+    # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la bitácora.
+
+    # Elimina la bitácora
+    bitacora.delete()
+
+    # Redirige a la página de detalle de bitácoras individuales o a donde lo necesites
+    return redirect('detalle_bitacora_individual', id_tutoria=bitacora.idTutoriaIndividual.idTutoriaIndividual)
 
 
 @require_http_methods(['GET'])
@@ -67,6 +92,28 @@ def obtener_notas_tutor(tutoria_individual):
     return notas_tutor
 
 
+def eliminar_bitacora_grupal_tutoria(request, id_bitacora):
+    # Verifica si el usuario está logeado y es un tutor
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Obtén la bitácora grupal o devuelve un error 404 si no existe
+    bitacora_grupal = get_object_or_404(
+        BitacoraGrupalTutor, idBitacoraGrupalTutor=id_bitacora)
+
+    # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la bitácora grupal.
+
+    # Elimina la bitácora grupal
+    bitacora_grupal.delete()
+
+    # Redirige a la página de detalle de bitácoras grupales o a donde lo necesites
+    return redirect('detalle_bitacora_grupal', tutoria_id=bitacora_grupal.idTutoriaGrupal.idTutoriaGrupal)
+
+
 def detalle_bitacora_grupal(request, tutoria_id):
 
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
@@ -93,6 +140,28 @@ def detalle_bitacora_grupal(request, tutoria_id):
     return render(request, 'detalleBitacoraGrupal.html', context)
 
 
+def eliminar_anuncio_grupal_tutoria(request, id_anuncio):
+    # Verifica si el usuario está logeado y es un tutor
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Obtén el anuncio grupal o devuelve un error 404 si no existe
+    anuncio_grupal = get_object_or_404(
+        AnunciosGrupalesTutor, idAnunciosGrupalesTutor=id_anuncio)
+
+    # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar el anuncio grupal.
+
+    # Elimina el anuncio grupal
+    anuncio_grupal.delete()
+
+    # Redirige a la página de anuncios grupales o a donde lo necesites
+    return redirect('anuncios_grupales_tutor', tutoria_id=anuncio_grupal.idTutoriaGrupal.idTutoriaGrupal)
+
+
 def anuncios_grupales_tutor(request, tutoria_id):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
@@ -116,6 +185,28 @@ def anuncios_grupales_tutor(request, tutoria_id):
     }
 
     return render(request, 'anunciosGrupalesTutor.html', context)
+
+
+def eliminar_nota_tutoria_individual(request, id_nota):
+    # Verifica si el usuario está logeado y es un tutorado
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutorado, redirige al inicio.
+    if not logged_in or rol != 'Tutorado':
+        return redirect('inicio')
+
+    # Obtén la nota individual o devuelve un error 404 si no existe
+    nota_individual = get_object_or_404(
+        NotasIndividualesTutorado, idNotasIndividualesTutorado=id_nota)
+
+    # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la nota individual.
+
+    # Elimina la nota individual
+    nota_individual.delete()
+
+    # Redirige a la página de notas individuales o a donde lo necesites
+    return redirect('notas_tutorado_tutoria_individual', tutoria_id=nota_individual.idTutoriaIndividual.idTutoriaIndividual)
 
 
 def notas_tutorado_tutoria_individual(request, tutoria_id):
@@ -327,6 +418,7 @@ def cerrar_sesion(request):
     return redirect('inicio')
 
 
+@transaction.atomic
 def crear_tutoriaIndividual(request):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
@@ -379,6 +471,29 @@ def crear_tutoriaIndividual(request):
     # El contexto es simplemente un conjunto de variables que se utilizan para mostrar información en la plantilla.
     context = {'form': form, 'logged_in': logged_in, 'rol': rol}
     return render(request, 'tutor/tutoriaIndividual/crearTutoriaIndividual.html', context)
+
+
+def eliminar_tutoria_individual(request, tutoria_id):
+    # Verifica si el usuario está logeado y es un tutor
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Obtiene la tutoría individual correspondiente o devuelve un error 404 si no existe
+    tutoria_individual = get_object_or_404(TutoriaIndividual, pk=tutoria_id)
+
+    # Actualiza el valor del campo numTutoresAsignados en la tabla Tutorado
+    Tutorado.objects.filter(pk=tutoria_individual.idTutorado.pk).update(
+        numTutoresAsignados=F('numTutoresAsignados') - 1)
+
+    # Elimina la tutoría individual
+    tutoria_individual.delete()
+
+    # Redirige a la página de inicio o cualquier otra página deseada
+    return redirect('menu')
 
 
 def detalle_tutoriaIndividual(request, tutoria_id):
@@ -607,6 +722,37 @@ def buscar_tutorados_tutoria_grupal(request, tutoria_id):
     return render(request, 'tutoradosTutoriaGrupal.html', context)
 
 
+def eliminar_tutorado_tutoria_grupal(request, tutorado_id):
+    # Verifica si el usuario está logeado y es un tutor
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Obtiene la relación ListaTutoriaGrupal correspondiente o devuelve un error 404 si no existe
+    relacion_tutorado_tutoria = get_object_or_404(
+        ListaTutoriaGrupal, idTutorado=tutorado_id)
+
+    # Obtiene la tutoría grupal correspondiente
+    tutoria_grupal = relacion_tutorado_tutoria.idTutoriaGrupal
+
+    # Actualiza el valor del campo cupoDisponible en la tabla TutoriaGrupal
+    TutoriaGrupal.objects.filter(pk=tutoria_grupal.pk).update(
+        cupoDisponible=F('cupoDisponible') + 1)
+
+    # Actualiza el valor del campo numTutoresAsignados en la tabla Tutorado
+    Tutorado.objects.filter(pk=tutorado_id).update(
+        numTutoresAsignados=F('numTutoresAsignados') - 1)
+
+    # Elimina la relación ListaTutoriaGrupal
+    relacion_tutorado_tutoria.delete()
+
+    # Redirige a la página de tutorados específicos para la tutoría grupal
+    return redirect('buscar_tutorados_tutoria_grupal', tutoria_id=tutoria_grupal.pk)
+
+
 def buscar_tutoria_grupal(request):
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
@@ -704,7 +850,7 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
                     ).exists()
                     if tutor_esta_inscrito:
                         messages.error(
-                            request, 'El Tutor ya está inscrito en esta Tutoría Grupal.')
+                            request, 'Ya estás inscrito en esta Tutoría Grupal.')
                     else:
                         nueva_inscripcion = ListaTutoriaGrupal.objects.create(
                             idTutoriaGrupal=tutoria_grupal,
@@ -733,6 +879,26 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
         'rol': rol
     }
     return render(request, 'tutorado/tutoriaGrupal/inscribirseTutoriaGrupal.html', context)
+
+
+def eliminar_tutoria_grupal(request, tutoria_id):
+    # Obtener la tutoría grupal
+    tutoria_grupal = get_object_or_404(
+        TutoriaGrupal, idTutoriaGrupal=tutoria_id)
+
+    # Actualizar numTutoresAsignados del tutorado individual
+    tutorados_inscritos = ListaTutoriaGrupal.objects.filter(
+        idTutoriaGrupal=tutoria_grupal)
+    for tutorado_inscrito in tutorados_inscritos:
+        Tutorado.objects.filter(pk=tutorado_inscrito.idTutorado.idTutorado).update(
+            numTutoresAsignados=F('numTutoresAsignados') - 1)
+
+    # Eliminar tutoría grupal y tutorados inscritos
+    tutorados_inscritos.delete()
+    tutoria_grupal.delete()
+
+    # Redirigir al menú u otra página de tu elección después de la eliminación
+    return redirect('menu')  # Ajusta la ruta según tu configuración
 
 
 def bitacora_tutor_tutoriaGrupal(request, tutoria_id):

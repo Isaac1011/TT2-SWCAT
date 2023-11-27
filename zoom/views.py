@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import VideoconferenciasIndividualesForm, VideoconferenciasGrupalesForm
 from crud.models import TutoriaIndividual, VideoconferenciasIndividuales, TutoriaGrupal, VideoconferenciasGrupales
+from django.utils import timezone
 
 import requests
 
@@ -76,7 +77,9 @@ def crear_reunion_individual(request, tutoria_id):
                 # Datos de autenticación y formulario
                 access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso previamente
                 topic = form.cleaned_data['topic']
-                start_time = form.cleaned_data['start_time']
+                # start_time = form.cleaned_data['start_time']
+                # Configurar la fecha y hora antes de guardar el formulario
+                start_time = timezone.now()
 
                 # Datos de la nueva reunión
                 # Configuración de la información de la reunión
@@ -199,7 +202,9 @@ def crear_reunion_grupal(request, tutoria_id):
                 # Datos de autenticación y formulario
                 access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso previamente
                 topic = form.cleaned_data['topic']
-                start_time = form.cleaned_data['start_time']
+                # start_time = form.cleaned_data['start_time']
+                # Configurar la fecha y hora antes de guardar el formulario
+                start_time = timezone.now()
 
                 # Datos de la nueva reunión
                 # Configuración de la información de la reunión
@@ -290,7 +295,7 @@ def crear_reunion_grupal(request, tutoria_id):
                            'rol': rol}
                 return render(request, 'error.html', context)
     else:
-        form = VideoconferenciasIndividualesForm()
+        form = VideoconferenciasGrupalesForm()
 
     context = {'form': form,
                'logged_in': logged_in,

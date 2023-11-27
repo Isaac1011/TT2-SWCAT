@@ -14,6 +14,7 @@
                 <th>Tutor</th>
                 <th>Nota</th>
                 <th>Fecha</th>
+                <th>Acciones</th> <!-- Nueva columna para acciones -->
             </tr>
         </thead>
         <tbody>
@@ -24,6 +25,12 @@
                     {{anuncio.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
                 <td>{{anuncio.nota}}</td>
                 <td>{{anuncio.fecha}}</td>
+                <td>
+                    <a href="{% url 'eliminar_anuncio_grupal_tutoria' anuncio.idAnunciosGrupalesTutor %}"
+                        class="btn btn-danger btn-sm">
+                        Eliminar
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

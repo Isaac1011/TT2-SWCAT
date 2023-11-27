@@ -15,6 +15,7 @@
                     <th scope="col">Tutoría</th>
                     <th scope="col">Nota</th>
                     <th scope="col">Fecha</th>
+                    <th scope="col">Acciones</th> <!-- Nueva columna para acciones -->
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +28,12 @@
                     <td>{{nota.idTutoriaIndividual.nombreTutoriaIndividual}}</td>
                     <td>{{nota.nota}}</td>
                     <td>{{nota.fecha}}</td>
+                    <td>
+                        <a href="{% url 'eliminar_nota_tutoria_individual' nota.idNotasIndividualesTutorado %}"
+                            class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

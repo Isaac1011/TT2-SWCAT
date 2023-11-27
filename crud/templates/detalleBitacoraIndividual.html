@@ -16,6 +16,7 @@
                 <th>Tutorado</th>
                 <th>Nota</th>
                 <th>Fecha</th>
+                <th>Acciones</th> <!-- Nueva columna para acciones -->
             </tr>
         </thead>
         <tbody>
@@ -32,6 +33,12 @@
                 </td>
                 <td>{{nota.nota}}</td>
                 <td>{{nota.fecha}}</td>
+                <td>
+                    <a href="{% url 'eliminar_bitacora_tutoria_individual' nota.idBitacoraIndividual %}"
+                        class="btn btn-danger btn-sm">
+                        Eliminar
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

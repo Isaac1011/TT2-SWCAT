@@ -97,7 +97,7 @@ class TutoriaIndividualForm(forms.ModelForm):
         model = TutoriaIndividual
         fields = ['idTutorado', 'nombreTutoriaIndividual']
         labels = {
-            'idTutorado': 'Tutorado *',
+            'idTutorado': 'Número de Boleta del Tutorado *',
             'nombreTutoriaIndividual': 'Nombre de Tutoría Individual *'
         }
         widgets = {

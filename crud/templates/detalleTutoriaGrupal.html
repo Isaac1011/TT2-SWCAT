@@ -13,6 +13,7 @@
     <p>Salón: <strong>{{tutoria_grupal.salon}}</strong></p>
 
     {% if rol == 'Tutor' %}
+    <p>ID Tutoría Grupal: <strong>{{tutoria_grupal.idTutoriaGrupal}}</strong></p>
     <p>Contraseña del Grupo: <strong>{{tutoria_grupal.passwordGrupo}}</strong></p>
 
     <a href="{% url 'buscar_tutorados_tutoria_grupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
@@ -46,6 +47,15 @@
     <a href="{% url 'anuncios_grupales_tutor' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
         class="btn btn-primary mb-2 custom-link">Ver Anuncios Grupales</a>
 
+    {% if rol == 'Tutor' %}
+    <!-- Botón Agregado: Eliminar Tutoría Grupal -->
+    <form method="POST" action="{% url 'eliminar_tutoria_grupal' tutoria_grupal.idTutoriaGrupal %}"
+        style="position: fixed; bottom: 20px; right: 20px;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar Tutoría Grupal</button>
+    </form>
+
+    {% endif %}
 
     <!-- Mostrar las notas del tutorado -->
     {% elif rol == 'Tutorado' %}

@@ -45,20 +45,38 @@ urlpatterns = [
     # Tutoría Individual
     path('menu/crearTutoriaIndividual/', views.crear_tutoriaIndividual,
          name='crear_tutoriaIndividual'),
+    path('menu/eliminarTutoriaIndividual/<int:tutoria_id>/',
+         views.eliminar_tutoria_individual, name='eliminar_tutoria_individual'),
     path('menu/detalleTutoriaIndividual/<int:tutoria_id>/',
          views.detalle_tutoriaIndividual, name='detalle_tutoriaIndividual'),
     path('menu/detalleTutoriaIndividual/detalleBitacoraIndividual/<int:id_tutoria>/',
          views.detalle_bitacora_individual, name='detalle_bitacora_individual'),
+    path('menu/detalleTutoriaIndividual/detalleBitacoraIndividual/eliminarBitacoraIndividual/<int:id_bitacora>/', views.eliminar_bitacora_tutoria_individual,
+         name='eliminar_bitacora_tutoria_individual'),
     path('menu/detalleTutoriaIndividual/detalleBitacoraIndividual/crearBitacoraIndividual/<int:tutoria_id>/',
          views.bitacora_tutor_tutoriaIndividual, name='crear_bitacora_tutoriaIndividual'),
     path('menu/detalleTutoriaIndividual/notasTutorado/<int:tutoria_id>/',
          views.notas_tutorado_tutoria_individual, name='notas_tutorado_tutoria_individual'),
     path('menu/detalleTutoriaIndividual/notasTutorado/crearNota/<int:tutoria_id>/',
          views.nota_tutorado_tutoriaIndividual, name='crear_nota_tutoriaIndividual'),
+    path('menu/detalleTutoriaIndividual/notasTutorado/eliminarNotaTutoriaIndividual/<int:id_nota>/',
+         views.eliminar_nota_tutoria_individual, name='eliminar_nota_tutoria_individual'),
+
+
+
+
+
+
+
+
 
     # Tutoría Grupal
     path('menu/tutoriasGrupales', views.tutorias_grupales_disponibles,
          name='tutorias_grupales_disponibles'),
+
+    path('menu/eliminarTutoriaGrupal/<int:tutoria_id>/',
+         views.eliminar_tutoria_grupal, name='eliminar_tutoria_grupal'),
+
     path('menu/inscribirseTutoriaGrupal/<int:tutoria_id>',
          views.inscribirse_tutoria_grupal, name='inscribirse_tutoria_grupal'),
     path('buscar_tutoria_grupal/', views.buscar_tutoria_grupal,
@@ -67,16 +85,26 @@ urlpatterns = [
          name='crear_tutoriaGrupal'),
     path('menu/detalleTutoriaGrupal/tutoradosInscritos/<int:tutoria_id>/',
          views.buscar_tutorados_tutoria_grupal, name='buscar_tutorados_tutoria_grupal'),
+    path('menu/detalleTutoriaGrupal/tutoradosInscritos/eliminarTutoradoTutoriaGrupal/<int:tutorado_id>/',
+         views.eliminar_tutorado_tutoria_grupal, name='eliminar_tutorado_tutoria_grupal'),
     path('menu/detalleTutoriaGrupal/<int:tutoria_id>',
          views.detalle_tutoriaGrupal, name='detalle_tutoriaGrupal'),
     path('menu/detalleTutoriaGrupal/detalleBitacoraGrupal/<int:tutoria_id>/',
          views.detalle_bitacora_grupal, name='detalle_bitacora_grupal'),
+    path('menu/detalleTutoriaGrupal/detalleBitacoraGrupal/eliminarBitacoraGrupal/<int:id_bitacora>/',
+         views.eliminar_bitacora_grupal_tutoria, name='eliminar_bitacora_grupal_tutoria'),
     path('menu/detalleTutoriaGrupal/detalleBitacoraGrupal/crearBitacoraGrupal/<int:tutoria_id>/',
          views.bitacora_tutor_tutoriaGrupal, name='bitacora_tutor_tutoriaGrupal'),
     path('menu/detalleTutoriaGrupal/anunciosGrupales/<int:tutoria_id>/',
          views.anuncios_grupales_tutor, name='anuncios_grupales_tutor'),
     path('menu/detalleTutoriaGrupal/anunciosGrupales/crearAnuncio/<int:tutoria_id>/',
          views.anuncio_tutor_tutoriaGrupal, name='anuncio_tutor_tutoriaGrupal'),
+    path('menu/detalleTutoriaGrupal/anunciosGrupales/eliminarAnuncioGrupal/<int:id_anuncio>/',
+         views.eliminar_anuncio_grupal_tutoria, name='eliminar_anuncio_grupal_tutoria'),
+
+
+
+
 
     # Zoom
     path('verReuniones/', viewsZoom.zoom_meetings,

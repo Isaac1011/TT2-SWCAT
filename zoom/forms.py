@@ -13,23 +13,28 @@ from django.forms import DateTimeInput
 class VideoconferenciasIndividualesForm(forms.ModelForm):
     class Meta:
         model = VideoconferenciasIndividuales
-        fields = ['topic', 'start_time']
+        fields = ['topic']  # Elimina 'start_time' de los campos
         labels = {
             'topic': 'Nombre de la reunión *',
-            'start_time': 'Hora y fecha *'
+            # 'start_time': 'Hora y fecha *'
         }
         widgets = {
             'topic': forms.TextInput(attrs={'class': 'form-control'}),
-            'start_time': DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            # 'start_time': DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
         }
 
 
 class VideoconferenciasGrupalesForm(forms.ModelForm):
     class Meta:
         model = VideoconferenciasGrupales
-        fields = ['topic', 'start_time']
+        fields = ['topic']  # Elimina 'start_time' de los campos
+        labels = {
+            'topic': 'Nombre de la reunión *',
+            # 'start_time': 'Hora y fecha *'
+        }
         widgets = {
-            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'topic': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'start_time': DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
         }
 
 
