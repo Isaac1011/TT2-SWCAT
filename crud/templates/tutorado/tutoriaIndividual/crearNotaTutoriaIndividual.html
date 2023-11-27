@@ -6,7 +6,9 @@
 {% block content %}
 
 <main class="container mt-5">
-    <h1 class="text-center">Crear Nota de Tutoría Individual para {{tutoria_individual.nombreTutoriaIndividual}}</h1>
+    <h1 class="text-center">Crear Nota de Tutoría Individual para
+        <strong>{{tutoria_individual.nombreTutoriaIndividual}}</strong>
+    </h1>
     {% if messages %}
     <div class="alert alert-danger">
         <ul class="messages list-unstyled">

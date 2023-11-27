@@ -20,12 +20,11 @@ from django.http import JsonResponse
 
 @require_http_methods(['GET'])
 def detalle_bitacora_individual(request, id_tutoria):
-
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
 
-    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
     # Con esto protejo la ruta menu/crearTutoriaIndividual/
     if not logged_in or rol != 'Tutor':
         return redirect('inicio')
@@ -33,30 +32,36 @@ def detalle_bitacora_individual(request, id_tutoria):
     template_name = 'detalleBitacoraIndividual.html'
 
     tutoria_individual = obtener_tutoria_individual(id_tutoria)
-    notas_tutor = obtener_notas_tutor(tutoria_individual)
 
-    context = {
-        'tutoria_individual': tutoria_individual,
-        'notas_tutor': notas_tutor,
-        'logged_in': logged_in,
-        'rol': rol
-        # ... otras variables de contexto ...
-    }
+    if tutoria_individual:
+        notas_tutor = obtener_notas_tutor(tutoria_individual)
 
-    return render(request, template_name, context)
+        context = {
+            'tutoria_individual': tutoria_individual,
+            'notas_tutor': notas_tutor,
+            'logged_in': logged_in,
+            'rol': rol
+            # ... otras variables de contexto ...
+        }
+
+        return render(request, template_name, context)
+    else:
+        messages.error(request, 'Tutoría no encontrada.')
+        return redirect('inicio')
 
 
 def obtener_tutoria_individual(id_tutoria):
-    # Aquí debes implementar la lógica para obtener la tutoría individual por su ID
-    # Puedes utilizar el modelo BitacoraIndividualTutor y su correspondiente consulta en la base de datos
-    bitacora_individual = BitacoraIndividualTutor.objects.get(
-        idBitacoraIndividual=id_tutoria)
-    return bitacora_individual.idTutoriaIndividual
+    try:
+        # Obtener la instancia de TutoriaIndividual según el ID proporcionado
+        tutoria_individual = TutoriaIndividual.objects.get(
+            idTutoriaIndividual=id_tutoria)
+        return tutoria_individual
+    except TutoriaIndividual.DoesNotExist:
+        return None
 
 
 def obtener_notas_tutor(tutoria_individual):
-    # Aquí debes implementar la lógica para obtener las notas del tutor para una tutoría individual
-    # Puedes utilizar el modelo BitacoraIndividualTutor y su correspondiente consulta en la base de datos
+    # Obtener las notas del tutor para una tutoría individual
     notas_tutor = BitacoraIndividualTutor.objects.filter(
         idTutoriaIndividual=tutoria_individual)
     return notas_tutor
@@ -416,6 +421,7 @@ def detalle_tutoriaIndividual(request, tutoria_id):
 
 
 def bitacora_tutor_tutoriaIndividual(request, tutoria_id):
+
     # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
@@ -576,6 +582,29 @@ def detalle_tutoriaGrupal(request, tutoria_id):
             'rol': rol
         }
         return render(request, 'detalleTutoriaGrupal.html', context)
+
+
+def buscar_tutorados_tutoria_grupal(request, tutoria_id):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+    # Si no estás logeado o no eres un tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/crearTutoriaIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Lógica para obtener los tutorados específicos según el ID de la tutoría
+    tutoria_grupal = get_object_or_404(TutoriaGrupal, pk=tutoria_id)
+    tutorados_especificos = ListaTutoriaGrupal.objects.filter(
+        idTutoriaGrupal=tutoria_grupal).select_related('idTutorado')
+
+    context = {
+        'tutorados_especificos': tutorados_especificos,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+
+    return render(request, 'tutoradosTutoriaGrupal.html', context)
 
 
 def buscar_tutoria_grupal(request):

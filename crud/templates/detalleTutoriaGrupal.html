@@ -7,26 +7,21 @@
 
 <main class="container mt-5">
     <h1 class="text-center">Detalle de Tutoría Grupal</h1>
-    <h2>Nombre de la tutoría: {{ tutoria_grupal.nombreGrupo }}</h2>
-    <p>Tutor: {{tutoria_grupal.idTutor.nombre}}</p>
-    <p>Salón: {{ tutoria_grupal.salon }}</p>
-    <p>ID: {{tutoria_grupal.idTutoriaGrupal}}</p>
+    <p>Nombre de la tutoría: <strong>{{tutoria_grupal.nombreGrupo}}</strong></p>
+    <p>Tutor: <strong>{{tutoria_grupal.idTutor.nombre}} {{tutoria_grupal.idTutor.apellidoPaterno}}
+            {{tutoria_grupal.idTutor.apellidoMaterno}}</strong></p>
+    <p>Salón: <strong>{{tutoria_grupal.salon}}</strong></p>
 
-    <!-- Otros detalles de la tutoría individual -->
+    {% if rol == 'Tutor' %}
+    <p>Contraseña del Grupo: <strong>{{tutoria_grupal.passwordGrupo}}</strong></p>
 
-    <h2>Tutorados inscritos:</h2>
-    {% for tutorado in tutorados_pertenecientes %}
-    <!-- Mostrar información del tutorado aquí -->
-    <p>{{ tutorado.idTutorado.nombre }} {{ tutorado.idTutorado.apellidoPaterno }}</p>
-    <!-- Otros campos del tutorado -->
-    {% endfor %}
-
+    <a href="{% url 'buscar_tutorados_tutoria_grupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Ver Tutorados</a>
+    {% endif %}
 
     <!-- Mostrar las bitácoras del tutor -->
     {% if rol == 'Tutor' %}
-    <p> <strong>Contraseña del Grupo:</strong> {{ tutoria_grupal.passwordGrupo }}</p>
-
-    <h3>Reunión '{{ videoconferencia_grupal.first.topic }}':</h3>
+    <h4>Reunión: <strong>{{videoconferencia_grupal.first.topic}}</strong></h4>
 
     {% if videoconferencia_grupal %}
 
@@ -48,18 +43,6 @@
     <a href="{% url 'detalle_bitacora_grupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
         class="btn btn-primary mb-2 custom-link">Ver Bitácora Grupal</a>
 
-
-
-    <!-- <h3>Anuncios Grupales del Tutor:</h3>
-    <ul class="list-group">
-        {% for anuncio in anuncios_grupales %}
-        <li class="list-group-item">{{ anuncio.nota }}</li>
-        <p class="list-group-item">{{anuncio.fecha}}</p>
-        {% endfor %}
-    </ul> -->
-    <!--Para crear un anuncio al grupo-->
-    <!-- <a href="{% url 'anuncio_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
-        class="btn btn-primary mb-2 custom-link">Crear Anuncio Grupal</a> -->
     <a href="{% url 'anuncios_grupales_tutor' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
         class="btn btn-primary mb-2 custom-link">Ver Anuncios Grupales</a>
 
@@ -67,7 +50,7 @@
     <!-- Mostrar las notas del tutorado -->
     {% elif rol == 'Tutorado' %}
 
-    <h3>Reunión '{{ videoconferencia_grupal.first.topic }}':</h3>
+    <h4>Reunión: <strong>{{ videoconferencia_grupal.first.topic }}</strong></h4>
 
     {% if videoconferencia_grupal %}
 
@@ -81,7 +64,9 @@
     {% endif %}
 
 
-    <h3>Anuncios Grupales del Tutor:</h3>
+    <br>
+    <br>
+    <h4>Anuncios Grupales del Tutor</h4>
     <table class="table table-striped">
         <thead>
             <tr>

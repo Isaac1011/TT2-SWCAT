@@ -6,14 +6,14 @@
 
 <main class="container mt-5">
     <h1 class="text-center">Detalle de Tutoría Individual</h1>
-    <h2>Nombre de la tutoría: {{ tutoria_individual.nombreTutoriaIndividual }}</h2>
-    <p>Tutor: {{ tutoria_individual.idTutor.nombre }}</p>
-    <p>Tutorado: {{ tutoria_individual.idTutorado.nombre }}</p>
-    <!-- Otros detalles de la tutoría individual -->
+    <p>Nombre de la tutoría: <strong>{{tutoria_individual.nombreTutoriaIndividual}}</strong></p>
+    <p>Tutor: <strong>{{tutoria_individual.idTutor.nombre}} {{tutoria_individual.idTutor.apellidoPaterno}}
+            {{tutoria_individual.idTutor.apellidoMaterno}}</strong></p>
+    <p>Tutorado: <strong>{{tutoria_individual.idTutorado.nombre}} {{tutoria_individual.idTutorado.apellidoPaterno}}
+            {{tutoria_individual.idTutorado.apellidoMaterno}}</strong></p>
 
+    <h4>Reunión: <strong>{{videoconferencia_individual.first.topic}}</strong></h4>
     {% if rol == 'Tutor' %}
-    <h3>Reunión '{{ videoconferencia_individual.first.topic }}':</h3>
-
     {% if videoconferencia_individual %}
     <a href="{{ videoconferencia_individual.first.start_url }}" target="_blank"
         class="btn btn-success mb-2 boton-exito">
@@ -31,28 +31,12 @@
     </a>
     {% endif %}
 
-    <!-- <h3>Bitácora del Tutor:</h3>
-    <ul class="list-group">
-        {% for nota in notas_tutor %}
-        <li class="list-group-item">{{ nota.nota }}</li>
-        <p class="list-group-item">{{ nota.fecha }}</p>
-        {% endfor %}
-    </ul>
-
-    <a href="{% url 'crear_bitacora_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
-        class="btn btn-primary mb-2 custom-link">
-        Crear Bitácora
-    </a> -->
-
     <a href="{% url 'detalle_bitacora_individual' tutoria_individual.idTutoriaIndividual %}"
         class="btn btn-primary mb-2 custom-link">
         Ver Bitácoras
     </a>
 
-
     {% elif rol == 'Tutorado' %}
-    <h3>Reunión '{{ videoconferencia_individual.first.topic }}':</h3>
-
     {% if videoconferencia_individual %}
     <a href="{{ videoconferencia_individual.first.join_url }}" target="_blank" class="btn btn-success mb-2 boton-exito">
         Unirse a la reunión
@@ -61,18 +45,6 @@
     <p>Aún no hay enlace para que te puedas unir</p>
     {% endif %}
 
-    <!-- <h3>Notas del Tutorado:</h3>
-    <ul class="list-group">
-        {% for nota in notas_tutorado %}
-        <li class="list-group-item">{{ nota.nota }}</li>
-        <p class="list-group-item">{{ nota.fecha }}</p>
-        {% endfor %}
-    </ul>
-
-    <a href="{% url 'crear_nota_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
-        class="btn btn-primary custom-button-small">
-        Crear Nota
-    </a> -->
     <!-- Enlace para ver las notas del tutorado -->
     <a href="{% url 'notas_tutorado_tutoria_individual' tutoria_id=tutoria_individual.idTutoriaIndividual %}"
         class="btn btn-primary mb-2 custom-link">

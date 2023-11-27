@@ -15,7 +15,8 @@
             {% for tutoria in tutorias_individuales %}
             <li class="list-group-item">
                 <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}" class="tutoria-link">
-                    Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
+                    Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{tutoria.idTutorado.nombre}}
+                    {{tutoria.idTutorado.apellidoPaterno}} {{tutoria.idTutorado.apellidoMaterno}}
                 </a>
             </li>
             {% endfor %}
