@@ -420,55 +420,53 @@ def cerrar_sesion(request):
 
 @transaction.atomic
 def crear_tutoriaIndividual(request):
-    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    # Verifica si el usuario está logeado y es un tutor
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
 
-    # Si no estás logeado o no eres un tutor, redirige al inicio.
-    # Con esto protejo la ruta menu/crearTutoriaIndividual/
-    if not logged_in or rol != 'Tutor':
-        return redirect('inicio')
-
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
     if request.method == 'POST':
         form = TutoriaIndividualForm(request.POST)
         if form.is_valid():
-            # Obtiene el tutor de la sesión
+            boleta_tutorado = form.cleaned_data['boletaTutorado']
+            nombre_tutoria_individual = form.cleaned_data['nombreTutoriaIndividual']
+
+            try:
+                tutorado = Tutorado.objects.get(boletaTutorado=boleta_tutorado)
+            except Tutorado.DoesNotExist:
+                messages.error(request, 'El tutorado no existe en el sistema.')
+                context = {'form': form,
+                           'logged_in': logged_in,
+                           'rol': rol}
+                return render(request, 'tutor/tutoriaIndividual/crearTutoriaIndividual.html', context)
+
+            if tutorado.numTutoresAsignados >= 3:
+                messages.error(
+                    request, 'El tutorado ya está inscrito en 3 tutorías.')
+                context = {'form': form,
+                           'logged_in': logged_in,
+                           'rol': rol}
+                return render(request, 'tutor/tutoriaIndividual/crearTutoriaIndividual.html', context)
+
             tutor = Tutor.objects.get(
                 numeroEmpleado=request.session['numero_empleado'])
-            tutoria_individual = form.save(commit=False)
+            tutoria_individual = TutoriaIndividual(
+                idTutor=tutor,
+                idTutorado=tutorado,
+                nombreTutoriaIndividual=nombre_tutoria_individual
+            )
+            tutoria_individual.save()
 
-            # Verifica si el Tutorado tiene menos de 3 tutores asignados
-            tutorado = tutoria_individual.idTutorado
-            if tutorado.numTutoresAsignados < 3:
-                # Asigna el tutor a la instancia de tutoría individual
-                tutoria_individual.idTutor = tutor
-                # Guarda la instancia de tutoría individual en la BD
-                tutoria_individual.save()
+            Tutorado.objects.filter(boletaTutorado=boleta_tutorado).update(
+                numTutoresAsignados=F('numTutoresAsignados') + 1)
 
-                # Incrementa el campo numTutoresAsignados del Tutorado en una unidad
-                # tutorado.numTutoresAsignados += 1
-                # tutorado.save()
+            # messages.success(
+            #     request, 'Tutoría individual creada exitosamente.')
+            return redirect('menu')  # Cambiar por la ruta adecuada
 
-                num = tutorado.numTutoresAsignados
-                #  Actualizar el campo numTutoresAsignados incrementadndo en una unidad
-                Tutorado.objects.filter(idTutorado=tutorado.idTutorado).update(
-                    numTutoresAsignados=num + 1
-                )
-
-                # Redirige a la vista 'menu'
-                return redirect('menu')
-            else:
-                # Muestra un mensaje de error si el Tutorado ya tiene 3 tutores asignados
-                messages.error(
-                    request, 'El Tutorado ya está inscrito en 3 tutorías.')
-    else:  # GET
+    else:
         form = TutoriaIndividualForm()
 
-    # Agrega las variables logged_in y rol al contexto
-
-    # Estamos creando un diccionario llamado context que contiene varias variables que se pasarán como contexto a la plantilla crearTutoriaIndividual.html cuando se renderice
-
-    # El contexto es simplemente un conjunto de variables que se utilizan para mostrar información en la plantilla.
     context = {'form': form, 'logged_in': logged_in, 'rol': rol}
     return render(request, 'tutor/tutoriaIndividual/crearTutoriaIndividual.html', context)
 

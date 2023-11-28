@@ -91,19 +91,21 @@ class TutoradoInicioSesionForm(forms.Form):
         )
     )
 
+# Crea un nuevo formulario para la creción de tutorias individuales sin estar basado en el modelo TutoriaIndividual poder realizar el registro correctamente
 
-class TutoriaIndividualForm(forms.ModelForm):
-    class Meta:
-        model = TutoriaIndividual
-        fields = ['idTutorado', 'nombreTutoriaIndividual']
-        labels = {
-            'idTutorado': 'Número de Boleta del Tutorado *',
-            'nombreTutoriaIndividual': 'Nombre de Tutoría Individual *'
-        }
-        widgets = {
-            'idTutorado': forms.Select(attrs={'class': 'form-control'}),
-            'nombreTutoriaIndividual': forms.TextInput(attrs={'class': 'form-control'}),
-        }
+
+class TutoriaIndividualForm(forms.Form):
+    boletaTutorado = forms.CharField(
+        max_length=10,
+        label='Número de Boleta *',
+        widget=forms.TextInput(attrs={'class': 'form-control dark-mode-input'})
+    )
+
+    nombreTutoriaIndividual = forms.CharField(
+        max_length=45,
+        label='Nombre de Tutoría Individual *',
+        widget=forms.TextInput(attrs={'class': 'form-control dark-mode-input'})
+    )
 
 
 class BitacoraIndividualTutorForm(forms.ModelForm):
