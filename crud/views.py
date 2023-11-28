@@ -14,6 +14,9 @@ from django.http import JsonResponse
 from django.db import transaction
 from django.db import models
 from django.db.models import F
+from .forms import TutorForm
+from .models import Tutorado
+from .forms import TutoradoForm
 
 
 # Create your views here.
@@ -286,7 +289,8 @@ def menu(request):
                       {'logged_in': logged_in,
                        'rol': rol,
                        'tutorias_individuales': tutorias_individuales,
-                       'tutorias_grupales': tutorias_grupales}
+                       'tutorias_grupales': tutorias_grupales,
+                       'tutor': tutor}
                       )
 
     # Si el usuario está iniciado sesión y su rol es 'Tutorado'
@@ -307,7 +311,8 @@ def menu(request):
                       {'logged_in': logged_in,
                        'rol': rol,
                        'tutorias_individuales': tutorias_individuales,
-                       'tutorias_grupales': tutorias_grupales}
+                       'tutorias_grupales': tutorias_grupales,
+                       'tutorado': tutorado}
                       )
 
     # Si el usuario no está iniciado sesión o su rol no coincide
@@ -998,3 +1003,66 @@ def visor_imagenes(request):
         'rol': rol
     }
     return render(request, 'visor_imagenes.html', context)
+
+
+def editar_tutor(request, tutor_id):
+    # Para proteger la ruta, verificamos si es un tutor y si tiene la sesión iniciada
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    # Con esto protejo la ruta menu/notaTutorIndividual/
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Utilizamos filter en lugar de get para obtener el queryset
+    queryset = Tutor.objects.filter(idTutor=tutor_id)
+
+    # Si no se encuentra el tutor, se redirige a una página de error 404
+    tutor = get_object_or_404(queryset)
+
+    if request.method == 'POST':
+        form = TutorForm(request.POST, instance=tutor)
+        if form.is_valid():
+            # Utilizamos update para actualizar directamente en la base de datos
+            queryset.update(**form.cleaned_data)
+            # Ajusta el nombre de la URL a la que quieres redirigir
+            return redirect('menu')
+    else:
+        form = TutorForm(instance=tutor)
+
+    context = {
+        'form': form,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'tutor/editarTutor.html', context)
+
+
+def editar_tutorado(request, tutorado_id):
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    if not logged_in or rol != 'Tutorado':
+        return redirect('inicio')
+
+    queryset = Tutorado.objects.filter(idTutorado=tutorado_id)
+
+    # Obtener el tutorado
+    tutorado = queryset.first()
+
+    if request.method == 'POST':
+        form = TutoradoForm(request.POST, instance=tutorado)
+        if form.is_valid():
+            # Actualizar en la base de datos utilizando update
+            queryset.update(**form.cleaned_data)
+            return redirect('menu')
+    else:
+        form = TutoradoForm(instance=tutorado)
+
+    context = {
+        'form': form,
+        'logged_in': logged_in,
+        'rol': rol
+    }
+    return render(request, 'tutorado/editarTutorado.html', context)

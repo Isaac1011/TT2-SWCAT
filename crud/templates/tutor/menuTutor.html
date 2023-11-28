@@ -2,11 +2,21 @@
 
 {% block title %}Menú principal Tutor | SWCAT{% endblock %}
 
-
 {% block content %}
 
 <main class="container mt-5">
     <h1 class="text-center">Menú principal del Tutor</h1>
+
+    <br>
+    <h4>Bienvenido, <strong><a href="{% url 'editar_tutor' tutor_id=tutor.idTutor %}" class="modificarDatos">
+                {{tutor.nombre}} {{tutor.apellidoPaterno}}
+                {{tutor.apellidoMaterno}}
+            </a></strong></h4>
+
+    <!-- <a href="{% url 'editar_tutor' tutor_id=tutor.idTutor %}" class="tutoria-link">
+        {{tutor.nombre}} {{tutor.apellidoPaterno}}
+        {{tutor.apellidoMaterno}}
+    </a> -->
 
     {% if tutorias_individuales or tutorias_grupales %}
     <div class="mt-4">
@@ -39,6 +49,7 @@
     {% else %}
     <p class="mt-4">No tienes tutorías a cargo.</p>
     {% endif %}
+
     <!-- Botón de Regresar -->
     <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
         Regresar

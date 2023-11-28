@@ -42,6 +42,13 @@ urlpatterns = [
     path('cerrarSesion/', views.cerrar_sesion,
          name='cerrar_sesion'),
 
+    # Editar información
+    path('menu/editarInformacionTutor/<int:tutor_id>/',
+         views.editar_tutor, name='editar_tutor'),
+    path('menu/editarInformacionTutorado/<int:tutorado_id>/',
+         views.editar_tutorado, name='editar_tutorado'),
+
+
     # Tutoría Individual
     path('menu/crearTutoriaIndividual/', views.crear_tutoriaIndividual,
          name='crear_tutoriaIndividual'),
@@ -125,5 +132,10 @@ urlpatterns = [
 
     # Materiales didácticos
     path('visor-imagenes/', views.visor_imagenes, name='visor_imagenes'),
+
+
+
+
+
 
 ]

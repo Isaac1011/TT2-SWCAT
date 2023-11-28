@@ -168,3 +168,37 @@ class AnunciosGrupalesTutorForm(forms.ModelForm):
         widgets = {
             'nota': forms.Textarea(attrs={'class': 'form-control', 'rows': 7}),
         }
+
+
+class TutorForm(forms.ModelForm):
+    class Meta:
+        model = Tutor
+        fields = ['numeroEmpleado', 'email', 'nombre',
+                  'apellidoPaterno', 'apellidoMaterno', 'cubiculo', 'telefono']
+
+        widgets = {
+            'numeroEmpleado': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control'}),
+            'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control'}),
+            'cubiculo': forms.TextInput(attrs={'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class TutoradoForm(forms.ModelForm):
+    class Meta:
+        model = Tutorado
+        fields = ['boletaTutorado', 'email', 'nombre',
+                  'apellidoPaterno', 'apellidoMaterno', 'semestre', 'telefono']
+
+        widgets = {
+            'boletaTutorado': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control'}),
+            'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control'}),
+            'semestre': forms.TextInput(attrs={'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+        }

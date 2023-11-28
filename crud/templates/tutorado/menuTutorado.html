@@ -7,6 +7,14 @@
 <main class="container mt-5">
     <h1 class="text-center">Menú principal del Tutorado</h1>
 
+    <br>
+
+    <h4>Bienvenido, <strong><a href="{% url 'editar_tutorado' tutorado_id=tutorado.idTutorado %}"
+                class="modificarDatos">
+                {{tutorado.nombre}} {{tutorado.apellidoPaterno}}
+                {{tutorado.apellidoMaterno}}
+            </a></strong></h4>
+
     {% if tutorias_individuales %}
     <div class="mt-4">
         <h2>Tutorías Individuales inscritas:</h2>
@@ -47,6 +55,6 @@
     <p>No tienes Tutorías Grupales inscritas</p>
     {% endif %}
 
-</main>
+    </h<>
 
-{% endblock %}
+    {% endblock %}

@@ -1,0 +1,26 @@
+<!-- editar_tutor.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <h1 class="text-center">Editar Información</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="custom-button">Guardar cambios</button>
+    </form>
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}
