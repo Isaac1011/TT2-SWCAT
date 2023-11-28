@@ -18,6 +18,7 @@ class Tutor(models.Model):
     apellidoMaterno = models.CharField(max_length=45)
     cubiculo = models.CharField(max_length=20, default=None)
     telefono = models.CharField(max_length=10, default=None)
+    zoomUserID = models.CharField(max_length=30, default=None)
 
     def save(self, *args, **kwargs):
         # Antes de guardar, convierte la contraseña en un hash seguro

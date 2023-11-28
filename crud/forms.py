@@ -173,17 +173,29 @@ class AnunciosGrupalesTutorForm(forms.ModelForm):
 class TutorForm(forms.ModelForm):
     class Meta:
         model = Tutor
-        fields = ['numeroEmpleado', 'email', 'nombre',
+        fields = ['numeroEmpleado', 'zoomUserID', 'email', 'nombre',
                   'apellidoPaterno', 'apellidoMaterno', 'cubiculo', 'telefono']
 
         widgets = {
             'numeroEmpleado': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'zoomUserID': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control'}),
             'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control'}),
             'cubiculo': forms.TextInput(attrs={'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+        labels = {
+            'numeroEmpleado': 'Número de Empleado',
+            'zoomUserID': 'Zoom User ID',
+            'email': 'Correo Electrónico',
+            'nombre': 'Nombre',
+            'apellidoPaterno': 'Apellido Paterno',
+            'apellidoMaterno': 'Apellido Materno',
+            'cubiculo': 'Cubículo',
+            'telefono': 'Teléfono',
         }
 
 
@@ -201,4 +213,14 @@ class TutoradoForm(forms.ModelForm):
             'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control'}),
             'semestre': forms.TextInput(attrs={'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+        labels = {
+            'boletaTutorado': 'Boleta del Tutorado',
+            'email': 'Correo Electrónico',
+            'nombre': 'Nombre',
+            'apellidoPaterno': 'Apellido Paterno',
+            'apellidoMaterno': 'Apellido Materno',
+            'semestre': 'Semestre',
+            'telefono': 'Teléfono',
         }

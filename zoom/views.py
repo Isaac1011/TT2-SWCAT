@@ -5,7 +5,7 @@ from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import VideoconferenciasIndividualesForm, VideoconferenciasGrupalesForm
-from crud.models import TutoriaIndividual, VideoconferenciasIndividuales, TutoriaGrupal, VideoconferenciasGrupales
+from crud.models import TutoriaIndividual, VideoconferenciasIndividuales, TutoriaGrupal, VideoconferenciasGrupales, Tutor
 from django.utils import timezone
 
 import requests
@@ -65,6 +65,8 @@ def crear_reunion_individual(request, tutoria_id):
 
     if request.method == 'POST':
         form = VideoconferenciasIndividualesForm(request.POST)
+        tutor = Tutor.objects.get(
+            numeroEmpleado=request.session['numero_empleado'])
         if form.is_valid():
             try:
 
@@ -103,7 +105,9 @@ def crear_reunion_individual(request, tutoria_id):
                 }
 
                 # URL para crear la reunión
-                user_id = "bDqfUrwlRmKb04tIl86Bkg"
+                # user_id = "bDqfUrwlRmKb04tIl86Bkg"
+                # Obtener el valor de zoomUserID desde la instancia de Tutorado
+                user_id = tutor.zoomUserID
                 create_meeting_url = f'https://api.zoom.us/v2/users/{user_id}/meetings'
                 # create_meeting_url = 'https://api.zoom.us/v2/users/me/meetings'
 
@@ -116,9 +120,6 @@ def crear_reunion_individual(request, tutoria_id):
                     create_meeting_url, json=meeting_data, headers=headers)
                 # Estos son los datos de la reunión que se acaba de crear
                 response_data = response.json()
-
-                print('AAAAAAAA')
-                print(response_data)
 
                 if response.status_code == 201:
                     # La reunión se creó correctamente
@@ -149,11 +150,12 @@ def crear_reunion_individual(request, tutoria_id):
 
                 else:
                     # Hubo un error al crear la reunión
-                    error_message = f"Error al crear la reunión. Código de estado: {response.status_code}"
+                    error_message = f"Error al crear la reunión. Debe editar su información para ingresar su Zoom User ID. Código de estado: {response.status_code}"
                     context = {
                         'error_message': error_message,
                         'logged_in': logged_in,
-                        'rol': rol
+                        'rol': rol,
+                        'tutor': tutor
                     }
                     return render(request, 'error.html', context)
 
@@ -161,20 +163,25 @@ def crear_reunion_individual(request, tutoria_id):
                 error_message = f"Error making a request: {e}"
                 context = {'error_message': error_message,
                            'logged_in': logged_in,
-                           'rol': rol}
+                           'rol': rol,
+                           'tutor': tutor}
                 return render(request, 'error.html', context)
             except Exception as e:
                 error_message = f"An error occurred: {e}"
                 context = {'error_message': error_message,
                            'logged_in': logged_in,
-                           'rol': rol}
+                           'rol': rol,
+                           'tutor': tutor}
                 return render(request, 'error.html', context)
     else:
         form = VideoconferenciasIndividualesForm()
+        tutor = Tutor.objects.get(
+            numeroEmpleado=request.session['numero_empleado'])
 
     context = {'form': form,
                'logged_in': logged_in,
-               'rol': rol}
+               'rol': rol,
+               'tutor': tutor}
     return render(request, 'crearReunion.html', context)
 
 
@@ -190,6 +197,8 @@ def crear_reunion_grupal(request, tutoria_id):
 
     if request.method == 'POST':
         form = VideoconferenciasGrupalesForm(request.POST)
+        tutor = Tutor.objects.get(
+            numeroEmpleado=request.session['numero_empleado'])
         if form.is_valid():
             try:
 
@@ -228,7 +237,9 @@ def crear_reunion_grupal(request, tutoria_id):
                 }
 
                 # URL para crear la reunión
-                user_id = "bDqfUrwlRmKb04tIl86Bkg"
+                # user_id = "bDqfUrwlRmKb04tIl86Bkg"
+                # Obtener el valor de zoomUserID desde la instancia de Tutorado
+                user_id = tutor.zoomUserID
                 create_meeting_url = f'https://api.zoom.us/v2/users/{user_id}/meetings'
                 # create_meeting_url = 'https://api.zoom.us/v2/users/me/meetings'
 
@@ -241,9 +252,6 @@ def crear_reunion_grupal(request, tutoria_id):
                     create_meeting_url, json=meeting_data, headers=headers)
                 # Estos son los datos de la reunión que se acaba de crear
                 response_data = response.json()
-
-                print('AAAAAAAA')
-                print(response_data)
 
                 if response.status_code == 201:
                     # La reunión se creó correctamente
@@ -274,11 +282,12 @@ def crear_reunion_grupal(request, tutoria_id):
 
                 else:
                     # Hubo un error al crear la reunión
-                    error_message = f"Error al crear la reunión. Código de estado: {response.status_code}"
+                    error_message = f"Error al crear la reunión. Debe editar su información para ingresar su Zoom User ID. Código de estado: {response.status_code}"
                     context = {
                         'error_message': error_message,
                         'logged_in': logged_in,
-                        'rol': rol
+                        'rol': rol,
+                        'tutor': tutor
                     }
                     return render(request, 'error.html', context)
 
@@ -286,20 +295,25 @@ def crear_reunion_grupal(request, tutoria_id):
                 error_message = f"Error making a request: {e}"
                 context = {'error_message': error_message,
                            'logged_in': logged_in,
-                           'rol': rol}
+                           'rol': rol,
+                           'tutor': tutor}
                 return render(request, 'error.html', context)
             except Exception as e:
                 error_message = f"An error occurred: {e}"
                 context = {'error_message': error_message,
                            'logged_in': logged_in,
-                           'rol': rol}
+                           'rol': rol,
+                           'tutor': tutor}
                 return render(request, 'error.html', context)
     else:
         form = VideoconferenciasGrupalesForm()
+        tutor = Tutor.objects.get(
+            numeroEmpleado=request.session['numero_empleado'])
 
     context = {'form': form,
                'logged_in': logged_in,
-               'rol': rol}
+               'rol': rol,
+               'tutor': tutor}
     return render(request, 'crearReunion.html', context)
 
 
