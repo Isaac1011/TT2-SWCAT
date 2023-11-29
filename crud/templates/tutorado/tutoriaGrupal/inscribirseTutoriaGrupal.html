@@ -4,9 +4,9 @@
 
 {% block content %}
 
-<main class="container-fluid mt-6">
+<main class="container-fluid mt-5 mb-5">
 
-    <h1 class="mb-4">Inscribirse a una Tutoría Grupal</h1>
+    <h1 class="text-center">Inscribirse a una Tutoría Grupal</h1>
 
     <!-- Agregar el formulario de búsqueda -->
     <form method="get" action="{% url 'buscar_tutoria_grupal' %}" class="mb-4">
@@ -35,12 +35,19 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th scope="col" style="width: 2%;">ID</th>
+                    <th scope="col" style="width: 10%;">ID</th>
+                    <th scope="col" style="width: 20%;">Tutoría</th>
+                    <th scope="col" style="width: 30%;">Tutor</th>
+                    <th scope="col" style="width: 10%;">Salón</th>
+                    <th scope="col" style="width: 10%;" class="text-center">Cupo Disponible</th>
+                    <th scope="col" style="width: 20%;">Inscribirse</th>
+
+                    <!-- <th scope="col" style="width: 2%;">ID</th>
                     <th scope="col" style="width: 15%;">Tutoría</th>
                     <th scope="col" style="width: 15%;">Tutor</th>
                     <th scope="col" style="width: 5%;">Salón</th>
                     <th scope="col" style="width: 5%;" class="text-center">Cupo Disponible</th>
-                    <th scope="col" style="width: 58%;">Inscribirse</th>
+                    <th scope="col" style="width: 58%;">Inscribirse</th> -->
                 </tr>
             </thead>
             <tbody>

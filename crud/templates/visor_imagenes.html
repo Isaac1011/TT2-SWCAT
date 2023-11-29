@@ -6,20 +6,23 @@
 
 {% load static %}
 
-<section id="imageViewer" style="max-width: 100%; margin: 0 auto; position: relative;">
-    <img id="currentImage" src="{% static 'imagen1.png' %}" alt="Material Didáctico"
-        style="width: 100%; height: auto; max-height: 600px;">
-</section>
 
-<button id="prevBtn" class="btn btn-secondary btn-lg"
-    style="position: absolute; bottom: 50%; left: 10px; transform: translateY(-50%);">Anterior</button>
-<button id="nextBtn" class="btn btn-secondary btn-lg"
-    style="position: absolute; bottom: 50%; right: 10px; transform: translateY(-50%);">Siguiente</button>
+<main class="container mb-5">
+    <section id="imageViewer" style="max-width: 100%; margin: 0 auto; position: relative;">
+        <img id="currentImage" src="{% static 'imagen1.png' %}" alt="Material Didáctico"
+            style="width: 100%; height: auto; max-height: 600px;">
+    </section>
 
-<!-- Botón de Regresar -->
-<button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
-    Regresar
-</button>
+    <button id="prevBtn" class="btn btn-secondary btn-lg"
+        style="position: absolute; bottom: 50%; left: 10px; transform: translateY(-50%);">Anterior</button>
+    <button id="nextBtn" class="btn btn-secondary btn-lg"
+        style="position: absolute; bottom: 50%; right: 10px; transform: translateY(-50%);">Siguiente</button>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+</main>
 
 
 <script>

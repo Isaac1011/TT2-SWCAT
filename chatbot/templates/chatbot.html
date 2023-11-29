@@ -1,34 +1,54 @@
+<!-- En tu plantilla Django -->
 {% extends 'base.html' %}
 
 {% block title %}Crear Reunión Zoom | SWCAT{% endblock %}
 
 {% block content %}
 
-<main>
-    <h1 class="text-center text-primary mt-5 chatbot-title">Chatbot</h1>
-
-    <div id="chat-container" class="bg-light p-3 my-4 rounded">
-        <div id="chat" style="max-height: 300px; overflow-y: auto;">
-            {% for conversation in conversations %}
-            <p><strong>Tú:</strong> {{ conversation.user_input }}</p>
-            <p><strong>Chatbot:</strong> {{ conversation.bot_response }}</p>
+<main class="container-fluid" style="display: flex;">
+    <!-- Bloque izquierdo (preguntas frecuentes) -->
+    <div class="container-fluid custom-container-1" style="width: 30%;">
+        <h3 class="text-primary mt-5 chatbot-title">Preguntas Frecuentes</h3>
+        <div class="list-group">
+            {% for question, answer in faq.items %}
+            <a href="#" class="list-group-item list-group-item-action faq-question" data-question="{{ question }}">
+                {{ question }}
+            </a>
             {% endfor %}
         </div>
     </div>
 
-    <form method="post" action="{% url 'chatbot' %}" class="mx-auto mb-4">
-        {% csrf_token %}
-        <div class="input-group">
-            <input type="text" name="user_input" class="form-control" placeholder="Escribe tu mensaje..." required>
-            <div class="input-group-append">
-                <button type="submit" class="btn btn-primary" style="background-color: #0047B6;">Enviar</button>
+    <!-- Bloque derecho (chatbot) -->
+    <div class="container-fluid custom-container-1" style="width: 70%;">
+        <h1 class="text-primary mt-5 chatbot-title">Chatbot</h1>
+
+        <!-- Chat Container -->
+        <div id="chat-container" class="bg-light p-3 my-4 rounded">
+            <div id="chat" style="max-height: 300px; overflow-y: auto;">
+                {% for conversation in conversations %}
+                <p><strong>Tú:</strong> {{ conversation.user_input|linebreaksbr }}</p>
+                <p><strong>Chatbot:</strong> {{ conversation.bot_response|linebreaksbr }}</p>
+                {% endfor %}
             </div>
         </div>
-    </form>
-    <!-- Botón de Regresar -->
-    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
-        Regresar
-    </button>
+
+        <!-- User Input Form -->
+        <form id="chatbot-form" method="post" action="{% url 'chatbot' %}" class="mb-4">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="user_input" id="user-input" class="form-control"
+                    placeholder="Escribe tu mensaje..." required>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary" style="background-color: #0047B6;">Enviar</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Botón de Regresar -->
+        <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()">
+            Regresar
+        </button>
+    </div>
 </main>
 
 <script>
@@ -36,6 +56,26 @@
     function goBack() {
         window.history.back();
     }
+
+    // Manejar clic en pregunta de FAQ
+    document.querySelectorAll('.faq-question').forEach(function (questionLink) {
+        questionLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            var clickedQuestion = this.getAttribute('data-question');
+            document.getElementById('user-input').value = clickedQuestion;
+
+            // Enviar automáticamente la pregunta de FAQ al servidor
+            var form = document.getElementById('chatbot-form');
+            var faqInput = document.createElement("input");
+            faqInput.setAttribute("type", "hidden");
+            faqInput.setAttribute("name", "faq_question");
+            faqInput.setAttribute("value", clickedQuestion);
+            form.appendChild(faqInput);
+
+            // Enviar el formulario
+            form.submit();
+        });
+    });
 </script>
 
 {% endblock %}

@@ -4,45 +4,47 @@
 
 {% block content %}
 
-<main class="container mt-5">
+<main class="container-fluid mt-5 mb-5">
 
     <h1 class="text-center">Bitácoras de Tutoría Individual</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre Tutoría</th>
-                <th>Tutor</th>
-                <th>Tutorado</th>
-                <th>Nota</th>
-                <th>Fecha</th>
-                <th>Acciones</th> <!-- Nueva columna para acciones -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for nota in notas_tutor %}
-            <tr>
-                <td>{{nota.idTutoriaIndividual.nombreTutoriaIndividual}}</td>
-                <td>{{nota.idTutoriaIndividual.idTutor.nombre}} {{nota.idTutoriaIndividual.idTutor.apellidoPaterno}}
-                    {{nota.idTutoriaIndividual.idTutor.apellidoMaterno}}
-                </td>
-                <td>{{nota.idTutoriaIndividual.idTutorado.nombre}}
-                    {{nota.idTutoriaIndividual.idTutorado.apellidoPaterno}}
-                    {{nota.idTutoriaIndividual.idTutorado.apellidoMaterno}} -
-                    {{nota.idTutoriaIndividual.idTutorado.boletaTutorado}}
-                </td>
-                <td>{{nota.nota}}</td>
-                <td>{{nota.fecha}}</td>
-                <td>
-                    <a href="{% url 'eliminar_bitacora_tutoria_individual' nota.idBitacoraIndividual %}"
-                        class="btn btn-danger btn-sm">
-                        Eliminar
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre Tutoría</th>
+                    <th>Tutor</th>
+                    <th>Tutorado</th>
+                    <th>Nota</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th> <!-- Nueva columna para acciones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for nota in notas_tutor %}
+                <tr>
+                    <td>{{nota.idTutoriaIndividual.nombreTutoriaIndividual}}</td>
+                    <td>{{nota.idTutoriaIndividual.idTutor.nombre}} {{nota.idTutoriaIndividual.idTutor.apellidoPaterno}}
+                        {{nota.idTutoriaIndividual.idTutor.apellidoMaterno}}
+                    </td>
+                    <td>{{nota.idTutoriaIndividual.idTutorado.nombre}}
+                        {{nota.idTutoriaIndividual.idTutorado.apellidoPaterno}}
+                        {{nota.idTutoriaIndividual.idTutorado.apellidoMaterno}} -
+                        {{nota.idTutoriaIndividual.idTutorado.boletaTutorado}}
+                    </td>
+                    <td>{{nota.nota}}</td>
+                    <td>{{nota.fecha}}</td>
+                    <td>
+                        <a href="{% url 'eliminar_bitacora_tutoria_individual' nota.idBitacoraIndividual %}"
+                            class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <a href="{% url 'crear_bitacora_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
         class="btn btn-primary mb-2 custom-link">

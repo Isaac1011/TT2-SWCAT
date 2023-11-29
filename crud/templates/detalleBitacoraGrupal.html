@@ -4,38 +4,40 @@
 
 {% block content %}
 
-<main class="container mt-5">
+<main class="container-fluid mt-5 mb-5">
 
     <h1 class="text-center">Bitácora del Tutor</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Tutoría</th>
-                <th>Tutor</th>
-                <th>Nota</th>
-                <th>Fecha</th>
-                <th>Acciones</th> <!-- Nueva columna para acciones -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for bitacora in bitacoras_tutor %}
-            <tr>
-                <td>{{bitacora.idTutoriaGrupal.nombreGrupo}}</td>
-                <td>{{bitacora.idTutoriaGrupal.idTutor.nombre}} {{bitacora.idTutoriaGrupal.idTutor.apellidoPaterno}}
-                    {{bitacora.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
-                <td>{{bitacora.nota}}</td>
-                <td>{{bitacora.fecha}}</td>
-                <td>
-                    <a href="{% url 'eliminar_bitacora_grupal_tutoria' bitacora.idBitacoraGrupalTutor %}"
-                        class="btn btn-danger btn-sm">
-                        Eliminar
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tutoría</th>
+                    <th>Tutor</th>
+                    <th>Nota</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th> <!-- Nueva columna para acciones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for bitacora in bitacoras_tutor %}
+                <tr>
+                    <td>{{bitacora.idTutoriaGrupal.nombreGrupo}}</td>
+                    <td>{{bitacora.idTutoriaGrupal.idTutor.nombre}} {{bitacora.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                        {{bitacora.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
+                    <td>{{bitacora.nota}}</td>
+                    <td>{{bitacora.fecha}}</td>
+                    <td>
+                        <a href="{% url 'eliminar_bitacora_grupal_tutoria' bitacora.idBitacoraGrupalTutor %}"
+                            class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <a href="{% url 'bitacora_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
         class="btn btn-primary mb-2 custom-link">Agregar Bitácora</a>

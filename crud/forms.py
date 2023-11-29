@@ -189,7 +189,7 @@ class TutorForm(forms.ModelForm):
 
         labels = {
             'numeroEmpleado': 'Número de Empleado',
-            'zoomUserID': 'Zoom User ID',
+            'zoomUserID': 'ID Zoom',
             'email': 'Correo Electrónico',
             'nombre': 'Nombre',
             'apellidoPaterno': 'Apellido Paterno',
