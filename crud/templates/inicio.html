@@ -4,37 +4,58 @@
 
 {% load static %}
 
-<main class="container mt-5 mb-5">
-    <h1 class="mt-5">Bienvenido a SWCAT</h1>
-    <p class="lead">La plataforma de tutorías que...</p>
+<main class="container-fluid d-flex flex-wrap">
 
-    <section class="mt-5">
-        <h2>¿Qué ofrecemos?</h2>
-        <p>Explora nuestras características...</p>
-    </section>
+    <div class="container-fluid custom-container-1 col-md-8">
+        <h1 class="mt-3">Bienvenido a SWCAT</h1>
+        <p class="lead">SWCAT es un sistema web creado para respaldar las Tutorías Individuales, Grupales y de
+            Recuperación destinadas a Profesoras/Profesores (Tutores) y Alumnos/Alumnas (Tutorados) pertenecientes a la
+            Escuela Superior de Cómputo (ESCOM) del Instituto Politécnico Nacional (IPN)</p>
 
-    <section class="mt-5">
-        <h2>Iniciar Sesión</h2>
+        <h3 class="mt-4">Características de SWCAT:</h3>
+
+        <ul class="list-unstyled">
+            <li>
+                <h5><strong>Chatbot Especializado</strong></h5>
+                <p>El sistema incorpora un Chatbot diseñado con la finalidad de abordar y resolver consultas
+                    relacionadas con la acción tutorial y el funcionamiento propio al sistema.</p>
+            </li>
+
+            <li>
+                <h5><strong>Videoconferencias Integradas</strong></h5>
+                <p>Integra funcionalidades de videoconferencia con el propósito de facilitar las reuniones y
+                    mejorar la eficiencia durante el tiempo de colaboración entre las/los Tutores y los Tutorados.</p>
+            </li>
+
+            <li>
+                <h5><strong>Sección "Acerca de Tutorías"</strong></h5>
+                <p>SWCAT dispone de una sección dedicada, denominada "Acerca de Tutorías", que ofrece Materiales
+                    Didácticos específicos vinculados a las tutorías. La finalidad de esta sección es proporcionar
+                    información detallada a la comunidad acerca de los distintos tipos de tutorías disponibles, sus
+                    objetivos, modalidades de participación, entre otros aspectos relevantes.</p>
+            </li>
+        </ul>
+
+    </div>
+
+    <div class="container-fluid custom-container-1 col-md-4">
+        <h2 class="mt-5">Iniciar Sesión</h2>
         <p>Selecciona tu rol para iniciar sesión:</p>
         <a href="{% url 'inicio_sesion_tutor' %}" class="btn btn-primary btn-lg btn-block mb-2 custom-link">Iniciar
-            Sesión como Tutor</a>
+            Sesión como
+            Tutor</a>
         <a href="{% url 'inicio_sesion_tutorado' %}" class="btn btn-primary btn-lg btn-block mb-2 custom-link">Iniciar
-            Sesión como Tutorado</a>
-    </section>
+            Sesión como
+            Tutorado</a>
 
-    <section class="mt-5">
-        <h2>Registrarse</h2>
+        <h2 class="mt-5">Registrarse</h2>
         <p>Selecciona tu rol para registrarte:</p>
         <a href="{% url 'registro_tutor' %}" class="btn btn-primary btn-lg btn-block mb-2 custom-link">Registrarse como
             Tutor</a>
         <a href="{% url 'registro_tutorado' %}" class="btn btn-primary btn-lg btn-block mb-2 custom-link">Registrarse
-            como Tutorado</a>
-    </section>
-
-    <section class="mt-5">
-        <h2>Últimas Actualizaciones</h2>
-        <p>Mantente informado sobre las novedades...</p>
-    </section>
+            como
+            Tutorado</a>
+    </div>
 
 </main>
 

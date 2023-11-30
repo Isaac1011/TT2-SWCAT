@@ -77,26 +77,28 @@
     <br>
     <br>
     <h4>Anuncios Grupales del Tutor</h4>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Tutor</th>
-                <th scope="col">Nota</th>
-                <th scope="col">Fecha</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for anuncio in anuncios_grupales %}
-            <tr>
-                <td>{{anuncio.idTutoriaGrupal.idTutor.nombre}} {{anuncio.idTutoriaGrupal.idTutor.apellidoPaterno}}
-                    {{anuncio.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
-                <td>{{anuncio.nota}}</td>
-                <td>{{anuncio.fecha}}</td>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Tutor</th>
+                    <th scope="col">Nota</th>
+                    <th scope="col">Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for anuncio in anuncios_grupales %}
+                <tr>
+                    <td>{{anuncio.idTutoriaGrupal.idTutor.nombre}} {{anuncio.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                        {{anuncio.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
+                    <td>{{anuncio.nota}}</td>
+                    <td>{{anuncio.fecha}}</td>
 
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 
     {% endif %}

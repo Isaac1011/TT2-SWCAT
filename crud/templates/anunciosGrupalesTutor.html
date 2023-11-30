@@ -7,34 +7,36 @@
 <main class="container mt-5 mb-5">
     <h1 class="text-center mb-4">Anuncios Grupales del Tutor</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Tutoría</th>
-                <th>Tutor</th>
-                <th>Nota</th>
-                <th>Fecha</th>
-                <th>Acciones</th> <!-- Nueva columna para acciones -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for anuncio in anuncios_grupales %}
-            <tr>
-                <td>{{anuncio.idTutoriaGrupal.nombreGrupo}}</td>
-                <td>{{anuncio.idTutoriaGrupal.idTutor.nombre}} {{anuncio.idTutoriaGrupal.idTutor.apellidoPaterno}}
-                    {{anuncio.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
-                <td>{{anuncio.nota}}</td>
-                <td>{{anuncio.fecha}}</td>
-                <td>
-                    <a href="{% url 'eliminar_anuncio_grupal_tutoria' anuncio.idAnunciosGrupalesTutor %}"
-                        class="btn btn-danger btn-sm">
-                        Eliminar
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Tutoría</th>
+                    <th scope="col">Tutor</th>
+                    <th scope="col">Nota</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Acciones</th> <!-- Nueva columna para acciones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for anuncio in anuncios_grupales %}
+                <tr>
+                    <td>{{anuncio.idTutoriaGrupal.nombreGrupo}}</td>
+                    <td>{{anuncio.idTutoriaGrupal.idTutor.nombre}} {{anuncio.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                        {{anuncio.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
+                    <td>{{anuncio.nota}}</td>
+                    <td>{{anuncio.fecha}}</td>
+                    <td>
+                        <a href="{% url 'eliminar_anuncio_grupal_tutoria' anuncio.idAnunciosGrupalesTutor %}"
+                            class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <!-- Para crear un anuncio al grupo -->
     <a href="{% url 'anuncio_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"

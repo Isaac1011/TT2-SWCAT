@@ -7,7 +7,7 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="custom-button">Guardar cambios</button>
+        <button type="submit" class="btn btn-primary btn-block custom-button">Guardar cambios</button>
     </form>
     <!-- Botón de Regresar -->
     <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
