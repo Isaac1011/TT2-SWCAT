@@ -18,7 +18,7 @@ class TutorRegistroForm(forms.ModelForm):
             'telefono': 'Número de teléfono'
         }
         widgets = {
-            'password': forms.TextInput(attrs={'placeholder': "", 'type': "password", 'class': 'form-control dark-mode-input', 'style': 'color: #ec0000'}),
+            'password': forms.TextInput(attrs={'placeholder': "", 'type': "password", 'class': 'form-control dark-mode-input'}),
             'numeroEmpleado': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'email': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
