@@ -56,7 +56,7 @@ def get_most_similar_question(user_question, faq):
     print('Similitud')
     print(max_similarity)
 
-    if max_similarity < 0.55:
+    if max_similarity < 0.8:
         best_match = None
 
     return best_match

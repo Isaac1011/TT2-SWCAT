@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Crear Reunión Zoom | SWCAT{% endblock %}
+{% block title %}Chatbot | SWCAT{% endblock %}
 
 {% block content %}
 
 <main class="container-fluid">
     <div class="row">
 
-        <!-- Bloque derecho (chatbot) -->
+        <!-- Bloque izquierdo (chatbot) -->
         <div class="col-md-8 col-lg-9">
-            <div class="container-fluid custom-container-1">
+            <div class="container-fluid custom-container-2">
                 <h1 class="text-primary mt-5 chatbot-title">Chatbot</h1>
 
                 <!-- Chat Container -->
@@ -43,7 +43,7 @@
         </div>
 
 
-        <!-- Bloque izquierdo (preguntas frecuentes) -->
+        <!-- Bloque derecho (preguntas frecuentes) -->
         <div class="col-md-4 col-lg-3">
             <div class="container-fluid custom-container-1">
                 <h3 class="text-primary mt-5 chatbot-title">Preguntas Frecuentes</h3>
@@ -57,6 +57,8 @@
                 </div>
             </div>
         </div>
+
+
     </div>
 </main>
 
@@ -65,6 +67,16 @@
     function goBack() {
         window.history.back();
     }
+
+    function scrollToBottom() {
+        var chatDiv = document.getElementById("chat");
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    // Llama a scrollToBottom después de cargar la página para desplazarse al fondo del chat.
+    window.onload = scrollToBottom;
+
+    // También puedes llamar a scrollToBottom después de cada actualización del chat.
 
     // Manejar clic en pregunta de FAQ
     document.querySelectorAll('.faq-question').forEach(function (questionLink) {

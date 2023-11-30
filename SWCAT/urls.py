@@ -128,10 +128,10 @@ urlpatterns = [
          name='crear_reunion_instantanea'),
 
     # Chatbot
-    path('menu/chatbot/', viewsChatbot.chatbot, name='chatbot'),
+    path('chatbot/', viewsChatbot.chatbot, name='chatbot'),
 
     # Materiales didácticos
-    path('visor-imagenes/', views.visor_imagenes, name='visor_imagenes'),
+    path('materialDidactico/', views.visor_imagenes, name='visor_imagenes'),
 
 
 

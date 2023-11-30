@@ -1,6 +1,6 @@
-<!-- visor_imagenes.html -->
-
 {% extends 'base.html' %}
+
+{% block title %}Material Didáctico | SWCAT{% endblock %}
 
 {% block content %}
 
@@ -9,7 +9,7 @@
 
 <main class="container mb-5">
     <section id="imageViewer" style="max-width: 100%; margin: 0 auto; position: relative;">
-        <img id="currentImage" src="{% static 'imagen1.png' %}" alt="Material Didáctico"
+        <img id="currentImage" src="{% static 'areasIntervencion.png' %}" alt="Material Didáctico"
             style="width: 100%; height: auto; max-height: 600px;">
     </section>
 
@@ -36,11 +36,11 @@
 <script>
     $(document).ready(function () {
         var images = [
-            "{% static 'imagen1.png' %}",
-            "{% static 'imagen2.png' %}",
-            "{% static 'imagen3.png' %}",
-            "{% static 'imagen4.png' %}",
-            "{% static 'imagen5.png' %}",
+            "{% static 'areasIntervencion.png' %}",
+            "{% static 'tareasTutor.png' %}",
+            "{% static 'tutoriaIndividual.png' %}",
+            "{% static 'tutoriaGrupal.png' %}",
+            "{% static 'PIT.png' %}",
         ];
         var currentIndex = 0;
 
