@@ -1126,14 +1126,14 @@ def enviar_mensaje(request, tutor_id, tutorado_id, es_grupal):
             mensaje = Mensaje.objects.create(
                 idChat=chat, tutorEnvia=tutorEnvia, contenido=contenido, fecha_envio=timezone.now())
 
-            mensajes_existentes = Mensaje.objects.filter(idChat=chat)
+            # mensajes_existentes = Mensaje.objects.filter(idChat=chat)
 
             context = {
                 'logged_in': logged_in,
                 'rol': rol,
                 'tutor': tutor,
                 'tutorado': tutorado,
-                'mensajes_existentes': mensajes_existentes,
+                # 'mensajes_existentes': mensajes_existentes,
                 'es_grupal_bool': es_grupal_bool,
                 'id_tutoria_individual': id_tutoria_individual,
                 'id_tutoria_grupal': id_tutoria_grupal
@@ -1143,14 +1143,14 @@ def enviar_mensaje(request, tutor_id, tutorado_id, es_grupal):
             return redirect('enviar_mensaje', tutor_id=tutor_id, tutorado_id=tutorado_id, es_grupal=es_grupal_bool)
 
     # Obtener mensajes asociados al Chat
-    mensajes_existentes = Mensaje.objects.filter(idChat=chat)
+    # mensajes_existentes = Mensaje.objects.filter(idChat=chat)
 
     context = {
         'logged_in': logged_in,
         'rol': rol,
         'tutor': tutor,
         'tutorado': tutorado,
-        'mensajes_existentes': mensajes_existentes,
+        # 'mensajes_existentes': mensajes_existentes,
         'es_grupal_bool': es_grupal_bool,
         'id_tutoria_individual': id_tutoria_individual,
         'id_tutoria_grupal': id_tutoria_grupal

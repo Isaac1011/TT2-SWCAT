@@ -4,10 +4,10 @@
 
 {% block content %}
 
-<main class="container-fluid mt-5 mb-5">
+<main class="container-fluid mt-5">
 
-    <!-- Chat Container -->
-    <div id="chat-container" class="bg-light p-3 my-4 rounded">
+    <div class="container-fluid custom-container-2" id="desplazar">
+        <!-- Chat Container -->
         <div id="chat" class="overflow-auto">
             <!-- Mensajes se cargarán dinámicamente aquí -->
         </div>
@@ -25,17 +25,20 @@
         </div>
     </form>
 
-    {% if es_grupal_bool %}
-    <a href="{% url 'detalle_tutoriaGrupal' id_tutoria_grupal.idTutoriaGrupal %}"
-        class="btn btn-outline-secondary back-button" style="margin-top: 20px;">
-        Regresar
-    </a>
-    {% else %}
-    <a href="{% url 'detalle_tutoriaIndividual' id_tutoria_individual.idTutoriaIndividual %}"
-        class="btn btn-outline-secondary back-button" style="margin-top: 20px;">
-        Regresar
-    </a>
-    {% endif %}
+    <!-- Botón Regresar -->
+    <div class="mt-3">
+        {% if es_grupal_bool %}
+        <a href="{% url 'detalle_tutoriaGrupal' id_tutoria_grupal.idTutoriaGrupal %}"
+            class="btn btn-outline-secondary back-button fixed-button">
+            Regresar
+        </a>
+        {% else %}
+        <a href="{% url 'detalle_tutoriaIndividual' id_tutoria_individual.idTutoriaIndividual %}"
+            class="btn btn-outline-secondary back-button fixed-button">
+            Regresar
+        </a>
+        {% endif %}
+    </div>
 
 
     <script>
@@ -48,7 +51,7 @@
                     data.mensajes.forEach(function (mensaje) {
                         var claseMensaje = mensaje.tutorEnvia ? 'tutor' : 'tutorado';
                         var contenido = mensaje.tutorEnvia ? '<strong>{{ tutor.nombre }} {{ tutor.apellidoPaterno }} {{ tutor.apellidoMaterno }}</strong>' : '<strong>{{ tutorado.nombre }} {{ tutorado.apellidoPaterno }} {{ tutorado.apellidoMaterno }}</strong>';
-                        contenido += ': ' + mensaje.contenido + '<small class="text-muted">' + mensaje.fecha_envio + '</small>';
+                        contenido += ': ' + mensaje.contenido + '<div class="hora">' + mensaje.fecha_envio + '</div>'; // Agrega la hora
                         $('#chat').append('<div class="message ' + claseMensaje + '">' + contenido + '</div>');
                     });
                     scrollToBottom();
@@ -96,7 +99,7 @@
         });
 
         function scrollToBottom() {
-            var chatContainer = document.getElementById('chat-container');
+            var chatContainer = document.getElementById('desplazar');
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     </script>
@@ -105,17 +108,30 @@
 
 <style>
     .message {
+        position: relative;
         padding: 10px;
         margin-bottom: 10px;
         border-radius: 8px;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+
+    .hora {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        color: #000000 !important;
     }
 
     .tutor {
-        background-color: #cce5ff;
+        background-color: #e9ebee;
+        margin-left: auto;
     }
 
     .tutorado {
-        background-color: #e6ffe6;
+        background-color: #e9ebee;
+        margin-right: auto;
     }
 
     #chat-container {
@@ -123,5 +139,8 @@
         overflow-y: auto;
     }
 </style>
+
+
+
 
 {% endblock %}
