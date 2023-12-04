@@ -20,10 +20,10 @@
 
     {% if tutorias_individuales or tutorias_grupales %}
     <div class="mt-4">
-        <h2>Tutorías Individuales a cargo:</h2>
-        <ul class="list-group">
+        <h2>Tutorías Individuales:</h2>
+        <ul class="list-group custom-list">
             {% for tutoria in tutorias_individuales %}
-            <li class="list-group-item">
+            <li class="custom-list-item mt-3">
                 <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}" class="tutoria-link">
                     Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{tutoria.idTutorado.nombre}}
                     {{tutoria.idTutorado.apellidoPaterno}} {{tutoria.idTutorado.apellidoMaterno}}
@@ -34,10 +34,10 @@
     </div>
 
     <div class="mt-4">
-        <h2>Tutorías Grupales a cargo:</h2>
-        <ul class="list-group">
+        <h2>Tutorías Grupales:</h2>
+        <ul class="list-group custom-list">
             {%for tutoria in tutorias_grupales %}
-            <li class="list-group-item">
+            <li class="custom-list-item mt-3">
                 <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal %}" class="tutoria-link">
                     Tutoría: {{ tutoria.nombreGrupo }} - Salón: {{ tutoria.salon }}
                 </a>

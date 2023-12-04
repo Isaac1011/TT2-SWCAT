@@ -18,6 +18,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap">
 
 
 
@@ -28,7 +29,8 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            /* font-family: Arial, sans-serif; */
+            font-family: 'Lato', sans-serif;
             background-color: #f7f7f7;
             margin: 0;
             padding: 0;
@@ -331,10 +333,31 @@
 
         /* Para las preguntas frecuentes */
         .custom-container-2 {
+            max-height: 500;
+            /* Establece la altura máxima del contenedor */
+            overflow-y: auto;
+            /* Agrega una barra de desplazamiento vertical cuando sea necesario */
+        }
+
+        /* Para las preguntas frecuentes */
+        .custom-container-3 {
             max-height: 460px;
             /* Establece la altura máxima del contenedor */
             overflow-y: auto;
             /* Agrega una barra de desplazamiento vertical cuando sea necesario */
+        }
+
+        /* Para la lista del menu de Tutorias Individuales y Grupales inscritas */
+        .custom-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        /* Para cada item de la lista del menu de Tutorias Individuales y Grupales inscritas */
+        .custom-list-item {
+            margin-bottom: 10px;
+            /* o ajusta según tus preferencias */
+            border: none;
         }
     </style>
 

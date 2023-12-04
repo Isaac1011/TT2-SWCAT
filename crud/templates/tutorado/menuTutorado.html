@@ -17,10 +17,10 @@
 
     {% if tutorias_individuales %}
     <div class="mt-4">
-        <h2>Tutorías Individuales inscritas:</h2>
-        <ul class="list-group">
+        <h2>Tutorías Individuales:</h2>
+        <ul class="list-group custom-list">
             {% for tutoria in tutorias_individuales %}
-            <li class="list-group-item">
+            <li class="custom-list-item mt-3">
                 <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}" class="tutoria-link">
                     Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
                 </a>
@@ -29,23 +29,23 @@
         </ul>
     </div>
     {% else %}
-    <p>No tienes Tutorías individuales inscritas</p>
+    <p>No tienes Tutorías individuales</p>
     {% endif %}
 
 
     {% if tutorias_grupales %}
     <div class="mt-4">
         <h2>Tutorías Grupales inscritas: </h2>
-        <ul class="list-group">
+        <ul class="list-group custom-list">
             {% for tutoria in tutorias_grupales %}
-            <li class="list-group-item">
+            <li class="custom-list-item mt-3">
                 <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal.idTutoriaGrupal %}"
                     class="tutoria-link">
                     Tutoría Grupal: {{ tutoria.idTutoriaGrupal.nombreGrupo }}
-                    Tutor: {{ tutoria.idTutoriaGrupal.idTutor.nombre}}
+                    - Tutor: {{ tutoria.idTutoriaGrupal.idTutor.nombre}}
                     {{tutoria.idTutoriaGrupal.idTutor.apellidoPaterno}}
                     {{tutoria.idTutoriaGrupal.idTutor.apellidoMaterno}}
-                    Salón: {{ tutoria.idTutoriaGrupal.salon }}
+                    - Salón: {{ tutoria.idTutoriaGrupal.salon }}
                 </a>
             </li>
             {% endfor %}
