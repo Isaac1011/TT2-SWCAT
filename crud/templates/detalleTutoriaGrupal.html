@@ -60,6 +60,12 @@
     <!-- Mostrar las notas del tutorado -->
     {% elif rol == 'Tutorado' %}
 
+    <a href="{% url 'enviar_mensaje' tutor_id=tutoria_grupal.idTutor.idTutor tutorado_id=tutorado.idTutorado es_grupal='true' %}"
+        class="btn btn-primary mb-2 custom-link">
+        Enviar mensaje al Tutor
+    </a>
+
+
     <h4>Reunión: <strong>{{ videoconferencia_grupal.first.topic }}</strong></h4>
 
     {% if videoconferencia_grupal %}

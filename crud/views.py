@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import TutorRegistroForm, TutorInicioSesionForm, TutoradoRegistroForm, TutoradoInicioSesionForm, TutoriaIndividualForm, BitacoraIndividualTutorForm, NotasIndividualesTutoradoForm, TutoriaGrupalForm, BitacoraGrupalTutorForm, AnunciosGrupalesTutorForm
-from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal, ListaTutoriaGrupal, VideoconferenciasIndividuales, VideoconferenciasGrupales
+from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor, NotasIndividualesTutorado, TutoriaGrupal, ListaTutoriaGrupal, VideoconferenciasIndividuales, VideoconferenciasGrupales, Chat, Mensaje
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.http import require_http_methods
@@ -17,6 +17,7 @@ from django.db.models import F
 from .forms import TutorForm
 from .models import Tutorado
 from .forms import TutoradoForm
+from django.utils import timezone
 
 
 # Create your views here.
@@ -682,6 +683,13 @@ def detalle_tutoriaGrupal(request, tutoria_id):
         # Obtener los anuncios de la tutoría grupal
         anuncios_grupales = AnunciosGrupalesTutor.objects.filter(
             idTutoriaGrupal=tutoria_grupal)
+
+        # Si es un Tutorado, lo buscamos
+        if rol == 'Tutorado':
+            tutorado = Tutorado.objects.get(
+                boletaTutorado=request.session['boleta_tutorado'])
+        else:
+            tutorado = False
         # Podemos obtener los detalles que queramos, como los anuncios del tutor
         # ...
 
@@ -691,6 +699,7 @@ def detalle_tutoriaGrupal(request, tutoria_id):
 
         # Renderizar el template de detalle_tutoria.html con la instancia de tutoría individual
         context = {
+            'tutorado': tutorado,
             'tutoria_grupal': tutoria_grupal,
             'tutorados_pertenecientes': tutorados_pertenecientes,
             'bitacoras_grupales': bitacoras_grupales,
@@ -715,9 +724,12 @@ def buscar_tutorados_tutoria_grupal(request, tutoria_id):
     tutoria_grupal = get_object_or_404(TutoriaGrupal, pk=tutoria_id)
     tutorados_especificos = ListaTutoriaGrupal.objects.filter(
         idTutoriaGrupal=tutoria_grupal).select_related('idTutorado')
+    tutor = Tutor.objects.get(
+        numeroEmpleado=request.session['numero_empleado'])
 
     context = {
         'tutorados_especificos': tutorados_especificos,
+        'tutor': tutor,
         'logged_in': logged_in,
         'rol': rol
     }
@@ -1066,3 +1078,100 @@ def editar_tutorado(request, tutorado_id):
         'rol': rol
     }
     return render(request, 'tutorado/editarTutorado.html', context)
+
+
+def enviar_mensaje(request, tutor_id, tutorado_id, es_grupal):
+    # Para proteger la ruta
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si NO estás logeado Y no eres un Tutor or un Tutorado, redirige al inicio.
+    if (not logged_in) or (rol not in ['Tutor', 'Tutorado']):
+        return redirect('inicio')
+
+    # Obtener instancias de Tutor y Tutorado
+    tutor = get_object_or_404(Tutor, idTutor=tutor_id)
+    tutorado = get_object_or_404(Tutorado, idTutorado=tutorado_id)
+
+    # Verificar si ya existe un Chat entre el Tutor y el Tutorado
+    chat, creado = Chat.objects.get_or_create(
+        idTutor=tutor, idTutorado=tutorado)
+
+    # Convierte el parámetro a un valor booleano, para saber si estamos en una Tutoria Grupal o Individual
+    es_grupal_bool = es_grupal.lower() == 'true'
+
+    if es_grupal_bool:
+        # Obtener el objeto ListaTutoriaGrupal que cumple con los criterios de búsqueda
+        lista_tutoria_grupal = get_object_or_404(
+            ListaTutoriaGrupal, idTutorado=tutorado, idTutoriaGrupal__idTutor=tutor)
+
+        # Puedes acceder al idTutoriaGrupal resultante con lista_tutoria_grupal.idTutoriaGrupal
+        id_tutoria_grupal = lista_tutoria_grupal.idTutoriaGrupal
+        id_tutoria_individual = False
+
+    else:
+        id_tutoria_individual = get_object_or_404(
+            TutoriaIndividual, idTutor=tutor, idTutorado=tutorado)
+        id_tutoria_grupal = False
+
+    # Si la solicitud es un POST, procesar el formulario
+    if request.method == 'POST':
+        contenido = request.POST.get('contenido', '')
+        if contenido:
+            # Crear y guardar un nuevo mensaje
+            if rol == 'Tutor':
+                tutorEnvia = True
+            else:
+                tutorEnvia = False
+            mensaje = Mensaje.objects.create(
+                idChat=chat, tutorEnvia=tutorEnvia, contenido=contenido, fecha_envio=timezone.now())
+
+            mensajes_existentes = Mensaje.objects.filter(idChat=chat)
+
+            context = {
+                'logged_in': logged_in,
+                'rol': rol,
+                'tutor': tutor,
+                'tutorado': tutorado,
+                'mensajes_existentes': mensajes_existentes,
+                'es_grupal_bool': es_grupal_bool,
+                'id_tutoria_individual': id_tutoria_individual,
+                'id_tutoria_grupal': id_tutoria_grupal
+            }
+
+            # Redirige a la misma vista después de enviar el mensaje
+            return redirect('enviar_mensaje', tutor_id=tutor_id, tutorado_id=tutorado_id, es_grupal=es_grupal_bool)
+
+    # Obtener mensajes asociados al Chat
+    mensajes_existentes = Mensaje.objects.filter(idChat=chat)
+
+    context = {
+        'logged_in': logged_in,
+        'rol': rol,
+        'tutor': tutor,
+        'tutorado': tutorado,
+        'mensajes_existentes': mensajes_existentes,
+        'es_grupal_bool': es_grupal_bool,
+        'id_tutoria_individual': id_tutoria_individual,
+        'id_tutoria_grupal': id_tutoria_grupal
+    }
+
+    return render(request, 'mensaje.html', context)
+
+
+def obtener_mensajes(request, tutor_id, tutorado_id, es_grupal):
+    tutor = get_object_or_404(Tutor, idTutor=tutor_id)
+    tutorado = get_object_or_404(Tutorado, idTutorado=tutorado_id)
+    chat, creado = Chat.objects.get_or_create(
+        idTutor=tutor, idTutorado=tutorado)
+    mensajes_existentes = Mensaje.objects.filter(idChat=chat)
+
+    mensajes_json = []
+    for mensaje in mensajes_existentes:
+        mensajes_json.append({
+            'contenido': mensaje.contenido,
+            'tutorEnvia': mensaje.tutorEnvia,
+            'fecha_envio': mensaje.fecha_envio.strftime("%Y-%m-%d %H:%M:%S"),
+        })
+
+    return JsonResponse({'mensajes': mensajes_json})

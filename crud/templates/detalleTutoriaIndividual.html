@@ -12,6 +12,21 @@
     <p>Tutorado: <strong>{{tutoria_individual.idTutorado.nombre}} {{tutoria_individual.idTutorado.apellidoPaterno}}
             {{tutoria_individual.idTutorado.apellidoMaterno}}</strong></p>
 
+    {% if rol == 'Tutor' %}
+    <a href="{% url 'enviar_mensaje' tutor_id=tutoria_individual.idTutor.idTutor tutorado_id=tutoria_individual.idTutorado.idTutorado es_grupal='false' %}"
+        class="btn btn-primary mb-2 custom-link">
+        Enviar mensaje al Tutorado
+    </a>
+    {% else %}
+    <a href="{% url 'enviar_mensaje' tutor_id=tutoria_individual.idTutor.idTutor tutorado_id=tutoria_individual.idTutorado.idTutorado es_grupal='false' %}"
+        class="btn btn-primary mb-2 custom-link">
+        Enviar mensaje al Tutor
+    </a>
+
+    {% endif %}
+
+
+
     <h4>Reunión: <strong>{{videoconferencia_individual.first.topic}}</strong></h4>
     {% if rol == 'Tutor' %}
     {% if videoconferencia_individual %}

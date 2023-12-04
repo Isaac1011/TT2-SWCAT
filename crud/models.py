@@ -153,3 +153,18 @@ class VideoconferenciasGrupales(models.Model):
     join_url = models.URLField(max_length=200, default=None)
     meeting_code = models.CharField(max_length=30, default=None)
     meeting_password = models.CharField(max_length=30, default=None)
+
+
+class Chat(models.Model):
+    idChat = models.AutoField(primary_key=True)
+    idTutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    idTutorado = models.ForeignKey(Tutorado, on_delete=models.CASCADE)
+
+
+class Mensaje(models.Model):
+    idMensaje = models.AutoField(primary_key=True)
+    idChat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    tutorEnvia = models.BooleanField(
+        default=False, null=False)  # Agregado null=False
+    contenido = models.TextField()
+    fecha_envio = models.DateTimeField(auto_now_add=True)

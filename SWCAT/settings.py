@@ -40,8 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crud',
     'zoom',
-    'chatbot'
+    'chatbot',
 ]
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

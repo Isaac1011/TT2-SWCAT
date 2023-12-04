@@ -10,6 +10,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th scope="col">Mensaje</th>
                     <th scope="col">Número de Boleta</th>
                     <th scope="col">Apellido Paterno</th>
                     <th scope="col">Apellido Materno</th>
@@ -18,12 +19,18 @@
                     <th scope="col">Semestre</th>
                     <th scope="col">Teléfono</th>
                     <th scope="col">No. Tutorías Inscritas</th>
-                    <th scope="col">Acciones</th> <!-- Nueva columna para acciones -->
+                    <th scope="col">Eliminar</th> <!-- Nueva columna para acciones -->
                 </tr>
             </thead>
             <tbody>
                 {% for tutorado_especifico in tutorados_especificos %}
                 <tr>
+                    <td>
+                        <a href="{% url 'enviar_mensaje' tutor_id=tutor.idTutor tutorado_id=tutorado_especifico.idTutorado.idTutorado es_grupal='true' %}"
+                            class="btn btn-primary btn-sm">
+                            Mensajes
+                        </a>
+                    </td>
                     <td>{{tutorado_especifico.idTutorado.boletaTutorado}}</td>
                     <td>{{tutorado_especifico.idTutorado.apellidoPaterno}}</td>
                     <td>{{tutorado_especifico.idTutorado.apellidoMaterno}}</td>
