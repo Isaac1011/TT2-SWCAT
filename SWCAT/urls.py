@@ -144,9 +144,4 @@ urlpatterns = [
          views.obtener_mensajes, name='obtener_mensajes'),
 
 
-
-
-
-
-
 ]

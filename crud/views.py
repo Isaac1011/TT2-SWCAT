@@ -18,9 +18,7 @@ from .forms import TutorForm
 from .models import Tutorado
 from .forms import TutoradoForm
 from django.utils import timezone
-from datetime import datetime
 import pytz
-from django import forms
 
 
 # Create your views here.
@@ -1046,6 +1044,7 @@ def anuncio_tutor_tutoriaGrupal(request, tutoria_id):
             anuncio = form.save(commit=False)
             anuncio.idTutoriaGrupal = tutoria_grupal
             anuncio.save()
+
             return redirect('detalle_tutoriaGrupal', tutoria_id=tutoria_id)
     else:
         form = NotasIndividualesTutoradoForm()
