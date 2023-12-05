@@ -25,20 +25,7 @@
         </div>
     </form>
 
-    <!-- Botón Regresar -->
-    <!-- <div class="mt-3">
-        {% if es_grupal_bool %}
-        <a href="{% url 'detalle_tutoriaGrupal' id_tutoria_grupal.idTutoriaGrupal %}"
-            class="btn btn-outline-secondary back-button fixed-button">
-            Regresar
-        </a>
-        {% else %}
-        <a href="{% url 'detalle_tutoriaIndividual' id_tutoria_individual.idTutoriaIndividual %}"
-            class="btn btn-outline-secondary back-button fixed-button">
-            Regresar
-        </a>
-        {% endif %}
-    </div> -->
+
     <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
         Regresar
     </button>
@@ -53,7 +40,7 @@
 
         function cargarMensajes() {
             $.ajax({
-                url: '{% url "obtener_mensajes" tutor_id=tutor.idTutor tutorado_id=tutorado.idTutorado es_grupal=es_grupal_bool %}',
+                url: '{% url "obtener_mensajes" tutor_id=tutor.idTutor tutorado_id=tutorado.idTutorado %}',
                 method: 'GET',
                 success: function (data) {
                     $('#chat').empty();
@@ -76,7 +63,7 @@
             if (contenido) {
                 var csrf_token = $('input[name=csrfmiddlewaretoken]').val();  // Obtener el token CSRF del formulario
                 $.ajax({
-                    url: '{% url "enviar_mensaje" tutor_id=tutor.idTutor tutorado_id=tutorado.idTutorado es_grupal=es_grupal_bool %}',
+                    url: '{% url "enviar_mensaje" tutor_id=tutor.idTutor tutorado_id=tutorado.idTutorado %}',
                     method: 'POST',
                     headers: { 'X-CSRFToken': csrf_token },  // Incluir el token CSRF en las cabeceras
                     data: { contenido: contenido },

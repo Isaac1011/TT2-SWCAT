@@ -60,7 +60,7 @@
     <!-- Mostrar las notas del tutorado -->
     {% elif rol == 'Tutorado' %}
 
-    <a href="{% url 'enviar_mensaje' tutor_id=tutoria_grupal.idTutor.idTutor tutorado_id=tutorado.idTutorado es_grupal='true' %}"
+    <a href="{% url 'enviar_mensaje' tutor_id=tutoria_grupal.idTutor.idTutor tutorado_id=tutorado.idTutorado %}"
         class="btn btn-primary mb-2 custom-link">
         Enviar mensaje al Tutor
     </a>

@@ -136,11 +136,11 @@ urlpatterns = [
 
     # Mensajes
     path(
-        'menu/enviar_mensaje/<int:tutor_id>/<int:tutorado_id>/<str:es_grupal>/',
+        'menu/enviar_mensaje/<int:tutor_id>/<int:tutorado_id>/',
         views.enviar_mensaje,
         name='enviar_mensaje'
     ),
-    path('menu/obtener_mensajes/<int:tutor_id>/<int:tutorado_id>/<str:es_grupal>/',
+    path('menu/obtener_mensajes/<int:tutor_id>/<int:tutorado_id>/',
          views.obtener_mensajes, name='obtener_mensajes'),
 
 

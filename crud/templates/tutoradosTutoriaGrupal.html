@@ -26,7 +26,7 @@
                 {% for tutorado_especifico in tutorados_especificos %}
                 <tr>
                     <td>
-                        <a href="{% url 'enviar_mensaje' tutor_id=tutor.idTutor tutorado_id=tutorado_especifico.idTutorado.idTutorado es_grupal='true' %}"
+                        <a href="{% url 'enviar_mensaje' tutor_id=tutor.idTutor tutorado_id=tutorado_especifico.idTutorado.idTutorado %}"
                             class="btn btn-primary btn-sm">
                             Mensajes
                         </a>
