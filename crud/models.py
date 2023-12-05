@@ -20,6 +20,7 @@ class Tutor(models.Model):
     telefono = models.CharField(max_length=10, default=None)
     zoomUserID = models.CharField(
         max_length=30, default=None, null=True, blank=True)
+    acepta_terminos = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # Antes de guardar, convierte la contraseña en un hash seguro
@@ -45,6 +46,7 @@ class Tutorado(models.Model):
     telefono = models.CharField(max_length=10, default=None)
     numTutoresAsignados = models.IntegerField(
         default=0, validators=[MinValueValidator(0), MaxValueValidator(3)])
+    acepta_terminos = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # Antes de guardar, convierte la contraseña en un hash seguro

@@ -18,6 +18,9 @@ from .forms import TutorForm
 from .models import Tutorado
 from .forms import TutoradoForm
 from django.utils import timezone
+from datetime import datetime
+import pytz
+from django import forms
 
 
 # Create your views here.
@@ -326,36 +329,86 @@ def registro_tutor(request):
     if request.method == 'POST':
         form = TutorRegistroForm(request.POST)
         if form.is_valid():
-            numero_empleado = form.cleaned_data['numeroEmpleado']
-            form.save()
-            # Inicio de sesión exitoso
-            request.session['logged_in'] = True
-            request.session['rol'] = 'Tutor'
-            request.session['numero_empleado'] = numero_empleado
-            return redirect('menu')
+            # Validar la estructura del email
+            email = form.cleaned_data['email']
+            if not email_valido(email):
+                messages.error(request, 'Ingrese un email válido.')
+            else:
+                # Validar que el número de teléfono solo contenga números
+                telefono = form.cleaned_data['telefono']
+                if not telefono.isdigit():
+                    messages.error(
+                        request, 'Ingrese un número de teléfono válido.')
+                else:
+                    if form.cleaned_data['acepta_terminos']:
+                        numero_empleado = form.cleaned_data['numeroEmpleado']
+                        form.save()
+                        # Inicio de sesión exitoso
+                        request.session['logged_in'] = True
+                        request.session['rol'] = 'Tutor'
+                        request.session['numero_empleado'] = numero_empleado
+                        return redirect('menu')
+                    else:
+                        messages.error(
+                            request, 'Debe aceptar los términos y condiciones para registrarse.')
+        else:
+            # Agregar mensajes de error del formulario a messages
+            for field, error_list in form.errors.items():
+                for error in error_list:
+                    messages.error(request, f'{field.capitalize()}: {error}')
+
     else:  # GET
         form = TutorRegistroForm()
-    return render(request, 'tutor/registroTutor.html', {
-        'form': form
-    })
+
+    return render(request, 'tutor/registroTutor.html', {'form': form})
+
+
+def email_valido(email):
+    from django.core.validators import validate_email
+    from django.core.exceptions import ValidationError
+
+    try:
+        validate_email(email)
+        return True
+    except ValidationError:
+        return False
 
 
 def registro_tutorado(request):
     if request.method == 'POST':
         form = TutoradoRegistroForm(request.POST)
         if form.is_valid():
-            boleta_tutorado = form.cleaned_data['boletaTutorado']
-            form.save()
-            # Inicio de sesión exitoso
-            request.session['logged_in'] = True
-            request.session['rol'] = 'Tutorado'
-            request.session['boleta_tutorado'] = boleta_tutorado
-            return redirect('menu')
+            # Validar la estructura del email
+            email = form.cleaned_data['email']
+            if not email_valido(email):
+                messages.error(request, 'Ingrese un email válido.')
+            else:
+                # Validar que el número de teléfono solo contenga números
+                telefono = form.cleaned_data['telefono']
+                if not telefono.isdigit():
+                    messages.error(
+                        request, 'Ingrese un número de teléfono válido.')
+                else:
+                    if form.cleaned_data['acepta_terminos']:
+                        boleta_tutorado = form.cleaned_data['boletaTutorado']
+                        form.save()
+                        # Inicio de sesión exitoso
+                        request.session['logged_in'] = True
+                        request.session['rol'] = 'Tutorado'
+                        request.session['boleta_tutorado'] = boleta_tutorado
+                        return redirect('menu')
+                    else:
+                        messages.error(
+                            request, 'Debe aceptar los términos y condiciones para registrarse.')
+        else:
+            # Agregar mensajes de error del formulario a messages
+            for field, error_list in form.errors.items():
+                for error in error_list:
+                    messages.error(request, f'{field.capitalize()}: {error}')
     else:  # GET
         form = TutoradoRegistroForm()
-    return render(request, 'tutorado/registroTutorado.html', {
-        'form': form
-    })
+
+    return render(request, 'tutorado/registroTutorado.html', {'form': form})
 
 
 def inicio_sesion_tutor(request):
@@ -379,7 +432,7 @@ def inicio_sesion_tutor(request):
                 else:
                     # Credenciales inválidas
                     messages.error(
-                        request, 'Credenciales inválidas. Inténtalo de nuevo.')
+                        request, 'Contraseña incorrecta. Inténtalo de nuevo.')
             except Tutor.DoesNotExist:
                 # Tutor no encontrado
                 messages.error(request, 'Tutor no encontrado.')
@@ -408,6 +461,10 @@ def inicio_sesion_tutorado(request):
                     request.session['rol'] = 'Tutorado'
                     request.session['boleta_tutorado'] = boleta_tutorado
                     return redirect('menu')
+                else:
+                    # Credenciales inválidas
+                    messages.error(
+                        request, 'Contraseña incorrecta. Inténtalo de nuevo.')
 
             except Tutorado.DoesNotExist:
                 # Tutor no encontrado
@@ -723,7 +780,7 @@ def buscar_tutorados_tutoria_grupal(request, tutoria_id):
     # Lógica para obtener los tutorados específicos según el ID de la tutoría
     tutoria_grupal = get_object_or_404(TutoriaGrupal, pk=tutoria_id)
     tutorados_especificos = ListaTutoriaGrupal.objects.filter(
-        idTutoriaGrupal=tutoria_grupal).select_related('idTutorado')
+        idTutoriaGrupal=tutoria_grupal).select_related('idTutorado').order_by('idTutorado__apellidoPaterno')
     tutor = Tutor.objects.get(
         numeroEmpleado=request.session['numero_empleado'])
 
@@ -1160,6 +1217,14 @@ def enviar_mensaje(request, tutor_id, tutorado_id, es_grupal):
 
 
 def obtener_mensajes(request, tutor_id, tutorado_id, es_grupal):
+    # Para proteger la ruta
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si NO estás logeado Y no eres un Tutor or un Tutorado, redirige al inicio.
+    if (not logged_in) or (rol not in ['Tutor', 'Tutorado']):
+        return redirect('inicio')
+
     tutor = get_object_or_404(Tutor, idTutor=tutor_id)
     tutorado = get_object_or_404(Tutorado, idTutorado=tutorado_id)
     chat, creado = Chat.objects.get_or_create(
@@ -1168,10 +1233,14 @@ def obtener_mensajes(request, tutor_id, tutorado_id, es_grupal):
 
     mensajes_json = []
     for mensaje in mensajes_existentes:
+        # Convertir la fecha y hora a la zona horaria de Ciudad de México
+        fecha_envio_mexico = mensaje.fecha_envio.astimezone(
+            pytz.timezone('America/Mexico_City'))
+
         mensajes_json.append({
             'contenido': mensaje.contenido,
             'tutorEnvia': mensaje.tutorEnvia,
-            'fecha_envio': mensaje.fecha_envio.strftime("%Y-%m-%d %H:%M:%S"),
+            'fecha_envio': fecha_envio_mexico.strftime("%Y-%m-%d %H:%M:%S %Z"),
         })
 
     return JsonResponse({'mensajes': mensajes_json})

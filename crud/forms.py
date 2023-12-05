@@ -3,10 +3,13 @@ from .models import Tutor, Tutorado, TutoriaIndividual, BitacoraIndividualTutor,
 
 
 class TutorRegistroForm(forms.ModelForm):
+
     class Meta:
         model = Tutor
-        fields = ['numeroEmpleado', 'email', 'password', 'nombre',
-                  'apellidoPaterno', 'apellidoMaterno', 'cubiculo', 'telefono']
+        fields = [
+            'numeroEmpleado', 'email', 'password', 'nombre',
+            'apellidoPaterno', 'apellidoMaterno', 'cubiculo', 'telefono', 'acepta_terminos'
+        ]
         labels = {
             'password': 'Contraseña *',
             'numeroEmpleado': 'Número de Empleado *',
@@ -14,8 +17,9 @@ class TutorRegistroForm(forms.ModelForm):
             'nombre': 'Nombre *',
             'apellidoPaterno': 'Apellido paterno *',
             'apellidoMaterno': 'Apellido materno *',
-            'cubiculo': 'Cubículo',
-            'telefono': 'Número de teléfono'
+            'cubiculo': 'Cubículo *',
+            'telefono': 'Número de teléfono *',
+            'acepta_terminos': 'He leído y acepto los Términos y Condiciones *'
         }
         widgets = {
             'password': forms.TextInput(attrs={'placeholder': "", 'type': "password", 'class': 'form-control dark-mode-input'}),
@@ -26,6 +30,7 @@ class TutorRegistroForm(forms.ModelForm):
             'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'cubiculo': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'acepta_terminos': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
 
@@ -50,7 +55,7 @@ class TutoradoRegistroForm(forms.ModelForm):
     class Meta:
         model = Tutorado
         fields = ['boletaTutorado', 'email', 'password', 'nombre',
-                  'apellidoPaterno', 'apellidoMaterno', 'semestre', 'telefono']
+                  'apellidoPaterno', 'apellidoMaterno', 'semestre', 'telefono', 'acepta_terminos']
         labels = {
             'password': 'Contraseña *',
             'boletaTutorado': 'Número de Boleta *',
@@ -58,8 +63,9 @@ class TutoradoRegistroForm(forms.ModelForm):
             'nombre': 'Nombre *',
             'apellidoPaterno': 'Apellido paterno *',
             'apellidoMaterno': 'Apellido materno *',
-            'semestre': 'Número de semestre',
-            'telefono': 'Número de teléfono',
+            'semestre': 'Número de semestre *',
+            'telefono': 'Número de teléfono *',
+            'acepta_terminos': 'He leído y acepto los Términos y Condiciones *'
         }
         widgets = {
             'password': forms.TextInput(attrs={'placeholder': "", 'type': "password", 'class': 'form-control dark-mode-input'}),
@@ -70,8 +76,7 @@ class TutoradoRegistroForm(forms.ModelForm):
             'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'semestre': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
-
-
+            'acepta_terminos': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
 # Crea un nuevo formulario para el inicio de sesión sin estar basado en el modelo Tutorado poder realizar el inicio de sesión correctamente sin que se genere el error de unicidad al verificar las credenciales.

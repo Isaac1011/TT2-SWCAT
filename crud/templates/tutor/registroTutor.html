@@ -6,14 +6,82 @@
 
     <h1 class="text-center mb-4">Registrar Tutor</h1>
 
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
 
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        <div class="form-group">
+            {{ form.numeroEmpleado.label_tag }}
+            {{ form.numeroEmpleado }}
+
+            {{ form.email.label_tag }}
+            {{ form.email }}
+
+            {{ form.password.label_tag }}
+            {{ form.password }}
+
+            {{ form.nombre.label_tag }}
+            {{ form.nombre }}
+
+            {{ form.apellidoPaterno.label_tag }}
+            {{ form.apellidoPaterno }}
+
+            {{ form.apellidoMaterno.label_tag }}
+            {{ form.apellidoMaterno }}
+
+            {{ form.cubiculo.label_tag }}
+            {{ form.cubiculo }}
+
+            {{ form.telefono.label_tag }}
+            {{ form.telefono }}
+        </div>
+
+        <!-- Otros campos del formulario -->
+
+        <div class="terminos-container form-group mt-2">
+            {{ form.acepta_terminos }}
+            <label for="{{ form.acepta_terminos.id_for_label }}">
+                He leído y acepto los <a href="#" id="terminos-link">Términos y Condiciones</a>
+            </label>
+        </div>
+
         <div class="form-group mt-4">
             <button type="submit" class="btn btn-primary btn-block custom-button">Registrarse</button>
         </div>
     </form>
+
+    <!-- Modal para mostrar los Términos y Condiciones -->
+    <div class="modal" tabindex="-1" role="dialog" id="terminosModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Términos y Condiciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido de tus Términos y Condiciones -->
+                    <!-- Puedes incluir el texto directamente o cargarlo dinámicamente desde un archivo o base de datos -->
+                    <p>Aquí van tus Términos y Condiciones...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Botón de Regresar -->
     <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
@@ -27,6 +95,17 @@
     function goBack() {
         window.history.back();
     }
+
+    // Manejar la apertura del modal cuando se hace clic en el enlace
+    document.getElementById('terminos-link').addEventListener('click', function () {
+        $('#terminosModal').modal('show');
+    });
+
+    $(document).ready(function () {
+        $('#terminosModal').modal({
+            show: false
+        });
+    });
 </script>
 
 {% endblock %}
