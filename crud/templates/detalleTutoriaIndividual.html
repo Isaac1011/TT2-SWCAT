@@ -36,7 +36,8 @@
         Iniciar reunión
     </a>
 
-    <form method="POST" action="{% url 'eliminar_reunion_individual' videoconferencia_individual.first.meeting_code %}">
+    <form method="POST"
+        action="{% url 'eliminar_reunion_individual' tutor_id=tutoria_individual.idTutor.idTutor reunion_id=videoconferencia_individual.first.meeting_code %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar reunión</button>
     </form>

@@ -27,7 +27,7 @@ from django.http import Http404
 # Esta función utiliza la decoración @require_http_methods(['GET']) para asegurarse de que solo responde a solicitudes GET.
 
 
-def eliminar_bitacora_tutoria_individual(request, id_bitacora):
+def eliminar_bitacora_tutoria_individual(request, id_tutor, id_bitacora):
     # Verifica si el usuario está logeado y es un tutor
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
@@ -36,17 +36,57 @@ def eliminar_bitacora_tutoria_individual(request, id_bitacora):
     if not logged_in or rol != 'Tutor':
         return redirect('inicio')
 
-    # Obtén la bitácora o devuelve un error 404 si no existe
-    bitacora = get_object_or_404(
-        BitacoraIndividualTutor, idBitacoraIndividual=id_bitacora)
+    try:
+        # Obtener la instancia de Tutorado según el ID proporcionado
+        bitacora = BitacoraIndividualTutor.objects.get(
+            idBitacoraIndividual=id_bitacora)
+    except BitacoraIndividualTutor.DoesNotExist:
+        messages.error(
+            request, 'No fue posible encontrar la Bitácora Individual con el ID {}.'.format(id_bitacora))
+        return redirect('menu')
 
-    # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la bitácora.
+    acceso = False
 
-    # Elimina la bitácora
-    bitacora.delete()
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutor':
+        # Busco el tutor que tiene la sesión
+        try:
+            tutorSesion = Tutor.objects.get(
+                numeroEmpleado=request.session['numero_empleado'])
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de sesión')
+            return redirect('menu')
 
-    # Redirige a la página de detalle de bitácoras individuales o a donde lo necesites
-    return redirect('detalle_bitacora_individual', id_tutoria=bitacora.idTutoriaIndividual.idTutoriaIndividual)
+        try:
+            tutor = Tutor.objects.get(
+                idTutor=id_tutor)
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de parámetro')
+            return redirect('menu')
+
+        if tutor.idTutor == tutorSesion.idTutor:
+            acceso = True
+
+    if acceso:
+
+        # Obtén la bitácora o devuelve un error 404 si no existe
+        bitacora = get_object_or_404(
+            BitacoraIndividualTutor, idBitacoraIndividual=id_bitacora)
+
+        # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la bitácora.
+
+        # Elimina la bitácora
+        bitacora.delete()
+
+        # Redirige a la página de detalle de bitácoras individuales o a donde lo necesites
+        return redirect('detalle_bitacora_individual', id_tutoria=bitacora.idTutoriaIndividual.idTutoriaIndividual)
+
+    else:
+        messages.error(
+            request, 'No tienes acceso a eliminar la Bitácora Individual con ID {}.'.format(id_bitacora))
+        return redirect('menu')
 
 
 @require_http_methods(['GET'])
@@ -110,7 +150,7 @@ def detalle_bitacora_individual(request, id_tutoria):
         return redirect('menu')
 
 
-def eliminar_bitacora_grupal_tutoria(request, id_bitacora):
+def eliminar_bitacora_grupal_tutoria(request, id_tutor, id_bitacora):
     # Verifica si el usuario está logeado y es un tutor
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
@@ -119,17 +159,57 @@ def eliminar_bitacora_grupal_tutoria(request, id_bitacora):
     if not logged_in or rol != 'Tutor':
         return redirect('inicio')
 
-    # Obtén la bitácora grupal o devuelve un error 404 si no existe
-    bitacora_grupal = get_object_or_404(
-        BitacoraGrupalTutor, idBitacoraGrupalTutor=id_bitacora)
+    try:
+        # Obtener la instancia de Tutorado según el ID proporcionado
+        bitacora = BitacoraGrupalTutor.objects.get(
+            idBitacoraGrupalTutor=id_bitacora)
+    except BitacoraGrupalTutor.DoesNotExist:
+        messages.error(
+            request, 'No fue posible encontrar la Bitácora Grupal con el ID {}.'.format(id_bitacora))
+        return redirect('menu')
 
-    # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la bitácora grupal.
+    acceso = False
 
-    # Elimina la bitácora grupal
-    bitacora_grupal.delete()
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutor':
+        # Busco el tutor que tiene la sesión
+        try:
+            tutorSesion = Tutor.objects.get(
+                numeroEmpleado=request.session['numero_empleado'])
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de sesión')
+            return redirect('menu')
 
-    # Redirige a la página de detalle de bitácoras grupales o a donde lo necesites
-    return redirect('detalle_bitacora_grupal', tutoria_id=bitacora_grupal.idTutoriaGrupal.idTutoriaGrupal)
+        try:
+            tutor = Tutor.objects.get(
+                idTutor=id_tutor)
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de parámetro')
+            return redirect('menu')
+
+        if tutor.idTutor == tutorSesion.idTutor:
+            acceso = True
+
+    if acceso:
+
+        # Obtén la bitácora grupal o devuelve un error 404 si no existe
+        bitacora_grupal = get_object_or_404(
+            BitacoraGrupalTutor, idBitacoraGrupalTutor=id_bitacora)
+
+        # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la bitácora grupal.
+
+        # Elimina la bitácora grupal
+        bitacora_grupal.delete()
+
+        # Redirige a la página de detalle de bitácoras grupales o a donde lo necesites
+        return redirect('detalle_bitacora_grupal', tutoria_id=bitacora_grupal.idTutoriaGrupal.idTutoriaGrupal)
+
+    else:
+        messages.error(
+            request, 'No tienes acceso a eliminar la Bitácora Grupal con ID {}.'.format(id_bitacora))
+        return redirect('menu')
 
 
 def detalle_bitacora_grupal(request, tutoria_id):
@@ -185,7 +265,7 @@ def detalle_bitacora_grupal(request, tutoria_id):
         return redirect('menu')
 
 
-def eliminar_anuncio_grupal_tutoria(request, id_anuncio):
+def eliminar_anuncio_grupal_tutoria(request, id_tutor, id_anuncio):
     # Verifica si el usuario está logeado y es un tutor
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
@@ -194,17 +274,57 @@ def eliminar_anuncio_grupal_tutoria(request, id_anuncio):
     if not logged_in or rol != 'Tutor':
         return redirect('inicio')
 
-    # Obtén el anuncio grupal o devuelve un error 404 si no existe
-    anuncio_grupal = get_object_or_404(
-        AnunciosGrupalesTutor, idAnunciosGrupalesTutor=id_anuncio)
+    try:
+        # Obtener la instancia de Tutorado según el ID proporcionado
+        anuncio = AnunciosGrupalesTutor.objects.get(
+            idAnunciosGrupalesTutor=id_anuncio)
+    except AnunciosGrupalesTutor.DoesNotExist:
+        messages.error(
+            request, 'No fue posible encontrar el Anuncio Grupal con el ID {}.'.format(id_anuncio))
+        return redirect('menu')
 
-    # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar el anuncio grupal.
+    acceso = False
 
-    # Elimina el anuncio grupal
-    anuncio_grupal.delete()
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutor':
+        # Busco el tutor que tiene la sesión
+        try:
+            tutorSesion = Tutor.objects.get(
+                numeroEmpleado=request.session['numero_empleado'])
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de sesión')
+            return redirect('menu')
 
-    # Redirige a la página de anuncios grupales o a donde lo necesites
-    return redirect('anuncios_grupales_tutor', tutoria_id=anuncio_grupal.idTutoriaGrupal.idTutoriaGrupal)
+        try:
+            tutor = Tutor.objects.get(
+                idTutor=id_tutor)
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de parámetro')
+            return redirect('menu')
+
+        if tutor.idTutor == tutorSesion.idTutor:
+            acceso = True
+
+    if acceso:
+
+        # Obtén el anuncio grupal o devuelve un error 404 si no existe
+        anuncio_grupal = get_object_or_404(
+            AnunciosGrupalesTutor, idAnunciosGrupalesTutor=id_anuncio)
+
+        # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar el anuncio grupal.
+
+        # Elimina el anuncio grupal
+        anuncio_grupal.delete()
+
+        # Redirige a la página de anuncios grupales o a donde lo necesites
+        return redirect('anuncios_grupales_tutor', tutoria_id=anuncio_grupal.idTutoriaGrupal.idTutoriaGrupal)
+
+    else:
+        messages.error(
+            request, 'No tienes acceso a eliminar el Anuncio Grupal con ID {}.'.format(id_anuncio))
+        return redirect('menu')
 
 
 def anuncios_grupales_tutor(request, tutoria_id):
@@ -259,7 +379,7 @@ def anuncios_grupales_tutor(request, tutoria_id):
         return redirect('menu')
 
 
-def eliminar_nota_tutoria_individual(request, id_nota):
+def eliminar_nota_tutoria_individual(request, id_tutorado, id_nota):
     # Verifica si el usuario está logeado y es un tutorado
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
@@ -268,17 +388,47 @@ def eliminar_nota_tutoria_individual(request, id_nota):
     if not logged_in or rol != 'Tutorado':
         return redirect('inicio')
 
-    # Obtén la nota individual o devuelve un error 404 si no existe
-    nota_individual = get_object_or_404(
-        NotasIndividualesTutorado, idNotasIndividualesTutorado=id_nota)
+    try:
+        # Obtener la instancia de Tutorado según el ID proporcionado
+        nota = NotasIndividualesTutorado.objects.get(
+            idNotasIndividualesTutorado=id_nota)
+    except NotasIndividualesTutorado.DoesNotExist:
+        messages.error(
+            request, 'No fue posible encontrar la nota con el ID {}.'.format(id_nota))
+        return redirect('menu')
 
-    # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la nota individual.
+    acceso = False
 
-    # Elimina la nota individual
-    nota_individual.delete()
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutorado':
+        # Busco el tutor que tiene la sesión
+        tutoradoSesion = Tutorado.objects.get(
+            boletaTutorado=request.session['boleta_tutorado'])
 
-    # Redirige a la página de notas individuales o a donde lo necesites
-    return redirect('notas_tutorado_tutoria_individual', tutoria_id=nota_individual.idTutoriaIndividual.idTutoriaIndividual)
+        tutorado = Tutorado.objects.get(
+            idTutorado=id_tutorado)
+
+        if tutorado.idTutorado == tutoradoSesion.idTutorado:
+            acceso = True
+
+    if acceso:
+
+        # Obtén la nota individual o devuelve un error 404 si no existe
+        nota_individual = get_object_or_404(
+            NotasIndividualesTutorado, idNotasIndividualesTutorado=id_nota)
+
+        # Aquí puedes agregar lógica adicional, por ejemplo, verificar si el usuario tiene permisos para eliminar la nota individual.
+
+        # Elimina la nota individual
+        nota_individual.delete()
+
+        # Redirige a la página de notas individuales o a donde lo necesites
+        return redirect('notas_tutorado_tutoria_individual', tutoria_id=nota_individual.idTutoriaIndividual.idTutoriaIndividual)
+
+    else:
+        messages.error(
+            request, 'No tienes acceso a eliminar la nota con ID {}.'.format(id_nota))
+        return redirect('menu')
 
 
 def notas_tutorado_tutoria_individual(request, tutoria_id):
@@ -335,7 +485,7 @@ def notas_tutorado_tutoria_individual(request, tutoria_id):
             'tutoria_individual': tutoria_individual,
             'form': form,
             'logged_in': logged_in,
-            'rol': rol
+            'rol': rol,
         }
 
         return render(request, 'notasIndividualesTutorado.html', context)
@@ -635,18 +785,46 @@ def eliminar_tutoria_individual(request, tutoria_id):
     if not logged_in or rol != 'Tutor':
         return redirect('inicio')
 
-    # Obtiene la tutoría individual correspondiente o devuelve un error 404 si no existe
-    tutoria_individual = get_object_or_404(TutoriaIndividual, pk=tutoria_id)
+    try:
+        # Obtener la instancia de TutoriaIndividual según el ID proporcionado
+        tutoria_individual = TutoriaIndividual.objects.get(
+            idTutoriaIndividual=tutoria_id)
+    except TutoriaIndividual.DoesNotExist:
+        messages.error(
+            request, 'La Tutoría Individual con el ID {} no fue encontrada.'.format(tutoria_id))
+        return redirect('menu')
 
-    # Actualiza el valor del campo numTutoresAsignados en la tabla Tutorado
-    Tutorado.objects.filter(pk=tutoria_individual.idTutorado.pk).update(
-        numTutoresAsignados=F('numTutoresAsignados') - 1)
+    acceso = False
 
-    # Elimina la tutoría individual
-    tutoria_individual.delete()
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutor':
+        # Busco el tutor que tiene la sesión
+        tutor = Tutor.objects.get(
+            numeroEmpleado=request.session['numero_empleado'])
 
-    # Redirige a la página de inicio o cualquier otra página deseada
-    return redirect('menu')
+        if tutoria_individual.idTutor.idTutor == tutor.idTutor:
+            acceso = True
+
+    if acceso:
+
+        # Obtiene la tutoría individual correspondiente o devuelve un error 404 si no existe
+        tutoria_individual = get_object_or_404(
+            TutoriaIndividual, pk=tutoria_id)
+
+        # Actualiza el valor del campo numTutoresAsignados en la tabla Tutorado
+        Tutorado.objects.filter(pk=tutoria_individual.idTutorado.pk).update(
+            numTutoresAsignados=F('numTutoresAsignados') - 1)
+
+        # Elimina la tutoría individual
+        tutoria_individual.delete()
+
+        # Redirige a la página de inicio o cualquier otra página deseada
+        return redirect('menu')
+
+    else:
+        messages.error(
+            request, 'La Tutoría Individual con el ID {} no está a tu cargo.'.format(tutoria_id))
+        return redirect('menu')
 
 
 def detalle_tutoriaIndividual(request, tutoria_id):
@@ -794,33 +972,51 @@ def nota_tutorado_tutoriaIndividual(request, tutoria_id):
         return redirect('inicio')
 
     try:
-        # Obtener la instancia de la tutoría individual según el ID proporcionado
+        # Obtener la instancia de TutoriaIndividual según el ID proporcionado
         tutoria_individual = get_object_or_404(
             TutoriaIndividual, pk=tutoria_id)
-    except TutoriaIndividual.DoesNotExist:
-        # Manejo si la tutoría no existe
+    except Http404:
+        # Manejo del error cuando no se encuentra la tutoría
         messages.error(
-            request, 'Tutoría no encontrada.')
-        # return redirect('inicio')
+            request, 'La Tutoría Individual con el ID {} no fue encontrada.'.format(tutoria_id))
+        return redirect('menu')
 
-    if request.method == 'POST':
-        form = NotasIndividualesTutoradoForm(request.POST)
-        if form.is_valid():
-            # Crear una instancia de NotasIndividualesTutorado pero no guardarla aún
-            nota = form.save(commit=False)
-            nota.idTutoriaIndividual = tutoria_individual
-            nota.save()
-            return redirect('detalle_tutoriaIndividual', tutoria_id=tutoria_id)
+    acceso = False
+
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutorado':
+        # Busco el tutor que tiene la sesión
+        tutorado = Tutorado.objects.get(
+            boletaTutorado=request.session['boleta_tutorado'])
+
+        if tutoria_individual.idTutorado.idTutorado == tutorado.idTutorado:
+            acceso = True
+
+    if acceso:
+
+        if request.method == 'POST':
+            form = NotasIndividualesTutoradoForm(request.POST)
+            if form.is_valid():
+                # Crear una instancia de NotasIndividualesTutorado pero no guardarla aún
+                nota = form.save(commit=False)
+                nota.idTutoriaIndividual = tutoria_individual
+                nota.save()
+                return redirect('detalle_tutoriaIndividual', tutoria_id=tutoria_id)
+        else:
+            form = NotasIndividualesTutoradoForm()
+
+        context = {
+            'form': form,
+            'tutoria_individual': tutoria_individual,
+            'logged_in': logged_in,
+            'rol': rol
+        }
+        return render(request, 'tutorado/tutoriaIndividual/crearNotaTutoriaIndividual.html', context)
+
     else:
-        form = NotasIndividualesTutoradoForm()
-
-    context = {
-        'form': form,
-        'tutoria_individual': tutoria_individual,
-        'logged_in': logged_in,
-        'rol': rol
-    }
-    return render(request, 'tutorado/tutoriaIndividual/crearNotaTutoriaIndividual.html', context)
+        messages.error(
+            request, 'No estás inscrito en la Tutoría Individual con el ID {}.'.format(tutoria_id))
+        return redirect('menu')
 
 
 def generar_contrasena_aleatoria(longitud):
@@ -1026,9 +1222,17 @@ def eliminar_tutorado_tutoria_grupal(request, tutorado_id, tutoria_id):
     try:
         relacion_tutorado_tutoria = ListaTutoriaGrupal.objects.filter(
             idTutorado=tutorado_id, idTutoriaGrupal=tutoria_id)
-    except ListaTutoriaGrupal.DoesNotExist:
+
+        print(f"Holaaa {relacion_tutorado_tutoria}")
+
+        if not relacion_tutorado_tutoria.exists():
+            messages.error(
+                request, 'El Tutorado con el ID {} no fue encontrado en la Tutoría Grupal con ID {}'.format(tutorado_id, tutoria_id))
+            return redirect('menu')
+
+    except ListaTutoriaGrupal.DoesNotExist as e:
         messages.error(
-            request, 'El Tutorado con el ID {} no fue encontrado en la Tutoría Grupal.'.format(tutorado_id))
+            request, f'{e}')
         return redirect('menu')
 
     acceso = False
@@ -1132,9 +1336,14 @@ def inscribirse_tutoria_grupal(request, tutoria_id):
     if not logged_in or rol != 'Tutorado':
         return redirect('inicio')
 
-    # Obtener la tutoría grupal a la que se quiere inscribir el tutorado
-    tutoria_grupal = get_object_or_404(
-        TutoriaGrupal, idTutoriaGrupal=tutoria_id)
+    try:
+        # Obtener la tutoría grupal a la que se quiere inscribir el tutorado
+        tutoria_grupal = TutoriaGrupal.objects.get(
+            idTutoriaGrupal=tutoria_id)
+    except TutoriaGrupal.DoesNotExist:
+        messages.error(
+            request, 'La Tutoría Grupal con el ID {} no fue encontrada.'.format(tutoria_id))
+        return redirect('menu')
 
     # Verificar si hay cupo disponible en la tutoría grupal
     if tutoria_grupal.cupoDisponible <= 0:

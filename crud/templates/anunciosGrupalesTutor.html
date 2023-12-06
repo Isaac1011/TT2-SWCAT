@@ -27,7 +27,7 @@
                     <td>{{anuncio.nota}}</td>
                     <td>{{anuncio.fecha}}</td>
                     <td>
-                        <a href="{% url 'eliminar_anuncio_grupal_tutoria' anuncio.idAnunciosGrupalesTutor %}"
+                        <a href="{% url 'eliminar_anuncio_grupal_tutoria' id_tutor=tutoria_grupal.idTutor.idTutor id_anuncio=anuncio.idAnunciosGrupalesTutor %}"
                             class="btn btn-danger btn-sm">
                             Eliminar
                         </a>

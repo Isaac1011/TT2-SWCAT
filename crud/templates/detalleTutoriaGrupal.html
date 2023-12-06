@@ -29,7 +29,8 @@
     <a href="{{ videoconferencia_grupal.first.start_url }}" target="_blank"
         class="btn btn-success mb-2 boton-exito">Iniciar reunión</a>
 
-    <form method="POST" action="{% url 'eliminar_reunion_grupal' videoconferencia_grupal.first.meeting_code %}">
+    <form method="POST"
+        action="{% url 'eliminar_reunion_grupal' reunion_id=videoconferencia_grupal.first.meeting_code tutor_id=tutoria_grupal.idTutor.idTutor %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar</button>
     </form>

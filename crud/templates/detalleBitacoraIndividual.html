@@ -45,7 +45,7 @@
                     <td>{{nota.nota}}</td>
                     <td>{{nota.fecha}}</td>
                     <td>
-                        <a href="{% url 'eliminar_bitacora_tutoria_individual' nota.idBitacoraIndividual %}"
+                        <a href="{% url 'eliminar_bitacora_tutoria_individual' id_tutor=tutoria_individual.idTutor.idTutor id_bitacora=nota.idBitacoraIndividual %}"
                             class="btn btn-danger btn-sm">
                             Eliminar
                         </a>

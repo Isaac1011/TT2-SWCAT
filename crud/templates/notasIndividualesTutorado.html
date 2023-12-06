@@ -29,7 +29,7 @@
                     <td>{{nota.nota}}</td>
                     <td>{{nota.fecha}}</td>
                     <td>
-                        <a href="{% url 'eliminar_nota_tutoria_individual' nota.idNotasIndividualesTutorado %}"
+                        <a href="{% url 'eliminar_nota_tutoria_individual' id_tutorado=tutoria_individual.idTutorado.idTutorado id_nota=nota.idNotasIndividualesTutorado %}"
                             class="btn btn-danger btn-sm">
                             Eliminar
                         </a>

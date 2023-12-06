@@ -28,7 +28,7 @@
                     <td>{{bitacora.nota}}</td>
                     <td>{{bitacora.fecha}}</td>
                     <td>
-                        <a href="{% url 'eliminar_bitacora_grupal_tutoria' bitacora.idBitacoraGrupalTutor %}"
+                        <a href="{% url 'eliminar_bitacora_grupal_tutoria' id_tutor=tutoria_grupal.idTutor.idTutor id_bitacora=bitacora.idBitacoraGrupalTutor %}"
                             class="btn btn-danger btn-sm">
                             Eliminar
                         </a>

@@ -373,94 +373,190 @@ def crear_reunion_grupal(request, tutoria_id):
         return redirect('menu')
 
 
-def eliminar_reunion_individual(request, reunion_id):
-    if request.method == 'POST':
+def eliminar_reunion_individual(request, reunion_id, tutor_id):
+    # Verifica si el usuario está logeado y es un tutor
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    try:
+        # Obtener la instancia de Tutorado según el ID proporcionado
+        reunion = VideoconferenciasIndividuales.objects.get(
+            meeting_code=reunion_id)
+    except VideoconferenciasIndividuales.DoesNotExist:
+        messages.error(
+            request, 'No fue posible encontrar la Videoconferencia Individual con el ID {}.'.format(reunion_id))
+        return redirect('menu')
+
+    acceso = False
+
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutor':
+        # Busco el tutor que tiene la sesión
         try:
-            # Datos de autenticación
-            access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso previamente
+            tutorSesion = Tutor.objects.get(
+                numeroEmpleado=request.session['numero_empleado'])
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de sesión')
+            return redirect('menu')
 
-            # URL para eliminar la reunión
-            delete_meeting_url = f'https://api.zoom.us/v2/meetings/{reunion_id}'
-
-            headers = {
-                'Authorization': f'Bearer {access_token}',
-                'Content-Type': 'application/json'
-            }
-
-            response = requests.delete(delete_meeting_url, headers=headers)
-
-            if response.status_code == 204:
-                # Eliminamos la videoconferencia de la DB
-                try:
-                    # Busca el registro por el campo 'meeting_code'
-                    videoconferencia = get_object_or_404(
-                        VideoconferenciasIndividuales, meeting_code=reunion_id)
-
-                    # Elimina el registro
-                    videoconferencia.delete()
-
-                    # Redirige de vuelta a la lista de reuniones
-                    return redirect('menu')
-
-                except requests.exceptions.RequestException as e:
-                    error_message = f"Error making a request: {e}"
-                    return render(request, 'error.html', {'error_message': error_message})
-
-                except VideoconferenciasIndividuales.DoesNotExist:
-                    error_message = f"No se encontró una videoconferencia con ese código: {e}"
-                    return render(request, 'error.html', {'error_message': error_message})
-
-        except requests.exceptions.RequestException as e:
-            error_message = f"Error making a request: {e}"
-            return render(request, 'error.html', {'error_message': error_message})
-        except Exception as e:
-            error_message = f"An error occurred: {e}"
-            return render(request, 'error.html', {'error_message': error_message})
-
-
-def eliminar_reunion_grupal(request, reunion_id):
-    if request.method == 'POST':
         try:
-            # Datos de autenticación
-            access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso previamente
+            tutor = Tutor.objects.get(
+                idTutor=tutor_id)
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de parámetro')
+            return redirect('menu')
 
-            # URL para eliminar la reunión
-            delete_meeting_url = f'https://api.zoom.us/v2/meetings/{reunion_id}'
+        if tutor.idTutor == tutorSesion.idTutor:
+            acceso = True
 
-            headers = {
-                'Authorization': f'Bearer {access_token}',
-                'Content-Type': 'application/json'
-            }
+    if acceso:
 
-            response = requests.delete(delete_meeting_url, headers=headers)
+        if request.method == 'POST':
+            try:
+                # Datos de autenticación
+                access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso previamente
 
-            if response.status_code == 204:
-                # Eliminamos la videoconferencia de la DB
-                try:
-                    # Busca el registro por el campo 'meeting_code'
-                    videoconferencia = get_object_or_404(
-                        VideoconferenciasGrupales, meeting_code=reunion_id)
+                # URL para eliminar la reunión
+                delete_meeting_url = f'https://api.zoom.us/v2/meetings/{reunion_id}'
 
-                    # Elimina el registro
-                    videoconferencia.delete()
+                headers = {
+                    'Authorization': f'Bearer {access_token}',
+                    'Content-Type': 'application/json'
+                }
 
-                    # Redirige de vuelta a la lista de reuniones
-                    return redirect('menu')
+                response = requests.delete(delete_meeting_url, headers=headers)
 
-                except requests.exceptions.RequestException as e:
-                    error_message = f"Error making a request: {e}"
-                    return render(request, 'error.html', {'error_message': error_message})
+                if response.status_code == 204:
+                    # Eliminamos la videoconferencia de la DB
+                    try:
+                        # Busca el registro por el campo 'meeting_code'
+                        videoconferencia = get_object_or_404(
+                            VideoconferenciasIndividuales, meeting_code=reunion_id)
 
-                except VideoconferenciasIndividuales.DoesNotExist:
-                    error_message = f"No se encontró una videoconferencia con ese código: {e}"
-                    return render(request, 'error.html', {'error_message': error_message})
+                        # Elimina el registro
+                        videoconferencia.delete()
 
-        except requests.exceptions.RequestException as e:
-            error_message = f"Error making a request: {e}"
-            return render(request, 'error.html', {'error_message': error_message})
-        except Exception as e:
-            error_message = f"An error occurred: {e}"
-            return render(request, 'error.html', {'error_message': error_message})
+                        # Redirige de vuelta a la lista de reuniones
+                        return redirect('menu')
+
+                    except requests.exceptions.RequestException as e:
+                        error_message = f"Error making a request: {e}"
+                        return render(request, 'error.html', {'error_message': error_message})
+
+                    except VideoconferenciasIndividuales.DoesNotExist:
+                        error_message = f"No se encontró una videoconferencia con ese código: {e}"
+                        return render(request, 'error.html', {'error_message': error_message})
+
+            except requests.exceptions.RequestException as e:
+                error_message = f"Error making a request: {e}"
+                return render(request, 'error.html', {'error_message': error_message})
+            except Exception as e:
+                error_message = f"An error occurred: {e}"
+                return render(request, 'error.html', {'error_message': error_message})
+
+    else:
+        messages.error(
+            request, 'No tienes acceso a eliminar la Videoconferencia Individual.')
+        return redirect('menu')
+
+
+def eliminar_reunion_grupal(request, reunion_id, tutor_id):
+    # Verifica si el usuario está logeado y es un tutor
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    try:
+        # Obtener la instancia de Tutorado según el ID proporcionado
+        reunion = VideoconferenciasGrupales.objects.get(
+            meeting_code=reunion_id)
+    except VideoconferenciasGrupales.DoesNotExist:
+        messages.error(
+            request, 'No fue posible encontrar la Videoconferencia Grupal con el ID {}.'.format(reunion_id))
+        return redirect('menu')
+
+    acceso = False
+
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutor':
+        # Busco el tutor que tiene la sesión
+        try:
+            tutorSesion = Tutor.objects.get(
+                numeroEmpleado=request.session['numero_empleado'])
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de sesión')
+            return redirect('menu')
+
+        try:
+            tutor = Tutor.objects.get(
+                idTutor=tutor_id)
+        except Tutor.DoesNotExist:
+            messages.error(
+                request, 'No se encontró el Tutor de parámetro')
+            return redirect('menu')
+
+        if tutor.idTutor == tutorSesion.idTutor:
+            acceso = True
+
+    if acceso:
+
+        if request.method == 'POST':
+            try:
+                # Datos de autenticación
+                access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso previamente
+
+                # URL para eliminar la reunión
+                delete_meeting_url = f'https://api.zoom.us/v2/meetings/{reunion_id}'
+
+                headers = {
+                    'Authorization': f'Bearer {access_token}',
+                    'Content-Type': 'application/json'
+                }
+
+                response = requests.delete(delete_meeting_url, headers=headers)
+
+                if response.status_code == 204:
+                    # Eliminamos la videoconferencia de la DB
+                    try:
+                        # Busca el registro por el campo 'meeting_code'
+                        videoconferencia = get_object_or_404(
+                            VideoconferenciasGrupales, meeting_code=reunion_id)
+
+                        # Elimina el registro
+                        videoconferencia.delete()
+
+                        # Redirige de vuelta a la lista de reuniones
+                        return redirect('menu')
+
+                    except requests.exceptions.RequestException as e:
+                        error_message = f"Error making a request: {e}"
+                        return render(request, 'error.html', {'error_message': error_message})
+
+                    except VideoconferenciasIndividuales.DoesNotExist:
+                        error_message = f"No se encontró una videoconferencia con ese código: {e}"
+                        return render(request, 'error.html', {'error_message': error_message})
+
+            except requests.exceptions.RequestException as e:
+                error_message = f"Error making a request: {e}"
+                return render(request, 'error.html', {'error_message': error_message})
+            except Exception as e:
+                error_message = f"An error occurred: {e}"
+                return render(request, 'error.html', {'error_message': error_message})
+
+    else:
+        messages.error(
+            request, 'No tienes acceso a eliminar la Videoconferencia Grupal.')
+        return redirect('menu')
 
 # No tengo permiso de modificar la reunión
 
