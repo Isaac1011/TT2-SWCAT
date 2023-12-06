@@ -29,7 +29,7 @@
                     <th scope="col">Email</th>
                     <th scope="col">Semestre</th>
                     <th scope="col">Teléfono</th>
-                    <th scope="col">No. Tutorías Inscritas</th>
+                    <th scope="col">Género</th>
                     <th scope="col">Eliminar</th> <!-- Nueva columna para acciones -->
                 </tr>
             </thead>
@@ -49,7 +49,7 @@
                     <td>{{tutorado_especifico.idTutorado.email}}</td>
                     <td>{{tutorado_especifico.idTutorado.semestre}}</td>
                     <td>{{tutorado_especifico.idTutorado.telefono}}</td>
-                    <td>{{tutorado_especifico.idTutorado.numTutoresAsignados}}</td>
+                    <td>{{tutorado_especifico.idTutorado.genero}}</td>
                     <td>
                         <a href="{% url 'eliminar_tutorado_tutoria_grupal' tutorado_id=tutorado_especifico.idTutorado.idTutorado tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
                             class="btn btn-danger btn-sm">

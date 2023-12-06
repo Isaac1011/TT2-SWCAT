@@ -371,7 +371,7 @@
 
         <!-- Si no estás logeado -->
         {% if not logged_in %}
-        <a class="navbar-brand" href="/">Inicio</a>
+        <a class="navbar-brand" href="/">SWCAT</a>
 
         {% else %}
         {% if rol == 'Tutor' %}
@@ -414,7 +414,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'crear_tutoriaGrupal' %}">Crear Tutoría Grupal</a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'obtener_user_id' %}">Consultar ID Zoom</a>
+                </li>
 
                 {% elif rol == 'Tutorado' %}
                 <li class="nav-item">

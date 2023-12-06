@@ -126,6 +126,10 @@ urlpatterns = [
          viewsZoom.eliminar_reunion_grupal, name='eliminar_reunion_grupal'),
     path('crear_reunion_instantanea/', viewsZoom.crear_reunion_instantanea,
          name='crear_reunion_instantanea'),
+    path('obtener_user_id/',
+         viewsZoom.obtener_user_id, name='obtener_user_id'),
+
+
 
     # Chatbot
     path('chatbot/', viewsChatbot.chatbot, name='chatbot'),

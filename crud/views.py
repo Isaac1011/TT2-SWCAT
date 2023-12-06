@@ -21,6 +21,8 @@ from django.utils import timezone
 import pytz
 from django.http import Http404
 import re
+from django.conf import settings
+import requests
 
 
 # Create your views here.
@@ -628,9 +630,9 @@ def email_valido(email):
 
 
 def cadena_alphanumeric(cadena):
-    # Utiliza una expresión regular para verificar si la cadena contiene solo caracteres alfanuméricos
-    # (letras, números y la letra "ñ") sin caracteres especiales.
-    return bool(re.match("^[a-zA-Z0-9ñÑ]+$", cadena))
+    # Utiliza una expresión regular para verificar si la cadena contiene solo caracteres alfanuméricos,
+    # espacios, comas, dos puntos, puntos, guiones bajos y guiones medios.
+    return bool(re.match("^[a-zA-Z0-9ñÑ ,:.\-_]+$", cadena))
 
 
 def registro_tutorado(request):

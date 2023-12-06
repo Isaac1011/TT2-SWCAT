@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Consulta ID Zoom | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container mt-5 mb-5">
+    <div class="mt-4">
+        {% if error_message %}
+        <div class="error-message">
+            <p>No se pudo consultar tu ID Zoom. Token expirado.</p>
+        </div>
+        {% else %}
+        <div class="card-body text-center">
+            <h1 class="mb-4">Tu ID de Zoom es el siguiente</h1>
+            <p class="font-weight-bold text-primary custom-text">{{ user_id }}</p>
+        </div>
+
+        {% endif %}
+
+        <!-- Botón de Regresar -->
+        <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()">
+            Regresar
+        </button>
+
+    </div>
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+<style>
+    .custom-text {
+        color: #0047B6 !important;
+        font-size: 22px;
+    }
+
+    .error-message {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px;
+    }
+</style>
+
+{% endblock %}

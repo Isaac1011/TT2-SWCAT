@@ -585,3 +585,53 @@ def crear_reunion_instantanea(request):
     print(join_url)
 
     return render(request, 'instant_meeting.html', {'join_url': join_url})
+
+
+def obtener_user_id(request):
+
+    # Verifica si el usuario está logeado y es un tutor
+    logged_in = request.session.get('logged_in', False)
+    rol = request.session.get('rol')
+
+    # Si no estás logeado o no eres un Tutor, redirige al inicio.
+    if not logged_in or rol != 'Tutor':
+        return redirect('inicio')
+
+    # Definir la URL de la API de Zoom
+    url = "https://api.zoom.us/v2/users/me"
+    access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso
+
+    # Configurar los encabezados con el token de autorización
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+
+    # Hacer la solicitud GET a la API de Zoom
+    response = requests.get(url, headers=headers)
+
+    # Verificar si la solicitud fue exitosa (código de respuesta 200)
+    if response.status_code == 200:
+        # Parsear el JSON de la respuesta
+        data = response.json()
+
+        # Obtener el valor del campo user_id
+        user_id = data.get("id")
+
+        context = {
+            'user_id': user_id,
+            'logged_in': logged_in,
+            'rol': rol
+        }
+
+        # Enviar el user_id al template
+        return render(request, 'idZoom.html', {'user_id': user_id})
+    else:
+        # Enviar un mensaje de error al template
+        context = {
+            'status_code': response.status_code,
+            'error_message': response.text,
+            'logged_in': logged_in,
+            'rol': rol
+        }
+        return render(request, 'idZoom.html', context)
