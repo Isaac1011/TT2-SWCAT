@@ -990,6 +990,7 @@ def buscar_tutorados_tutoria_grupal(request, tutoria_id):
             numeroEmpleado=request.session['numero_empleado'])
 
         context = {
+            'tutoria_grupal': tutoria_grupal,
             'tutorados_especificos': tutorados_especificos,
             'tutor': tutor,
             'logged_in': logged_in,
@@ -1004,7 +1005,7 @@ def buscar_tutorados_tutoria_grupal(request, tutoria_id):
         return redirect('menu')
 
 
-def eliminar_tutorado_tutoria_grupal(request, tutorado_id):
+def eliminar_tutorado_tutoria_grupal(request, tutorado_id, tutoria_id):
     # Verifica si el usuario está logeado y es un tutor
     logged_in = request.session.get('logged_in', False)
     rol = request.session.get('rol')
@@ -1013,26 +1014,54 @@ def eliminar_tutorado_tutoria_grupal(request, tutorado_id):
     if not logged_in or rol != 'Tutor':
         return redirect('inicio')
 
-    # Obtiene la relación ListaTutoriaGrupal correspondiente o devuelve un error 404 si no existe
-    relacion_tutorado_tutoria = get_object_or_404(
-        ListaTutoriaGrupal, idTutorado=tutorado_id)
+    try:
+        # Obtener la instancia de TutoriaIndividual según el ID proporcionado
+        tutoria_grupal = TutoriaGrupal.objects.get(
+            idTutoriaGrupal=tutoria_id)
+    except TutoriaGrupal.DoesNotExist:
+        messages.error(
+            request, 'La Tutoría Grupal con el ID {} no fue encontrada.'.format(tutoria_id))
+        return redirect('menu')
 
-    # Obtiene la tutoría grupal correspondiente
-    tutoria_grupal = relacion_tutorado_tutoria.idTutoriaGrupal
+    try:
+        relacion_tutorado_tutoria = ListaTutoriaGrupal.objects.filter(
+            idTutorado=tutorado_id, idTutoriaGrupal=tutoria_id)
+    except ListaTutoriaGrupal.DoesNotExist:
+        messages.error(
+            request, 'El Tutorado con el ID {} no fue encontrado en la Tutoría Grupal.'.format(tutorado_id))
+        return redirect('menu')
 
-    # Actualiza el valor del campo cupoDisponible en la tabla TutoriaGrupal
-    TutoriaGrupal.objects.filter(pk=tutoria_grupal.pk).update(
-        cupoDisponible=F('cupoDisponible') + 1)
+    acceso = False
 
-    # Actualiza el valor del campo numTutoresAsignados en la tabla Tutorado
-    Tutorado.objects.filter(pk=tutorado_id).update(
-        numTutoresAsignados=F('numTutoresAsignados') - 1)
+    # Seguridad en los parámetros de la URL
+    if rol == 'Tutor':
+        # Busco el tutor que tiene la sesión
+        tutor = Tutor.objects.get(
+            numeroEmpleado=request.session['numero_empleado'])
 
-    # Elimina la relación ListaTutoriaGrupal
-    relacion_tutorado_tutoria.delete()
+        if tutoria_grupal.idTutor.idTutor == tutor.idTutor:
+            acceso = True
 
-    # Redirige a la página de tutorados específicos para la tutoría grupal
-    return redirect('buscar_tutorados_tutoria_grupal', tutoria_id=tutoria_grupal.pk)
+    if acceso:
+
+        # Actualiza el valor del campo cupoDisponible en la tabla TutoriaGrupal
+        TutoriaGrupal.objects.filter(pk=tutoria_grupal.pk).update(
+            cupoDisponible=F('cupoDisponible') + 1)
+
+        # Actualiza el valor del campo numTutoresAsignados en la tabla Tutorado
+        Tutorado.objects.filter(pk=tutorado_id).update(
+            numTutoresAsignados=F('numTutoresAsignados') - 1)
+
+        # Elimina la relación ListaTutoriaGrupal
+        relacion_tutorado_tutoria.delete()
+
+        # Redirige a la página de tutorados específicos para la tutoría grupal
+        return redirect('buscar_tutorados_tutoria_grupal', tutoria_id=tutoria_grupal.pk)
+
+    else:
+        messages.error(
+            request, 'No tienes permitido eliminar al Tutorado con ID {}.'.format(tutorado_id))
+        return redirect('menu')
 
 
 def buscar_tutoria_grupal(request):

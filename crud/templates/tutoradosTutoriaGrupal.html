@@ -6,6 +6,17 @@
 {% block content %}
 <main class="container-fluid mt-5 mb-5">
     <h1 class="text-center">Tutorados Inscritos</h1>
+
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -40,7 +51,7 @@
                     <td>{{tutorado_especifico.idTutorado.telefono}}</td>
                     <td>{{tutorado_especifico.idTutorado.numTutoresAsignados}}</td>
                     <td>
-                        <a href="{% url 'eliminar_tutorado_tutoria_grupal' tutorado_id=tutorado_especifico.idTutorado.idTutorado %}"
+                        <a href="{% url 'eliminar_tutorado_tutoria_grupal' tutorado_id=tutorado_especifico.idTutorado.idTutorado tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
                             class="btn btn-danger btn-sm">
                             Eliminar
                         </a>

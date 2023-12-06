@@ -92,7 +92,7 @@ urlpatterns = [
          name='crear_tutoriaGrupal'),
     path('menu/detalleTutoriaGrupal/tutoradosInscritos/<int:tutoria_id>/',
          views.buscar_tutorados_tutoria_grupal, name='buscar_tutorados_tutoria_grupal'),
-    path('menu/detalleTutoriaGrupal/tutoradosInscritos/eliminarTutoradoTutoriaGrupal/<int:tutorado_id>/',
+    path('menu/detalleTutoriaGrupal/tutoradosInscritos/eliminarTutoradoTutoriaGrupal/<int:tutorado_id>/<int:tutoria_id>/',
          views.eliminar_tutorado_tutoria_grupal, name='eliminar_tutorado_tutoria_grupal'),
     path('menu/detalleTutoriaGrupal/<int:tutoria_id>',
          views.detalle_tutoriaGrupal, name='detalle_tutoriaGrupal'),
