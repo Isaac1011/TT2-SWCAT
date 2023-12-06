@@ -20,6 +20,7 @@ from .forms import TutoradoForm
 from django.utils import timezone
 import pytz
 from django.http import Http404
+import re
 
 
 # Create your views here.
@@ -582,17 +583,27 @@ def registro_tutor(request):
                     messages.error(
                         request, 'Ingrese un número de teléfono válido.')
                 else:
-                    if form.cleaned_data['acepta_terminos']:
-                        numero_empleado = form.cleaned_data['numeroEmpleado']
-                        form.save()
-                        # Inicio de sesión exitoso
-                        request.session['logged_in'] = True
-                        request.session['rol'] = 'Tutor'
-                        request.session['numero_empleado'] = numero_empleado
-                        return redirect('menu')
-                    else:
+                    salon = form.cleaned_data['cubiculo']
+                    if not cadena_alphanumeric(salon):
                         messages.error(
-                            request, 'Debe aceptar los términos y condiciones para registrarse.')
+                            request, 'La sala no debe contener caracteres especiales.')
+                    else:
+                        numeroEmpleado = form.cleaned_data['numeroEmpleado']
+                        if not numeroEmpleado.isdigit():
+                            messages.error(
+                                request, 'Ingrese un Número de Empleado válido.')
+                        else:
+                            if form.cleaned_data['acepta_terminos']:
+                                numero_empleado = form.cleaned_data['numeroEmpleado']
+                                form.save()
+                                # Inicio de sesión exitoso
+                                request.session['logged_in'] = True
+                                request.session['rol'] = 'Tutor'
+                                request.session['numero_empleado'] = numero_empleado
+                                return redirect('menu')
+                            else:
+                                messages.error(
+                                    request, 'Debe aceptar los términos y condiciones para registrarse.')
         else:
             # Agregar mensajes de error del formulario a messages
             for field, error_list in form.errors.items():
@@ -616,6 +627,12 @@ def email_valido(email):
         return False
 
 
+def cadena_alphanumeric(cadena):
+    # Utiliza una expresión regular para verificar si la cadena contiene solo caracteres alfanuméricos
+    # (letras, números y la letra "ñ") sin caracteres especiales.
+    return bool(re.match("^[a-zA-Z0-9ñÑ]+$", cadena))
+
+
 def registro_tutorado(request):
     if request.method == 'POST':
         form = TutoradoRegistroForm(request.POST)
@@ -631,17 +648,22 @@ def registro_tutorado(request):
                     messages.error(
                         request, 'Ingrese un número de teléfono válido.')
                 else:
-                    if form.cleaned_data['acepta_terminos']:
-                        boleta_tutorado = form.cleaned_data['boletaTutorado']
-                        form.save()
-                        # Inicio de sesión exitoso
-                        request.session['logged_in'] = True
-                        request.session['rol'] = 'Tutorado'
-                        request.session['boleta_tutorado'] = boleta_tutorado
-                        return redirect('menu')
-                    else:
+                    boletaTutorado = form.cleaned_data['boletaTutorado']
+                    if not boletaTutorado.isdigit():
                         messages.error(
-                            request, 'Debe aceptar los términos y condiciones para registrarse.')
+                            request, 'Ingrese un Número de Boleta válido.')
+                    else:
+                        if form.cleaned_data['acepta_terminos']:
+                            boleta_tutorado = form.cleaned_data['boletaTutorado']
+                            form.save()
+                            # Inicio de sesión exitoso
+                            request.session['logged_in'] = True
+                            request.session['rol'] = 'Tutorado'
+                            request.session['boleta_tutorado'] = boleta_tutorado
+                            return redirect('menu')
+                        else:
+                            messages.error(
+                                request, 'Debe aceptar los términos y condiciones para registrarse.')
         else:
             # Agregar mensajes de error del formulario a messages
             for field, error_list in form.errors.items():
@@ -1633,10 +1655,34 @@ def editar_tutor(request, tutor_id):
         if request.method == 'POST':
             form = TutorForm(request.POST, instance=tutor)
             if form.is_valid():
-                # Utilizamos update para actualizar directamente en la base de datos
-                queryset.update(**form.cleaned_data)
-                # Ajusta el nombre de la URL a la que quieres redirigir
-                return redirect('menu')
+                # Validar la estructura del email
+                email = form.cleaned_data['email']
+                if not email_valido(email):
+                    messages.error(request, 'Ingrese un email válido.')
+                else:
+                    # Validar que el número de teléfono solo contenga números
+                    telefono = form.cleaned_data['telefono']
+                    if not telefono.isdigit():
+                        messages.error(
+                            request, 'Ingrese un número de teléfono válido.')
+                    else:
+                        salon = form.cleaned_data['cubiculo']
+                        if not cadena_alphanumeric(salon):
+                            messages.error(
+                                request, 'La sala no debe contener caracteres especiales.')
+                        else:
+                            # Utilizamos update para actualizar directamente en la base de datos
+                            queryset.update(**form.cleaned_data)
+                            # Ajusta el nombre de la URL a la que quieres redirigir
+                            return redirect('menu')
+
+            else:
+                # Agregar mensajes de error del formulario a messages
+                for field, error_list in form.errors.items():
+                    for error in error_list:
+                        messages.error(
+                            request, f'{field.capitalize()}: {error}')
+
         else:
             form = TutorForm(instance=tutor)
 
@@ -1690,9 +1736,28 @@ def editar_tutorado(request, tutorado_id):
         if request.method == 'POST':
             form = TutoradoForm(request.POST, instance=tutorado)
             if form.is_valid():
-                # Actualizar en la base de datos utilizando update
-                queryset.update(**form.cleaned_data)
-                return redirect('menu')
+                # Validar la estructura del email
+                email = form.cleaned_data['email']
+                if not email_valido(email):
+                    messages.error(request, 'Ingrese un email válido.')
+                else:
+                    # Validar que el número de teléfono solo contenga números
+                    telefono = form.cleaned_data['telefono']
+                    if not telefono.isdigit():
+                        messages.error(
+                            request, 'Ingrese un número de teléfono válido.')
+                    else:
+                        # Actualizar en la base de datos utilizando update
+                        queryset.update(**form.cleaned_data)
+                        return redirect('menu')
+
+            else:
+                # Agregar mensajes de error del formulario a messages
+                for field, error_list in form.errors.items():
+                    for error in error_list:
+                        messages.error(
+                            request, f'{field.capitalize()}: {error}')
+
         else:
             form = TutoradoForm(instance=tutorado)
 

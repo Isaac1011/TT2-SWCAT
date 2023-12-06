@@ -16,7 +16,7 @@ class Tutor(models.Model):
     nombre = models.CharField(max_length=45)
     apellidoPaterno = models.CharField(max_length=45)
     apellidoMaterno = models.CharField(max_length=45)
-    cubiculo = models.CharField(max_length=20, default=None)
+    cubiculo = models.CharField(max_length=100, default=None)
     telefono = models.CharField(max_length=10, default=None)
     zoomUserID = models.CharField(
         max_length=30, default=None, null=True, blank=True)
@@ -100,7 +100,7 @@ class TutoriaGrupal(models.Model):
     idTutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     nombreGrupo = models.CharField(max_length=45, default=None)
     cupoDisponible = models.IntegerField(default=45)
-    salon = models.CharField(max_length=20, default=None)
+    salon = models.CharField(max_length=100, default=None)
     passwordGrupo = models.CharField(max_length=20, null=True, blank=True)
 
 

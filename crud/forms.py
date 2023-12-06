@@ -17,7 +17,7 @@ class TutorRegistroForm(forms.ModelForm):
             'nombre': 'Nombre *',
             'apellidoPaterno': 'Apellido paterno *',
             'apellidoMaterno': 'Apellido materno *',
-            'cubiculo': 'Cubículo *',
+            'cubiculo': 'Sala del Tutor *',
             'telefono': 'Número de teléfono *',
             'acepta_terminos': 'He leído y acepto los Términos y Condiciones *'
         }
@@ -63,7 +63,7 @@ class TutoradoRegistroForm(forms.ModelForm):
             'nombre': 'Nombre *',
             'apellidoPaterno': 'Apellido paterno *',
             'apellidoMaterno': 'Apellido materno *',
-            'semestre': 'Número de semestre *',
+            'semestre': 'Número de semestre que estás cursando *',
             'telefono': 'Número de teléfono *',
             'acepta_terminos': 'He leído y acepto los Términos y Condiciones *'
         }
@@ -74,7 +74,7 @@ class TutoradoRegistroForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
-            'semestre': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
+            'semestre': forms.Select(choices=[(i, i) for i in range(1, 13)], attrs={'class': 'form-control dark-mode-input'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control dark-mode-input'}),
             'acepta_terminos': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
@@ -199,7 +199,7 @@ class TutorForm(forms.ModelForm):
             'nombre': 'Nombre',
             'apellidoPaterno': 'Apellido Paterno',
             'apellidoMaterno': 'Apellido Materno',
-            'cubiculo': 'Cubículo',
+            'cubiculo': 'Sala del Tutor',
             'telefono': 'Teléfono',
         }
 
@@ -216,7 +216,7 @@ class TutoradoForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control'}),
             'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control'}),
-            'semestre': forms.TextInput(attrs={'class': 'form-control'}),
+            'semestre': forms.Select(choices=[(i, i) for i in range(1, 13)], attrs={'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
@@ -226,6 +226,6 @@ class TutoradoForm(forms.ModelForm):
             'nombre': 'Nombre',
             'apellidoPaterno': 'Apellido Paterno',
             'apellidoMaterno': 'Apellido Materno',
-            'semestre': 'Semestre',
+            'semestre': 'Número de semestre que estás cursando',
             'telefono': 'Teléfono',
         }
