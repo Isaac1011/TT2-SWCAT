@@ -714,7 +714,7 @@ def obtener_user_id(request):
         }
 
         # Enviar el user_id al template
-        return render(request, 'idZoom.html', {'user_id': user_id})
+        return render(request, 'idZoom.html', context)
     else:
         # Enviar un mensaje de error al template
         context = {
@@ -820,6 +820,8 @@ def verificar_token_expirado():
 
         # Compara las fechas
         es_expirado = fecha_expira < fecha_actual
+
+        # Aunque la fecha se guarda distinto en la base de datos, cuando hago la comparación sí funciona bien
 
         print(f"Hora token: {fecha_expira}")
         print(f"Hora actual: {fecha_actual}")
