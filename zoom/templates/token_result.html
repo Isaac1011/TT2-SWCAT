@@ -12,9 +12,12 @@
 <body>
     <h1>Token de Acceso de Zoom</h1>
 
-    <p>El token de acceso de Zoom es: {{ access_token }}</p>
+    <p>Access Token: {{ data.access_token }}</p>
+    <p>Expires In: {{ data.expires_in }} seconds</p>
+    <p>Token Type: {{ data.token_type }}</p>
+    <p>Created At: {{ data.created_at }}</p>
+    <p>Expires At: {{ data.expires_at }}</p>
 
-    <!-- Puedes agregar más contenido HTML según sea necesario -->
 </body>
 
 </html>

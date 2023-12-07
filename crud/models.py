@@ -171,3 +171,11 @@ class Mensaje(models.Model):
         default=False, null=False)  # Agregado null=False
     contenido = models.TextField()
     fecha_envio = models.DateTimeField(auto_now_add=True)
+
+
+class TokenZoom(models.Model):
+    idTokenZoom = models.AutoField(primary_key=True)
+    accessToken = models.CharField(max_length=1000)
+    tipoToken = models.CharField(max_length=10)
+    fechaCreado = models.DateTimeField()
+    fechaExpira = models.DateTimeField()

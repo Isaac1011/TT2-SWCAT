@@ -34,7 +34,9 @@ faq = {
 
     "¿Cómo crear una reunión?": "Para crear una reunión, ya sea de una Tutoría Individual o Grupal se deben seguir los siguientes pasos: \n\n1. Es necesario que la Tutora o Tutor actualicen su información para agregar su ID de Zoom, esto se hace dando clic en el nombre que aparece en el menú de inicio de la Tutora o Tutor. \n2. Una vez hecho lo anterior, se accede a la Tutoría que desea crear la reunión, dar clic en el botón azúl 'Crear reunión' y darle un nombre a la reunión. \n3. Listo, ahora aparecerá el botón verda para Iniciar la reunión para el Tutor y automáticamente le aparecerá el botón para Unirse a la Reunión a los Tutorados ",
 
-    "¿Cómo puedo saber mi ID de Zoom?": "Para obtener el ID de una cuenta de Zoom se deben seguir los siguientes pasos:\n\n1. Descargar el software de Zoom en tu laptop o PC. \n2. Iniciar sesión o crear una cuenta de Zoom. \n3. Descargar el software Postman. \n4. Ingresar la siguiente URL en Postman y enviar la petición usando la petición 'GET'. \n5. En Postman aparecerá el ID de Zoom en el campo 'user_id'.",
+    "¿Cómo puedo saber o consultar mi ID de Zoom?": "Para consultar tu ID de Zoom se deben seguir los siguientes pasos:\n\n1. Ingresar al sistema SWCAT como Tutor. \n2. En la parte superior del sistema aparecen las acciones que puedes hacer como Tutor en el sistema, ahí aparece una opción que dice 'Consultar ID Zoom'. \n3. El sistema te mostrará tu ID de Zoom que puedes usar actualizando tus Información como Tutor dando clic en tu nombre en el menú principal ",
+
+    "¿Cómo actualizar mi información en el SWCAT?": "Para actualizar tu información en SWCAT se deben seguir los siguientes pasos:\n\n1. Ingresar al sistema SWCAT como Tutor o Tutorado. \n2. En el menú prinicpal aparece el nombre del Tutor o Tutorado, se da clic en el mismo \n3. Se te mostrará tu información que ingresaste al sistema la cual puedes actualizar "
 
 }
 
