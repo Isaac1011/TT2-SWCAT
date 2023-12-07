@@ -667,11 +667,15 @@ def obtener_user_id(request):
     # Definir la URL de la API de Zoom
     url = "https://api.zoom.us/v2/users/me"
 
-# Verificamos si el access token ha expirado
+# Verificamos si el access token ha expirado4
+    print("1")
     token_expirado = verificar_token_expirado()
+    print("2")
     if token_expirado == True:
+        print("3")
         # Si ha expirado, entonces generamos uno nuevo
         if generar_access_token() == False:
+            print("4")
             # Si no se generó correctamente lo anunciamos
             messages.error(
                 request, 'Error al generar el Access Token, inténtelo de nuevo por favor')
@@ -680,8 +684,10 @@ def obtener_user_id(request):
     # Si el token no está expirado entonces continuamos
     # access_token = settings.TU_ACCESS_TOKEN
     # Tomamos el access token de la base de datos
+    print("5")
     ultimo_registro_token = TokenZoom.objects.latest('idTokenZoom')
     access_token = ultimo_registro_token.accessToken
+    print("6")
     # access_token = settings.TU_ACCESS_TOKEN  # Obtén el token de acceso
 
     # Configurar los encabezados con el token de autorización
@@ -777,21 +783,12 @@ def generar_access_token():
         data['expires_at'] = (
             datetime.now() + timedelta(seconds=expires_in_seconds)).isoformat()
 
-        # Convierte las fechas a la zona horaria de Ciudad de México
-        tz_mexico = pytz.timezone('America/Mexico_City')
-        created_at = datetime.strptime(
-            data['created_at'], '%Y-%m-%dT%H:%M:%S.%f').replace(tzinfo=pytz.utc)
-        expires_at = datetime.strptime(
-            data['expires_at'], '%Y-%m-%dT%H:%M:%S.%f').replace(tzinfo=pytz.utc)
-        created_at_mexico = created_at.astimezone(tz_mexico)
-        expires_at_mexico = expires_at.astimezone(tz_mexico)
-
         # Crea un nuevo registro en la base de datos utilizando el modelo TokenZoom
         nuevo_token = TokenZoom(
-            accessToken=data.get('access_token', ''),
-            tipoToken=data.get('token_type', ''),
-            fechaCreado=created_at_mexico,
-            fechaExpira=expires_at_mexico
+            accessToken=data['access_token'],
+            tipoToken=data['token_type'],
+            fechaCreado=data['created_at'],
+            fechaExpira=data['expires_at']
         )
         nuevo_token.save()
 
@@ -814,19 +811,22 @@ def verificar_token_expirado():
         # Obtiene la zona horaria de la Ciudad de México
         tz_mexico = pytz.timezone('America/Mexico_City')
 
-        # Ajusta la fecha de expiración a la zona horaria de la Ciudad de México. Este es la hora en la que expira el Access Token
-        # fecha_expira_mexico = ultimo_token.fechaExpira.astimezone(tz_mexico)
+        # Obtiene la fecha de expiración del token y la convierte a la zona horaria de México
+        fecha_expira = ultimo_token.fechaExpira.replace(
+            tzinfo=pytz.UTC).astimezone(tz_mexico)
 
-        # Obtiene la fecha y hora actual en la zona horaria de la Ciudad de México
-        fecha_actual_mexico = datetime.now(tz_mexico)
+        # Obtiene la fecha y hora actual en la zona horaria de México
+        fecha_actual = datetime.now(tz_mexico)
 
         # Compara las fechas
-        es_expirado = ultimo_token.fechaExpira > fecha_actual_mexico
+        es_expirado = fecha_expira < fecha_actual
 
-        print(f"Hora token: {ultimo_token.fechaExpira}")
-        print(f"Hora México: {fecha_actual_mexico}")
+        print(f"Hora token: {fecha_expira}")
+        print(f"Hora actual: {fecha_actual}")
 
-        print(f"Ha expirado? {es_expirado}")
+        print(f"¿Ha expirado? {es_expirado}")
+
+        return es_expirado
 
         return es_expirado
     except TokenZoom.DoesNotExist:
