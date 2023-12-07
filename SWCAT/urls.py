@@ -129,6 +129,10 @@ urlpatterns = [
     path('obtener_user_id/',
          viewsZoom.obtener_user_id, name='obtener_user_id'),
 
+    path('refresh_access_token/', viewsZoom.refresh_access_token,
+         name='refresh_access_token'),
+
+
 
 
     # Chatbot

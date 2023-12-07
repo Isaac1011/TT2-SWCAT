@@ -8,6 +8,8 @@ from .forms import VideoconferenciasIndividualesForm, VideoconferenciasGrupalesF
 from crud.models import TutoriaIndividual, VideoconferenciasIndividuales, TutoriaGrupal, VideoconferenciasGrupales, Tutor
 from django.utils import timezone
 from django.contrib import messages
+import base64
+from django.views.decorators.csrf import csrf_exempt
 
 
 import requests
@@ -635,3 +637,29 @@ def obtener_user_id(request):
             'rol': rol
         }
         return render(request, 'idZoom.html', context)
+
+
+def refresh_access_token(request):
+    # Utiliza el refresh token para obtener un nuevo token de acceso
+    token_url = "https://zoom.us/oauth/token"
+    client_id = settings.CLIENTE_ID
+    # Reemplaza con tu secreto de cliente de Zoom
+    client_secret = settings.CLIENTE_SECRET
+    refresh_token = settings.REFRESH_ACCES_TOKEN
+    payload = {
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token,
+        'client_id': client_id,
+        'client_secret': client_secret
+    }
+
+    response = requests.post(token_url, data=payload)
+
+    if response.status_code == 200:
+        # Devuelve el nuevo token de acceso
+        access_token = response.json().get('access_token')
+        return render(request, 'token_result.html', {'access_token': access_token})
+    else:
+        # Maneja cualquier error que pueda ocurrir al intentar obtener un nuevo token
+        error_message = f'Error al actualizar el token de acceso: {response.text}'
+        return render(request, 'error.html', {'error_message': error_message}, status=500)
