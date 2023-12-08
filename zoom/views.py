@@ -1,17 +1,12 @@
 from django.shortcuts import render
 import requests
-import json
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 from .forms import VideoconferenciasIndividualesForm, VideoconferenciasGrupalesForm
 from crud.models import TutoriaIndividual, VideoconferenciasIndividuales, TutoriaGrupal, VideoconferenciasGrupales, Tutor, TokenZoom
 from django.utils import timezone
 from django.contrib import messages
-import base64
-from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
-from django.http import JsonResponse
 import pytz
 
 
@@ -840,3 +835,57 @@ def verificar_token_expirado():
         else:
             print("Hola3")
             print(f"Error al insertar el primero token en la base de datos")
+
+
+# Funciona bien
+def obtener_informacion_usuarios(request):
+    # Obtén el access token (asegúrate de implementar tu lógica para obtener el access token)
+
+    token_expirado = verificar_token_expirado()
+    print("2")
+    if token_expirado == True:
+        print("3")
+        # Si ha expirado, entonces generamos uno nuevo
+        if generar_access_token() == False:
+            print("4")
+            # Si no se generó correctamente lo anunciamos
+            messages.error(
+                request, 'Error al generar el Access Token, inténtelo de nuevo por favor')
+            return redirect('menu')
+
+    # Si el token no está expirado entonces continuamos
+    # access_token = settings.TU_ACCESS_TOKEN
+    # Tomamos el access token de la base de datos
+    print("5")
+    ultimo_registro_token = TokenZoom.objects.latest('idTokenZoom')
+    access_token = ultimo_registro_token.accessToken
+    print("6")
+
+    # URL para obtener la información de los usuarios
+    list_users_url = "https://api.zoom.us/v2/users"
+
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+
+    try:
+        # Realiza la solicitud GET para obtener la lista de usuarios
+        response = requests.get(list_users_url, headers=headers)
+        response.raise_for_status()  # Lanza una excepción en caso de error HTTP
+
+        # Convierte la respuesta a formato JSON
+        users_data = response.json()
+
+        # Renderiza la vista con la información de los usuarios
+        return render(request, 'informacion_usuarios.html', {'users_data': users_data})
+
+    except requests.exceptions.RequestException as e:
+        # Maneja errores de solicitud
+        error_message = f"Error making a request: {e}"
+        return render(request, 'error.html', {'error_message': error_message})
+
+    except Exception as e:
+        # Maneja otros errores
+        error_message = f"An error occurred: {e}"
+        return render(request, 'error.html', {'error_message': error_message})

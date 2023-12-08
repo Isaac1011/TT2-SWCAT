@@ -132,6 +132,8 @@ urlpatterns = [
     path('refresh_access_token/', viewsZoom.refresh_access_token,
          name='refresh_access_token'),
 
+    path('obtener_informacion_usuarios/', viewsZoom.obtener_informacion_usuarios,
+         name='obtener_informacion_usuarios'),
 
 
 
