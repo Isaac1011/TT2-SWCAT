@@ -134,7 +134,8 @@ urlpatterns = [
 
     path('obtener_informacion_usuarios/', viewsZoom.obtener_informacion_usuarios,
          name='obtener_informacion_usuarios'),
-
+    path('agregar_usuario_zoom/', viewsZoom.agregar_usuario_zoom,
+         name='agregar_usuario_zoom'),
 
 
     # Chatbot

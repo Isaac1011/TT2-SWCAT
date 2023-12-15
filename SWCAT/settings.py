@@ -12,9 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import openai
 from pathlib import Path
-import os
-import dj_database_url
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,16 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
+SECRET_KEY = 'django-insecure-=n%=9vqpl(3@l)t_9#e6l6r4e8nbm7q)z6chd6!x4_k_(1a!0x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
+DEBUG = True
 
 ALLOWED_HOSTS = []
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
@@ -67,7 +60,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'SWCAT.urls'
@@ -95,10 +87,14 @@ WSGI_APPLICATION = 'SWCAT.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://postgres:postgres@localhost/postgres',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'swcat_db_v2',
+        'USER': 'root',
+        'PASSWORD': 'admin77',
+        'HOST': 'localhost',  # Puedes cambiarlo si tu base de datos está en un host remoto
+        'PORT': '3306',       # Puerto por defecto de MySQL
+    }
 }
 
 
@@ -142,14 +138,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-# Following settings only make sense on production and may break development environments.
-if not DEBUG:    # Tell Django to copy statics to the `staticfiles` directory
-    # in your application directory on Render.
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    # Turn on WhiteNoise storage backend that takes care of compressing static files
-    # and creating unique names for each version so they can safely be cached forever.
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 
 LOGIN_URL = '/'
 # Default primary key field type
@@ -157,17 +145,12 @@ LOGIN_URL = '/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SOCIAL_AUTH_ZOOM_KEY = 'rAbzdBQoSfieaFyUQf2gBA'
-SOCIAL_AUTH_ZOOM_SECRET = 'HUCoLXp4bqTYofGgIMTqeMSLYoq0BGDU'
-SOCIAL_AUTH_ZOOM_AUTH_EXTRA_ARGUMENTS = {
-    'access_type': 'offline',  # Esto solicita un token de actualización
-}
-
 CORS_ALLOW_ORIGIN = [
     'https://tu-dominio.com',  # Agrega tu dominio aquí
 ]
 
-REFRESH_ACCES_TOKEN = "eyJzdiI6IjAwMDAwMSIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjZkMDYxODcxLTNhODAtNDM2Zi05ZWUwLTQ3YzdkOTU2ZmExMSJ9.eyJ2ZXIiOjksImF1aWQiOiI1YjA4OWQ5NDg4M2YxMmI2Mzg5Yzk5NmQxYjkyOTY4MCIsImNvZGUiOiJPRXV3SUl6OVRVajRJOXVGRGZ4VGZHaVFXVWNhWXhZZXciLCJpc3MiOiJ6bTpjaWQ6UzFRQ3VDZ1FKeU5BNHJ4SWNCMlVnIiwiZ25vIjowLCJ0eXBlIjoxLCJ0aWQiOjAsImF1ZCI6Imh0dHBzOi8vb2F1dGguem9vbS51cyIsInVpZCI6ImZmV0ZrTXlvUndtdjR0RjRjUmRPR3ciLCJuYmYiOjE3MDI0MTM4NTQsImV4cCI6MTcxMDE4OTg1NCwiaWF0IjoxNzAyNDEzODU0LCJhaWQiOiJFaEtlNVRtTlN0cU42VWFrYVRvRFd3In0.6w3PZBpcNIBiBrmPh2oEKZUfvBGCIHcO60SiMaJZyYvit0U60sJye1StKCwPL1Y13ab0WU-0gPmYk-KVAqLKqA"
+
+REFRESH_ACCES_TOKEN = "eyJzdiI6IjAwMDAwMSIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6Ijk5NDMxNWMwLWIyYzUtNGNjOS04YjEzLTFhYmRhNDJmNGRmNiJ9.eyJ2ZXIiOjksImF1aWQiOiI1YjA4OWQ5NDg4M2YxMmI2Mzg5Yzk5NmQxYjkyOTY4MCIsImNvZGUiOiJ5SjhWZ01meEhrTTN0WWVvZTFPUzUtVkR6U0tuTGZEVXciLCJpc3MiOiJ6bTpjaWQ6UzFRQ3VDZ1FKeU5BNHJ4SWNCMlVnIiwiZ25vIjowLCJ0eXBlIjoxLCJ0aWQiOjAsImF1ZCI6Imh0dHBzOi8vb2F1dGguem9vbS51cyIsInVpZCI6ImZmV0ZrTXlvUndtdjR0RjRjUmRPR3ciLCJuYmYiOjE3MDI2NzEzNzIsImV4cCI6MTcxMDQ0NzM3MiwiaWF0IjoxNzAyNjcxMzcyLCJhaWQiOiJFaEtlNVRtTlN0cU42VWFrYVRvRFd3In0.aq9xDTS59JucJYCW2BFOPv8lLgqKDnPHA73xkR83gZBVd0Ejj_KL_ldWIbjDOXcJ6kQYfUDf9QM1jOvEE-zejw"
 
 CLIENTE_ID = "S1QCuCgQJyNA4rxIcB2Ug"
 

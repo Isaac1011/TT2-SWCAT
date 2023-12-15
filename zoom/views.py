@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.contrib import messages
 from datetime import datetime, timedelta
 import pytz
+from django.http import JsonResponse
 
 
 import requests
@@ -721,6 +722,85 @@ def obtener_user_id(request):
         return render(request, 'idZoom.html', context)
 
 # Este es para pruebas
+
+
+def agregar_usuario_zoom(request):
+    # Token de acceso de tu aplicación
+
+    token_expirado = verificar_token_expirado()
+    print("2")
+    if token_expirado:
+        print("3")
+        # Si ha expirado, entonces generamos uno nuevo
+        if not generar_access_token():
+            print("4")
+            # Si no se generó correctamente lo anunciamos
+            messages.error(
+                request, 'Error al generar el Access Token, inténtelo de nuevo por favor')
+            return redirect('menu')
+
+    # Si el token no está expirado, entonces continuamos
+    # access_token = settings.TU_ACCESS_TOKEN
+    # Tomamos el access token de la base de datos
+    print("5")
+    ultimo_registro_token = TokenZoom.objects.latest('idTokenZoom')
+    access_token = ultimo_registro_token.accessToken
+    print("6")
+
+    # URL de la API de Zoom para agregar usuarios
+    url = 'https://api.zoom.us/v2/users'
+
+    # Configura los encabezados de autorización
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+
+    # Datos del usuario que quieres agregar
+    nombre_usuario = 'SWCAT22225'
+    email_usuario = 'sandovalfelix580@gmail.com'
+
+    # Verificar si el usuario ya existe en Zoom
+    verificar_usuario_url = f'https://api.zoom.us/v2/users/{email_usuario}'
+    verificar_usuario_response = requests.get(
+        verificar_usuario_url, headers=headers)
+
+    print(f"Holaaaaaaaaa {verificar_usuario_response.status_code}")
+
+    # Verifica si el usuario ya pertenece a la cuenta principal
+    if verificar_usuario_response.status_code == 200:
+        # El usuario ya existe
+        return JsonResponse({'message': f'El usuario {email_usuario} ya está registrado en el sistema. Revise se cuenta de correo para verificar que tiene el mensaje para unirse a la cuenta principal de Zoom'})
+
+    elif verificar_usuario_response.status_code == 404:
+        # El usuario no existe, así que lo agregamos
+        # Configura los datos del nuevo usuario
+        data = {
+            'action': 'create',
+            'user_info': {
+                'email': email_usuario,
+                'type': 1,  # 1 para usuarios básicos
+                'first_name': nombre_usuario,
+            },
+        }
+
+        # Realiza la solicitud POST a la API de Zoom
+        response = requests.post(url, json=data, headers=headers)
+
+        # Verifica el código de respuesta de la solicitud
+        if response.status_code == 201:
+            # Usuario agregado exitosamente
+            response_data = response.json()
+            user_id = response_data.get('id')
+            print(f'User ID del usuario agregado: {user_id}')
+            return JsonResponse({'message': 'Usuario agregado correctamente'})
+        else:
+            # Error al agregar el usuario
+            return JsonResponse({'message': f'Error al agregar usuario: {response.text}'}, status=response.status_code)
+
+    else:
+        # Otro tipo de error al verificar el usuario
+        return JsonResponse({'message': f'Error al verificar usuario: {verificar_usuario_response.text}'}, status=verificar_usuario_response.status_code)
 
 
 def refresh_access_token(request):
