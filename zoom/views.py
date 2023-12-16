@@ -190,7 +190,7 @@ def crear_reunion_individual(request, tutoria_id):
 
                     else:
                         # Hubo un error al crear la reunión
-                        error_message = f"Error al crear la reunión. Debe editar su información para ingresar su Zoom User ID. Código de estado: {response.status_code}"
+                        error_message = f"Error al crear la reunión. Favor de revisar su correo electrónico y aceptar el mensaje de Zoom para unir su cuenta de Zoom a la cuenta principal: {response.status_code}"
                         context = {
                             'error_message': error_message,
                             'logged_in': logged_in,
@@ -322,6 +322,7 @@ def crear_reunion_grupal(request, tutoria_id):
                     # user_id = "bDqfUrwlRmKb04tIl86Bkg"
                     # Obtener el valor de zoomUserID desde la instancia de Tutorado
                     user_id = tutor.zoomUserID
+                    print(f"UserID: {user_id}")
                     create_meeting_url = f'https://api.zoom.us/v2/users/{user_id}/meetings'
                     # create_meeting_url = 'https://api.zoom.us/v2/users/me/meetings'
 
@@ -364,7 +365,7 @@ def crear_reunion_grupal(request, tutoria_id):
 
                     else:
                         # Hubo un error al crear la reunión
-                        error_message = f"Error al crear la reunión. Debe editar su información para ingresar su Zoom User ID. Código de estado: {response.status_code}"
+                        error_message = f"Error al crear la reunión. Favor de revisar su correo electrónico y aceptar el mensaje de Zoom para unir su cuenta de Zoom a la cuenta principal: {response.status_code}"
                         context = {
                             'error_message': error_message,
                             'logged_in': logged_in,
@@ -507,6 +508,10 @@ def eliminar_reunion_individual(request, reunion_id, tutor_id):
             except Exception as e:
                 error_message = f"An error occurred: {e}"
                 return render(request, 'error.html', {'error_message': error_message})
+            else:
+                messages.error(
+                    request, 'No eres la Tutor o el Tutor que creó esta reunión, no tienes permiso de eliminar la reunión.')
+                return redirect('menu')
 
     else:
         messages.error(
@@ -615,6 +620,10 @@ def eliminar_reunion_grupal(request, reunion_id, tutor_id):
             except Exception as e:
                 error_message = f"An error occurred: {e}"
                 return render(request, 'error.html', {'error_message': error_message})
+            else:
+                messages.error(
+                    request, 'No eres la Tutor o el Tutor que creó esta reunión, no tienes permiso de eliminar la reunión.')
+                return redirect('menu')
 
     else:
         messages.error(
@@ -724,7 +733,7 @@ def obtener_user_id(request):
 # Este es para pruebas
 
 
-def agregar_usuario_zoom(request):
+def agregar_usuario_zoom(nombre_usuario, email_usuario):
     # Token de acceso de tu aplicación
 
     token_expirado = verificar_token_expirado()
@@ -736,7 +745,7 @@ def agregar_usuario_zoom(request):
             print("4")
             # Si no se generó correctamente lo anunciamos
             messages.error(
-                request, 'Error al generar el Access Token, inténtelo de nuevo por favor')
+                'Error al generar el Access Token, inténtelo de nuevo por favor')
             return redirect('menu')
 
     # Si el token no está expirado, entonces continuamos
@@ -756,21 +765,17 @@ def agregar_usuario_zoom(request):
         'Content-Type': 'application/json'
     }
 
-    # Datos del usuario que quieres agregar
-    nombre_usuario = 'SWCAT22225'
-    email_usuario = 'sandovalfelix580@gmail.com'
-
     # Verificar si el usuario ya existe en Zoom
     verificar_usuario_url = f'https://api.zoom.us/v2/users/{email_usuario}'
     verificar_usuario_response = requests.get(
         verificar_usuario_url, headers=headers)
 
-    print(f"Holaaaaaaaaa {verificar_usuario_response.status_code}")
-
     # Verifica si el usuario ya pertenece a la cuenta principal
     if verificar_usuario_response.status_code == 200:
         # El usuario ya existe
-        return JsonResponse({'message': f'El usuario {email_usuario} ya está registrado en el sistema. Revise se cuenta de correo para verificar que tiene el mensaje para unirse a la cuenta principal de Zoom'})
+        messages.error(
+            f'El usuario {email_usuario} ya está registrado en el sistema. Revise se cuenta de correo para verificar que tiene el mensaje para unirse a la cuenta principal de Zoom')
+        return redirect('inicio')
 
     elif verificar_usuario_response.status_code == 404:
         # El usuario no existe, así que lo agregamos
@@ -793,14 +798,16 @@ def agregar_usuario_zoom(request):
             response_data = response.json()
             user_id = response_data.get('id')
             print(f'User ID del usuario agregado: {user_id}')
-            return JsonResponse({'message': 'Usuario agregado correctamente'})
+            return user_id
         else:
             # Error al agregar el usuario
-            return JsonResponse({'message': f'Error al agregar usuario: {response.text}'}, status=response.status_code)
+            messages.error('Error al agregar usuario.')
+            return redirect('inicio')
 
     else:
         # Otro tipo de error al verificar el usuario
-        return JsonResponse({'message': f'Error al verificar usuario: {verificar_usuario_response.text}'}, status=verificar_usuario_response.status_code)
+        messages.error('Error al verificar usuario.')
+        return redirect('inicio')
 
 
 def refresh_access_token(request):

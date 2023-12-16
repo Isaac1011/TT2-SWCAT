@@ -187,8 +187,8 @@ class TutorForm(forms.ModelForm):
 
         widgets = {
             'numeroEmpleado': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
-            'zoomUserID': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'zoomUserID': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control'}),
             'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control'}),
@@ -216,7 +216,7 @@ class TutoradoForm(forms.ModelForm):
 
         widgets = {
             'boletaTutorado': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'apellidoPaterno': forms.TextInput(attrs={'class': 'form-control'}),
             'apellidoMaterno': forms.TextInput(attrs={'class': 'form-control'}),

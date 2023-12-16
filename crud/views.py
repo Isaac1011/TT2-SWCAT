@@ -23,7 +23,7 @@ from django.http import Http404
 import re
 from django.conf import settings
 import requests
-
+from zoom import views as Zoom
 
 # Create your views here.
 
@@ -596,13 +596,25 @@ def registro_tutor(request):
                                 request, 'Ingrese un Número de Empleado válido.')
                         else:
                             if form.cleaned_data['acepta_terminos']:
-                                numero_empleado = form.cleaned_data['numeroEmpleado']
-                                form.save()
-                                # Inicio de sesión exitoso
-                                request.session['logged_in'] = True
-                                request.session['rol'] = 'Tutor'
-                                request.session['numero_empleado'] = numero_empleado
-                                return redirect('menu')
+                                nombre = form.cleaned_data['nombre']
+                                # Llamamos la función desde otra app
+                                user_id = Zoom.agregar_usuario_zoom(
+                                    nombre, email)
+
+                                if user_id:
+                                    numero_empleado = form.cleaned_data['numeroEmpleado']
+                                    tutor_instance = form.save(commit=False)
+                                    tutor_instance.zoomUserID = user_id
+                                    tutor_instance.save()
+                                    # Inicio de sesión exitoso
+                                    request.session['logged_in'] = True
+                                    request.session['rol'] = 'Tutor'
+                                    request.session['numero_empleado'] = numero_empleado
+                                    # Agrega el mensaje
+                                    # Agrega el mensaje
+                                    messages.success(
+                                        request, 'Se ha enviado un mensaje por parte de Zoom a su correo electrónico, favor de aceptar unirse a la cuenta principal de Zoom para tener acceso a crear videoconferencias')
+                                    return redirect('menu')
                             else:
                                 messages.error(
                                     request, 'Debe aceptar los términos y condiciones para registrarse.')

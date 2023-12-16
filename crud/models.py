@@ -82,7 +82,7 @@ class BitacoraIndividualTutor(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Bitácora {self.idTutoriaIndividual} - Tutoría: {self.fecha}"
+        return f"idBitacoraIndividual: {self.idBitacoraIndividual} - idTutoriaIndividual: {self.idTutoriaIndividual}"
 
 
 class NotasIndividualesTutorado(models.Model):
@@ -95,6 +95,9 @@ class NotasIndividualesTutorado(models.Model):
     # Fecha y hora de la entrada de la bitácora
     fecha = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"idNotasIndividualesTutorado: {self.idNotasIndividualesTutorado} - idTutoriaIndividual: {self.idTutoriaIndividual}"
+
 
 class TutoriaGrupal(models.Model):
     idTutoriaGrupal = models.AutoField(primary_key=True)
@@ -103,6 +106,9 @@ class TutoriaGrupal(models.Model):
     cupoDisponible = models.IntegerField(default=45)
     salon = models.CharField(max_length=100, default=None)
     passwordGrupo = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self):
+        return f"idTutoriaGrupal: {self.idTutoriaGrupal} - idTutor: {self.idTutor} - nombreGrupo: {self.nombreGrupo}"
 
 
 class ListaTutoriaGrupal(models.Model):
@@ -113,6 +119,9 @@ class ListaTutoriaGrupal(models.Model):
     # Relación con el modelo Tutorado
     idTutorado = models.ForeignKey(Tutorado, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"idListaTutoriaGrupal: {self.idListaTutoriaGrupal} - idTutoriaGrupal: {self.idTutoriaGrupal} - idTutorado: {self.idTutorado}"
+
 
 class BitacoraGrupalTutor(models.Model):
     idBitacoraGrupalTutor = models.AutoField(primary_key=True)
@@ -122,6 +131,9 @@ class BitacoraGrupalTutor(models.Model):
     # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
     fecha = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"idBitacoraGrupalTutor: {self.idBitacoraGrupalTutor} - idTutoriaGrupal: {self.idTutoriaGrupal}"
+
 
 class AnunciosGrupalesTutor(models.Model):
     idAnunciosGrupalesTutor = models.AutoField(primary_key=True)
@@ -130,6 +142,9 @@ class AnunciosGrupalesTutor(models.Model):
     nota = models.CharField(max_length=400)
     # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
     fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"idAnunciosGrupalesTutor: {self.idAnunciosGrupalesTutor} - idTutoriaGrupal: {self.idTutoriaGrupal}"
 
 
 class VideoconferenciasIndividuales(models.Model):
@@ -144,6 +159,9 @@ class VideoconferenciasIndividuales(models.Model):
     meeting_code = models.CharField(max_length=30, default=None)
     meeting_password = models.CharField(max_length=30, default=None)
 
+    def __str__(self):
+        return f"idVideoconferenciaIndivual: {self.idVideoconferenciaIndivual} - idTutoriaIndividual: {self.idTutoriaIndividual} - topic: {self.topic}"
+
 
 class VideoconferenciasGrupales(models.Model):
     idVideoconferenciaGrupal = models.AutoField(primary_key=True)
@@ -157,11 +175,17 @@ class VideoconferenciasGrupales(models.Model):
     meeting_code = models.CharField(max_length=30, default=None)
     meeting_password = models.CharField(max_length=30, default=None)
 
+    def __str__(self):
+        return f"idVideoconferenciaGrupal: {self.idVideoconferenciaGrupal} - idTutoriaGrupal: {self.idTutoriaGrupal} - topic: {self.topic}"
+
 
 class Chat(models.Model):
     idChat = models.AutoField(primary_key=True)
     idTutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     idTutorado = models.ForeignKey(Tutorado, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"idChat: {self.idChat} - idTutor: {self.idTutor} - idTutorado: {self.idTutorado}"
 
 
 class Mensaje(models.Model):
@@ -179,3 +203,6 @@ class TokenZoom(models.Model):
     tipoToken = models.CharField(max_length=10)
     fechaCreado = models.DateTimeField()
     fechaExpira = models.DateTimeField()
+
+    def __str__(self):
+        return f"idTokenZoom: {self.idTokenZoom}"
