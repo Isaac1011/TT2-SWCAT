@@ -183,6 +183,8 @@ class Chat(models.Model):
     idChat = models.AutoField(primary_key=True)
     idTutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     idTutorado = models.ForeignKey(Tutorado, on_delete=models.CASCADE)
+    mensajes_no_leidos_tutor = models.IntegerField(default=0)
+    mensajes_no_leidos_tutorado = models.IntegerField(default=0)
 
     def __str__(self):
         return f"idChat: {self.idChat} - idTutor: {self.idTutor} - idTutorado: {self.idTutorado}"

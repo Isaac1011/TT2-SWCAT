@@ -634,7 +634,12 @@ def email_valido(email):
     from django.core.validators import validate_email
     from django.core.exceptions import ValidationError
 
+    # Verificar si la dirección de correo electrónico termina con "@ipn.mx"
+    if email.endswith("@ipn.mx"):
+        return True
+
     try:
+        # Validar la dirección de correo electrónico
         validate_email(email)
         return True
     except ValidationError:
@@ -1840,6 +1845,18 @@ def enviar_mensaje(request, tutor_id, tutorado_id):
 
                     # mensajes_existentes = Mensaje.objects.filter(idChat=chat)
 
+                    # Mensajes vistos
+                    if rol == 'Tutor':
+                        chat.mensajes_no_leidos_tutorado += 1
+                    elif rol == 'Tutorado':
+                        chat.mensajes_no_leidos_tutor += 1
+
+                    chat.save()
+
+                    print(f"Enviar Tutor {chat.mensajes_no_leidos_tutor}")
+                    print(
+                        f"Enviar Tutorado {chat.mensajes_no_leidos_tutorado}")
+
                     context = {
                         'logged_in': logged_in,
                         'rol': rol,
@@ -1907,6 +1924,21 @@ def obtener_mensajes(request, tutor_id, tutorado_id):
         tutorado = get_object_or_404(Tutorado, idTutorado=tutorado_id)
         chat, creado = Chat.objects.get_or_create(
             idTutor=tutor, idTutorado=tutorado)
+
+        # Mensajes leidos
+        if rol == 'Tutor':
+            chat.mensajes_no_leidos_tutor = 0
+        elif rol == 'Tutorado':
+            chat.mensajes_no_leidos_tutorado = 0
+
+        chat.save()
+
+        print(f"Carga Tutor {chat.mensajes_no_leidos_tutor}")
+        print(f"Carga Tutorado {chat.mensajes_no_leidos_tutorado}")
+
+        mensajes_no_leidos_tutor = chat.mensajes_no_leidos_tutor
+        mensajes_no_leidos_tutorado = chat.mensajes_no_leidos_tutorado
+
         mensajes_existentes = Mensaje.objects.filter(idChat=chat)
 
         mensajes_json = []
@@ -1919,6 +1951,8 @@ def obtener_mensajes(request, tutor_id, tutorado_id):
                 'contenido': mensaje.contenido,
                 'tutorEnvia': mensaje.tutorEnvia,
                 'fecha_envio': fecha_envio_mexico.strftime("%Y-%m-%d %H:%M:%S %Z"),
+                'mensajes_no_leidos_tutor': mensajes_no_leidos_tutor,
+                'mensajes_no_leidos_tutorado': mensajes_no_leidos_tutorado,
             })
 
         return JsonResponse({'mensajes': mensajes_json})
