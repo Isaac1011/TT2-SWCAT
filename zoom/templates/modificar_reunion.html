@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h1>{{reunion_id}}</h1>
+    <h1>Modificar Reunión</h1>
+    <form method="POST" action="{% url 'guardar_modificacion_reunion' reunion_id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Guardar cambios</button>
+    </form>
+</main>
+
+{% endblock %}

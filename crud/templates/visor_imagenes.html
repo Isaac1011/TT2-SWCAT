@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Material Didáctico | SWCAT{% endblock %}
+
+{% block content %}
+
+{% load static %}
+
+
+<main class="container mb-5">
+    <section id="imageViewer" style="max-width: 100%; margin: 0 auto; position: relative;">
+        <img id="currentImage" src="{% static 'areasIntervencion.png' %}" alt="Material Didáctico"
+            style="width: 100%; height: auto; max-height: 600px;">
+    </section>
+
+    <button id="prevBtn" class="btn btn-secondary btn-lg"
+        style="position: absolute; bottom: 50%; left: 10px; transform: translateY(-50%);">Anterior</button>
+    <button id="nextBtn" class="btn btn-secondary btn-lg"
+        style="position: absolute; bottom: 50%; right: 10px; transform: translateY(-50%);">Siguiente</button>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+</main>
+
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        var images = [
+            "{% static 'areasIntervencion.png' %}",
+            "{% static 'tareasTutor.png' %}",
+            "{% static 'tutoriaIndividual.png' %}",
+            "{% static 'tutoriaGrupal.png' %}",
+            "{% static 'PIT.png' %}",
+        ];
+        var currentIndex = 0;
+
+        function showImage(index) {
+            $('#currentImage').attr('src', images[index]);
+        }
+
+        $('#prevBtn').click(function () {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(currentIndex);
+        });
+
+        $('#nextBtn').click(function () {
+            currentIndex = (currentIndex + 1) % images.length;
+            showImage(currentIndex);
+        });
+    });
+</script>
+
+{% endblock %}

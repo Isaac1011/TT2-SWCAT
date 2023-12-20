@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Menú principal Tutorado | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container mt-5 mb-5">
+    <h1 class="text-center">Menú principal del Tutorado</h1>
+
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <br>
+
+    <h4>Bienvenido, <strong><a href="{% url 'editar_tutorado' tutorado_id=tutorado.idTutorado %}"
+                class="modificarDatos">
+                {{tutorado.nombre}} {{tutorado.apellidoPaterno}}
+                {{tutorado.apellidoMaterno}}
+            </a></strong></h4>
+
+    {% if tutorias_individuales %}
+    <div class="mt-4">
+        <h2>Tutorías Individuales:</h2>
+        <ul class="list-group custom-list">
+            {% for tutoria in tutorias_individuales %}
+            <li class="custom-list-item mt-3">
+                <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}" class="tutoria-link">
+                    Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{ tutoria.idTutorado.nombre }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <p>No tienes Tutorías individuales</p>
+    {% endif %}
+
+
+    {% if tutorias_grupales %}
+    <div class="mt-4">
+        <h2>Tutorías Grupales inscritas: </h2>
+        <ul class="list-group custom-list">
+            {% for tutoria in tutorias_grupales %}
+            <li class="custom-list-item mt-3">
+                <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal.idTutoriaGrupal %}"
+                    class="tutoria-link">
+                    Tutoría Grupal: {{ tutoria.idTutoriaGrupal.nombreGrupo }}
+                    - Tutor: {{ tutoria.idTutoriaGrupal.idTutor.nombre}}
+                    {{tutoria.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                    {{tutoria.idTutoriaGrupal.idTutor.apellidoMaterno}}
+                    - Salón: {{ tutoria.idTutoriaGrupal.salon }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <p>No tienes Tutorías Grupales inscritas</p>
+    {% endif %}
+
+    </h<>
+
+    {% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle Tutoría Grupal | SWCAT{% endblock %}
+
+
+{% block content %}
+
+<main class="container mt-5 mb-5">
+    <h1 class="text-center">Detalle de Tutoría Grupal</h1>
+    <p>Nombre de la tutoría: <strong>{{tutoria_grupal.nombreGrupo}}</strong></p>
+    <p>Tutor: <strong>{{tutoria_grupal.idTutor.nombre}} {{tutoria_grupal.idTutor.apellidoPaterno}}
+            {{tutoria_grupal.idTutor.apellidoMaterno}}</strong></p>
+    <p>Salón: <strong>{{tutoria_grupal.salon}}</strong></p>
+
+    {% if rol == 'Tutor' %}
+    <p>ID Tutoría Grupal: <strong>{{tutoria_grupal.idTutoriaGrupal}}</strong></p>
+    <p>Contraseña del Grupo: <strong>{{tutoria_grupal.passwordGrupo}}</strong></p>
+
+    <a href="{% url 'buscar_tutorados_tutoria_grupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Ver Tutorados</a>
+    {% endif %}
+
+    <!-- Mostrar las bitácoras del tutor -->
+    {% if rol == 'Tutor' %}
+    <h4>Reunión: <strong>{{videoconferencia_grupal.first.topic}}</strong></h4>
+
+    {% if videoconferencia_grupal %}
+
+    <a href="{{ videoconferencia_grupal.first.start_url }}" target="_blank"
+        class="btn btn-success mb-2 boton-exito">Iniciar reunión</a>
+
+    <form method="POST"
+        action="{% url 'eliminar_reunion_grupal' reunion_id=videoconferencia_grupal.first.meeting_code tutor_id=tutoria_grupal.idTutor.idTutor %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar</button>
+    </form>
+
+    {% else %}
+
+    <a href="{% url 'crear_reunion_grupal'  tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-button-small">Crear Reunión</a>
+
+    {% endif %}
+
+    <a href="{% url 'detalle_bitacora_grupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Ver Bitácora Grupal</a>
+
+    <a href="{% url 'anuncios_grupales_tutor' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Ver Anuncios Grupales</a>
+
+    {% if rol == 'Tutor' %}
+    <!-- Botón Agregado: Eliminar Tutoría Grupal -->
+    <form method="POST" action="{% url 'eliminar_tutoria_grupal' tutoria_grupal.idTutoriaGrupal %}"
+        style="position: fixed; bottom: 20px; right: 20px;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar Tutoría Grupal</button>
+    </form>
+
+    {% endif %}
+
+    <!-- Mostrar las notas del tutorado -->
+    {% elif rol == 'Tutorado' %}
+
+    <a href="{% url 'enviar_mensaje' tutor_id=tutoria_grupal.idTutor.idTutor tutorado_id=tutorado.idTutorado %}"
+        class="btn btn-primary mb-2 custom-link">
+        Enviar mensaje al Tutor
+    </a>
+
+
+    <h4>Reunión: <strong>{{ videoconferencia_grupal.first.topic }}</strong></h4>
+
+    {% if videoconferencia_grupal %}
+
+    <a href="{{ videoconferencia_grupal.first.join_url }}" target="_blank"
+        class="btn btn-success mb-2 boton-exito">Unirse a la reunión</a>
+
+    {% else %}
+
+    <p>Aún no hay enlace para que te puedas unir</p>
+
+    {% endif %}
+
+
+    <br>
+    <br>
+    <h4>Anuncios Grupales del Tutor</h4>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Tutor</th>
+                    <th scope="col">Nota</th>
+                    <th scope="col">Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for anuncio in anuncios_grupales %}
+                <tr>
+                    <td>{{anuncio.idTutoriaGrupal.idTutor.nombre}} {{anuncio.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                        {{anuncio.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
+                    <td>{{anuncio.nota}}</td>
+                    <td>{{anuncio.fecha}}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    {% endif %}
+
+
+    <br>
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

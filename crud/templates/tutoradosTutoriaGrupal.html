@@ -1,0 +1,77 @@
+<!-- tutoradoTutoriaGrupal.html -->
+{% extends 'base.html' %}
+
+{% block title %}Tutorados Específicos | SWCAT{% endblock %}
+
+{% block content %}
+<main class="container-fluid mt-5 mb-5">
+    <h1 class="text-center">Tutorados Inscritos</h1>
+
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Mensaje</th>
+                    <th scope="col">Número de Boleta</th>
+                    <th scope="col">Apellido Paterno</th>
+                    <th scope="col">Apellido Materno</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Semestre</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Género</th>
+                    <th scope="col">Eliminar</th> <!-- Nueva columna para acciones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for tutorado_especifico in tutorados_especificos %}
+                <tr>
+                    <td>
+                        <a href="{% url 'enviar_mensaje' tutor_id=tutor.idTutor tutorado_id=tutorado_especifico.idTutorado.idTutorado %}"
+                            class="btn btn-primary btn-sm">
+                            Mensajes
+                        </a>
+                    </td>
+                    <td>{{tutorado_especifico.idTutorado.boletaTutorado}}</td>
+                    <td>{{tutorado_especifico.idTutorado.apellidoPaterno}}</td>
+                    <td>{{tutorado_especifico.idTutorado.apellidoMaterno}}</td>
+                    <td>{{tutorado_especifico.idTutorado.nombre}}</td>
+                    <td>{{tutorado_especifico.idTutorado.email}}</td>
+                    <td>{{tutorado_especifico.idTutorado.semestre}}</td>
+                    <td>{{tutorado_especifico.idTutorado.telefono}}</td>
+                    <td>{{tutorado_especifico.idTutorado.genero}}</td>
+                    <td>
+                        <a href="{% url 'eliminar_tutorado_tutoria_grupal' tutorado_id=tutorado_especifico.idTutorado.idTutorado tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+                            class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+{% endblock %}

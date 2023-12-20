@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle Tutoría Individual | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container mt-5 mb-5">
+    <h1 class="text-center">Detalle de Tutoría Individual</h1>
+    <p>Nombre de la tutoría: <strong>{{tutoria_individual.nombreTutoriaIndividual}}</strong></p>
+    <p>Tutor: <strong>{{tutoria_individual.idTutor.nombre}} {{tutoria_individual.idTutor.apellidoPaterno}}
+            {{tutoria_individual.idTutor.apellidoMaterno}}</strong></p>
+    <p>Tutorado: <strong>{{tutoria_individual.idTutorado.nombre}} {{tutoria_individual.idTutorado.apellidoPaterno}}
+            {{tutoria_individual.idTutorado.apellidoMaterno}}</strong></p>
+    <p>Número de Boleta del Tutorado: <strong>{{tutoria_individual.idTutorado.boletaTutorado}}</strong></p>
+
+    {% if rol == 'Tutor' %}
+    <a href="{% url 'enviar_mensaje' tutor_id=tutoria_individual.idTutor.idTutor tutorado_id=tutoria_individual.idTutorado.idTutorado %}"
+        class="btn btn-primary mb-2 custom-link">
+        Enviar mensaje al Tutorado
+    </a>
+    {% else %}
+    <a href="{% url 'enviar_mensaje' tutor_id=tutoria_individual.idTutor.idTutor tutorado_id=tutoria_individual.idTutorado.idTutorado %}"
+        class="btn btn-primary mb-2 custom-link">
+        Enviar mensaje al Tutor
+    </a>
+
+    {% endif %}
+
+
+
+    <h4>Reunión: <strong>{{videoconferencia_individual.first.topic}}</strong></h4>
+    {% if rol == 'Tutor' %}
+    {% if videoconferencia_individual %}
+    <a href="{{ videoconferencia_individual.first.start_url }}" target="_blank"
+        class="btn btn-success mb-2 boton-exito">
+        Iniciar reunión
+    </a>
+
+    <form method="POST"
+        action="{% url 'eliminar_reunion_individual' tutor_id=tutoria_individual.idTutor.idTutor reunion_id=videoconferencia_individual.first.meeting_code %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar reunión</button>
+    </form>
+    {% else %}
+    <a href="{% url 'crear_reunion_individual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-button-small">
+        Crear Reunión
+    </a>
+    {% endif %}
+
+    <a href="{% url 'detalle_bitacora_individual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-link">
+        Ver Bitácoras
+    </a>
+
+    <!-- Agregado: Botón para eliminar tutoría individual -->
+    <form method="POST" action="{% url 'eliminar_tutoria_individual' tutoria_individual.idTutoriaIndividual %}"
+        style="position: fixed; bottom: 20px; right: 20px;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mb-2 boton-eliminar">Eliminar Tutoría Individual</button>
+    </form>
+
+    {% elif rol == 'Tutorado' %}
+    {% if videoconferencia_individual %}
+    <a href="{{ videoconferencia_individual.first.join_url }}" target="_blank" class="btn btn-success mb-2 boton-exito">
+        Unirse a la reunión
+    </a>
+    {% else %}
+    <p>Aún no hay enlace para que te puedas unir</p>
+    {% endif %}
+
+    <!-- Enlace para ver las notas del tutorado -->
+    <a href="{% url 'notas_tutorado_tutoria_individual' tutoria_id=tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-link">
+        Ver Notas del Tutorado
+    </a>
+    {% endif %}
+
+    <br>
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

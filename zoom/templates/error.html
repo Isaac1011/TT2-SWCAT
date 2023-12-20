@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h1>Error</h1>
+    <h3>{{ error_message }}</h3>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

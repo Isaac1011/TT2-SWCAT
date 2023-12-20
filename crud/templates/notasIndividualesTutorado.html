@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Notas Personales Tutorado | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container-fluid mt-5 mb-5">
+    <h1 class="text-center">Notas del Tutorado</h1>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Tutorado</th>
+                    <th scope="col">Boleta</th>
+                    <th scope="col">Tutoría</th>
+                    <th scope="col">Nota</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Acciones</th> <!-- Nueva columna para acciones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for nota in notas_tutorado %}
+                <tr>
+                    <td>{{nota.idTutoriaIndividual.idTutorado.nombre}}
+                        {{nota.idTutoriaIndividual.idTutorado.apellidoPaterno}}
+                        {{nota.idTutoriaIndividual.idTutorado.apellidoMaterno}}</td>
+                    <td>{{nota.idTutoriaIndividual.idTutorado.boletaTutorado}}</td>
+                    <td>{{nota.idTutoriaIndividual.nombreTutoriaIndividual}}</td>
+                    <td>{{nota.nota}}</td>
+                    <td>{{nota.fecha}}</td>
+                    <td>
+                        <a href="{% url 'eliminar_nota_tutoria_individual' id_tutorado=tutoria_individual.idTutorado.idTutorado id_nota=nota.idNotasIndividualesTutorado %}"
+                            class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{% url 'crear_nota_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-link">
+        Crear Nota
+    </a>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

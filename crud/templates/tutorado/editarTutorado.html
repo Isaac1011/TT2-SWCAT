@@ -1,0 +1,36 @@
+<!-- editarTutorado.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container mt-5 mb-5">
+    <h1 class="text-center">Editar Información</h1>
+
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary btn-block custom-button">Guardar cambios</button>
+    </form>
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

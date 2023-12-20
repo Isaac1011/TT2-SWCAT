@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main>
+    <h1>Reunión Instantánea</h1>
+    <p>Haz clic en el siguiente enlace para unirte a la reunión:</p>
+    <a href="{{ join_url }}" target="_blank">{{ join_url }}</a>
+</main>
+
+{% endblock %}

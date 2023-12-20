@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Menú principal Tutor | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container mt-5 mb-5">
+    <h1 class="text-center">Menú principal del Tutor</h1>
+
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <br>
+    <h4>Bienvenido, <strong><a href="{% url 'editar_tutor' tutor_id=tutor.idTutor %}" class="modificarDatos">
+                {{tutor.nombre}} {{tutor.apellidoPaterno}}
+                {{tutor.apellidoMaterno}}
+            </a></strong></h4>
+
+    <!-- <a href="{% url 'editar_tutor' tutor_id=tutor.idTutor %}" class="tutoria-link">
+        {{tutor.nombre}} {{tutor.apellidoPaterno}}
+        {{tutor.apellidoMaterno}}
+    </a> -->
+
+    {% if tutorias_individuales or tutorias_grupales %}
+    <div class="mt-4">
+        <h2>Tutorías Individuales:</h2>
+        <ul class="list-group custom-list">
+            {% for tutoria in tutorias_individuales %}
+            <li class="custom-list-item mt-3">
+                <a href="{% url 'detalle_tutoriaIndividual' tutoria.idTutoriaIndividual %}" class="tutoria-link">
+                    Tutoría: {{ tutoria.nombreTutoriaIndividual }} - Tutorado: {{tutoria.idTutorado.nombre}}
+                    {{tutoria.idTutorado.apellidoPaterno}} {{tutoria.idTutorado.apellidoMaterno}}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mt-4">
+        <h2>Tutorías Grupales:</h2>
+        <ul class="list-group custom-list">
+            {%for tutoria in tutorias_grupales %}
+            <li class="custom-list-item mt-3">
+                <a href="{% url 'detalle_tutoriaGrupal' tutoria.idTutoriaGrupal %}" class="tutoria-link">
+                    Tutoría: {{ tutoria.nombreGrupo }} - Salón: {{ tutoria.salon }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% else %}
+    <p class="mt-4">No tienes tutorías a cargo.</p>
+    {% endif %}
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

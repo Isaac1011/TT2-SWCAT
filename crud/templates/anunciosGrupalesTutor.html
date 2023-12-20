@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Anuncios Grupales del Tutor | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container mt-5 mb-5">
+    <h1 class="text-center mb-4">Anuncios Grupales del Tutor</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Tutoría</th>
+                    <th scope="col">Tutor</th>
+                    <th scope="col">Nota</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Acciones</th> <!-- Nueva columna para acciones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for anuncio in anuncios_grupales %}
+                <tr>
+                    <td>{{anuncio.idTutoriaGrupal.nombreGrupo}}</td>
+                    <td>{{anuncio.idTutoriaGrupal.idTutor.nombre}} {{anuncio.idTutoriaGrupal.idTutor.apellidoPaterno}}
+                        {{anuncio.idTutoriaGrupal.idTutor.apellidoMaterno}}</td>
+                    <td>{{anuncio.nota}}</td>
+                    <td>{{anuncio.fecha}}</td>
+                    <td>
+                        <a href="{% url 'eliminar_anuncio_grupal_tutoria' id_tutor=tutoria_grupal.idTutor.idTutor id_anuncio=anuncio.idAnunciosGrupalesTutor %}"
+                            class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Para crear un anuncio al grupo -->
+    <a href="{% url 'anuncio_tutor_tutoriaGrupal' tutoria_id=tutoria_grupal.idTutoriaGrupal %}"
+        class="btn btn-primary mb-2 custom-link">Crear Anuncio Grupal</a>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+{% endblock %}

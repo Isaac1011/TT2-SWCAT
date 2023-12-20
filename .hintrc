@@ -9,6 +9,15 @@
       {
         "list": "off"
       }
-    ]
+    ],
+    "axe/language": [
+      "default",
+      {
+        "html-has-lang": "off"
+      }
+    ],
+    "axe/forms": "off",
+    "no-inline-styles": "off",
+    "meta-charset-utf-8": "off"
   }
 }

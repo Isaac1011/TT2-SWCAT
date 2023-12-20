@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container mt-5 mb-5">
+
+    <h1 class="text-center mb-4">Registrar Tutor</h1>
+
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            {{ form.numeroEmpleado.label_tag }}
+            {{ form.numeroEmpleado }}
+
+            {{ form.email.label_tag }}
+            {{ form.email }}
+
+            {{ form.password.label_tag }}
+            {{ form.password }}
+
+            <!-- Mensaje sobre la contraseña -->
+            <div class="password-message alert alert-danger">
+                <ul class="list-unstyled">
+                    <li>La contraseña debe incluir al menos:</li>
+                    <ul>
+                        <li>8 caracteres</li>
+                        <li>1 número</li>
+                        <li>1 letra mayúscula</li>
+                        <li>1 letra minúscula</li>
+                    </ul>
+                    <li>La contraseña no debe incluir:</li>
+                    <ul>
+                        <li>4 o más caracteres consecutivos</li>
+                        <li>Caracteres especiales</li>
+                    </ul>
+                </ul>
+            </div>
+
+            {{ form.nombre.label_tag }}
+            {{ form.nombre }}
+
+            {{ form.apellidoPaterno.label_tag }}
+            {{ form.apellidoPaterno }}
+
+            {{ form.apellidoMaterno.label_tag }}
+            {{ form.apellidoMaterno }}
+
+            {{ form.cubiculo.label_tag }}
+            {{ form.cubiculo }}
+
+            {{ form.telefono.label_tag }}
+            {{ form.telefono }}
+        </div>
+
+        <!-- Otros campos del formulario -->
+
+        <div class="terminos-container form-group mt-2">
+            {{ form.acepta_terminos }}
+            <label for="{{ form.acepta_terminos.id_for_label }}">
+                He leído y acepto los <a href="#" id="terminos-link">Términos y Condiciones</a>
+            </label>
+        </div>
+
+        <div class="privacidad-container form-group mt-2">
+            {{ form.acepta_privacidad }}
+            <label for="{{ form.acepta_privacidad.id_for_label }}">
+                He leído y acepto el <a href="#" id="privacidad-link">Aviso de privacidad</a>
+            </label>
+        </div>
+
+
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary btn-block custom-button">Registrarse</button>
+        </div>
+    </form>
+
+    <!-- Modal para mostrar los Términos y Condiciones -->
+    <div class="modal" tabindex="-1" role="dialog" id="terminosModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Términos y Condiciones</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <!-- Contenido de los Términos y Condiciones -->
+                    <h1 class="mb-4">Términos y condiciones</h1>
+
+                    <p class="mb-3">Fecha de actualización anterior: 11 de diciembre del 2023.</p>
+                    <p class="mb-3">Fecha de última actualización: 20 de diciembre del 2023.</p>
+
+                    <p class="mb-4">Bienvenidos al Sistema Web "SWCAT" (Sistema Web para apoyo con chatbot a fin de
+                        brindar sesiones de
+                        acompañamiento Tutorial en la Escuela Superior de Cómputo del Instituto Politécnico Nacional),
+                        el cual opera en la dirección Web: https://swcat-deploy1.onrender.com</p>
+
+                    <p class="mb-4">Estos Términos y Condiciones ("Términos") regulan
+                        el uso del Sistema web "SWCAT". Por favor, lea atentamente estos Términos antes de registrarse y
+                        hacer uso del sistema.</p>
+
+                    <p class="mb-4">"SWCAT" es propiedad y está operada por [la Escuela Superior de Cómputo, del
+                        Instituto
+                        Politécnico Nacional] ("Nosotros" o "Nos"). Al utilizar "SWCAT", usted ("Usuario") acepta estos
+                        Términos en su totalidad. Si no está de acuerdo con estos Términos, por favor,absténgase de
+                        utilizar "SWCAT".</p>
+
+                    <h2 class="mb-3">1. Uso de la Aplicación:</h2>
+                    <p class="mb-4">a. Este sistema se proporciona con el propósito de apoyar la acción tutorial para
+                        profesoras/profesores (Tutores) y alumnas/alumnos (Tutorados) en la ESCOM del IPN mediante el
+                        uso de videoconferencias, mensajes, chatbot y bitácoras de seguimiento.</p>
+                    <p class="mb-4">b. Usted se compromete a utilizar "SWCAT" únicamente con fines de la acción tutorial
+                        (abarcando una o más Áreas de intervención que contempla la acción tutorial en el IPN).</p>
+                    <p class="mb-4">c. Usted no debe utilizar "SWCAT" de manera que infrinja las leyes o
+                        regulaciones aplicables.</p>
+
+                    <h3 class="mb-3">1.1 Cuenta</h3>
+                    <p class="mb-4">Para hacer uso total de las funciones que ofrece "SWCAT" para Tutores y Tutorados,
+                        deberá registrar una cuenta. Se le solicitar que proporcione datos personales/sensiles los
+                        cuales son nombre, apellido parterno, apellido materno,
+                        número de empleado (para Tutores), número de boleta (para Tutorados), número de teléfono, una
+                        dirección de correo electrónico y una contraseña relacionada con su cuenta, estos datos solo se
+                        utilizarán para fines académicos y de control.
+                        El nombre, apellido parterno, apellido materno y correo electrónico tienen la excepción de ser
+                        utilizados únicamente para unirse a la cuenta principal de Zoom y así tener acceso a las
+                        funciones que proporciona la API de Zoom.
+                        Usted es el
+                        único responsable de mantener la confidencialidad de su cuenta y contraseña,
+                        y está de acuerdo con aceptar la responsabilidad de todas las actividades que
+                        ocurran bajo su cuenta o contraseña. Usted está de acuerdo que la información
+                        que proporcione a "SWCAT", ya sea durante el registro o en cualquier otro
+                        momento, será verdadero, correcto, actual, y completo. También está de
+                        acuerdo en que garantizará que esta información se mantendrá correcta y
+                        actualizada en todo momento.
+                    </p>
+
+                    <h2 class="mb-3">2. Propiedad intelectual</h2>
+                    <p class="mb-4">a. Todos los derechos de propiedad intelectual relacionados con "SWCAT",
+                        incluyendo, pero no limitado a, derechos de autor, marcas comerciales y
+                        patentes, son propiedad exclusiva de [la Escuela Superior de Cómputo, del
+                        Instituto Politécnico Nacional] o sus licenciatarios.
+                    </p>
+                    <p class="mb-4">b. Usted no tiene derecho a copiar, modificar, distribuir o utilizar cualquier
+                        contenido de "SWCAT" sin el consentimiento expreso por escrito de [la
+                        Escuela Superior de Cómputo, del Instituto Politécnico Nacional].</p>
+                    <p class="mb-4"></p>
+                    <p class="mb-4">c. Las interfaces visuales, gráficas, diseño, compilación, información, código
+                        informático (incluye el código fuente o código objeto), software, contenido
+                        multimedia, y todos los otros elementos del sistema web “SWCAT” están protegidos por el
+                        Instituto Mexicano de la Propiedad
+                        Industrial (IMPI), en materia de derechos de autor, patentes y marcas, que
+                        rigen la propiedad intelectual y los derechos de propiedad.</p>
+
+                    <h2 class="mb-3">3. Privacidad</h2>
+                    <p class="mb-4">Nuestra política de privacidad, que se encuentra detallada en el apartado
+                        correspondiente, rige la recopilación y el uso de sus datos personales. Al utilizar la
+                        Aplicación, usted acepta las prácticas de privacidad descritas en nuestra Política de
+                        Privacidad.</p>
+
+                    <h2 class="mb-3">4. Limitación de Responsabilidad</h2>
+                    <p class="mb-4">a. El sistema web "SWCAT" se proporciona "tal cual" y "según disponibilidad". No
+                        garantizamos la precisión, confiabilidad o disponibilidad continua de la
+                        Aplicación Web.
+                    </p>
+                    <p class="mb-4">b. [La Escuela Superior de Cómputo, del Instituto Politécnico Nacional] no
+                        será responsable por daños físicos, psicológicos, directos, indirectos, incidentales, especiales
+                        o
+                        consecuentes que resulten del uso del sistema web "SWCAT".
+                    </p>
+
+                    <h2 class="mb-3">5. Modificaciones</h2>
+                    <p class="mb-4">[La Escuela Superior de Cómputo, del Instituto Politécnico Nacional], se reserva el
+                        derecho, a nuestra entera discreción, de cambiar, modificar, añadir, o quitar partes
+                        de dichos Términos en cualquier momento. Las modificaciones entrarán en vigor
+                        inmediatamente después de su publicación en el sistema web "SWCAT". Se le recomienda revisar
+                        periódicamente estos Términos para estar al tanto de cualquier cambio.</p>
+
+                    <h2 class="mb-3">6. Acceso al contenido del usuario</h2>
+                    <p class="mb-4">El sistema web "SWCAT" puede permitir a los usuarios compartir su contenido
+                        de usuario con un grupo selecto de otros usuarios, Usted reconoce y está de acuerdo
+                        en que, a pesar de que "SWCAT" puede proporcionar ciertas funciones que
+                        pretenden permitirle restringir algún contenido de usuario que usted cree para otros
+                        usuarios, "SWCAT" no garantiza que dicho contenido de usuario no será accesible
+                        para otros.</p>
+
+                    <h2 class="mb-3">7. Retroalimentación</h2>
+                    <p class="mb-4">Al enviarnos sugerencias u otros comentarios relacionados a "SWCAT", usted
+                        acepta que podemos (pero no estamos obligados) utilizar y compartir dichos
+                        comentarios para cualquier propósito sin compensación para usted. Respetaremos
+                        cualquier límite que acordemos en el momento de recopilar los comentarios.</p>
+
+                    <h2 class="mb-3">8. Acreditación</h2>
+                    <p class="mb-4">Si usted distribuye, realiza o muestra públicamente, transmite, publica, o de lo
+                        contrario pone a disposición cualquier contenido educativo con licencia o cualquier
+                        trabajo derivado del mismo, debe proporcionar el siguiente aviso destacado junto al
+                        contenido educativo con licencia o trabajo derivado del mismo.</p>
+
+                    <h2 class="mb-3">9. Vigencia</h2>
+                    <p class="mb-4">Estos términos permanecerán en pleno vigor y efecto mientras utilice "SWCAT" a menos
+                        que su cuenta se dé por terminada según lo dispuesto en estos términos,
+                        en cuyo caso ya no tendrá el derecho de emplear el sistema web "SWCAT".</p>
+
+                    <h2 class="mb-3">10. Terminación del Vínculo la Aplicación Web</h2>
+                    <p class="mb-4">Podemos suspender o terminar su acceso a la Aplicación en cualquier momento y por
+                        cualquier motivo, sin previo aviso.</p>
+
+                    <!-- Fin del contenido de los Términos y Condiciones -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal para mostrar el Aviso de privacidad -->
+    <div class="modal" tabindex="-1" role="dialog" id="privacidadModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Aviso de privacidad</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <!-- Contenido del Aviso de privacidad -->
+                    <h1 class="mb-4">Aviso de privacidad</h1>
+
+                    <p class="mb-3">Fecha de actualización anterior: 11 de diciembre del 2023</p>
+                    <p class="mb-3">Fecha de última actualización: 11 de diciembre del 2023</p>
+
+                    <p class="mb-4">Nuestra Política de Privacidad establece cómo recopilamos, utilizamos y protegemos
+                        la información personal que usted proporciona a través del sistema web "SWCAT" (Sistema Web para
+                        apoyo con Chatbot a fin de brindar sesiones de Acompañamiento Tutorial)</p>
+
+                    <h2 class="mb-3">1. Recopilación de Datos Personales:</h2>
+                    <p class="mb-4">Los datos que recopilamos cuando un usuario se registra en "SWCAT" son usados para
+                        mejorar la prestación o uso del sistema y el correcto funcionamiento del mismo.</p>
+
+                    <h2 class="mb-3">2. Uso de Datos Personales</h2>
+                    <p class="mb-4">Utilizamos los datos personales recopilados para proporcionar y mejorar el sistema
+                        web "SWCAT". Usted acepta que se pueda utilizar el correo electrónico que se ingresó para
+                        agregarlo como usuario a la cuenta principal de Zoom y así pueda crear y eliminar reuniones de
+                        videoconferencia.</p>
+
+                    <h2 class="mb-3">3. Configuración de la cuenta</h2>
+                    <p class="mb-4">Queremos que tenga acceso a sus datos, para que pueda contribuir a mantenerla lo más
+                        precisa posible. Si se registra y proporciona información al sistema web "SWCAT", puede
+                        actualizar
+                        y corregir información permitida en cualquier momento revisando la información de su perfil. En
+                        caso de desear eliminar su cuenta, favor de ponerse en contacto con la dirección académica de la
+                        ESCOM para solicitar una actualización o eliminar su cuenta.</p>
+
+                    <h2 class="mb-3">4. Seguridad de los Datos</h2>
+                    <p class="mb-4">Implementamos medidas de seguridad para proteger sus datos personales. Sin embargo,
+                        no podemos garantizar la seguridad absoluta de la información transmitida a través de la
+                        Aplicación, debido a que ninguna medida de seguridad es perfecta.</p>
+
+                    <h2 class="mb-3">5. Cambios a este Aviso de Privacidad</h2>
+                    <p class="mb-3">"SWCAT" puede modificar o revisar este Aviso de Privacidad de vez en cuando.
+                        Cualquier
+                        cambio en nuestro Aviso de Privacidad podrá ser visto en el Aviso de Privacidad revisado con una
+                        fecha de revisión actualizada en nuestra aplicación web. Si cambiamos este Aviso de manera
+                        sustancial, haremos todo lo posible para notificarle de los cambios mediante la publicación de
+                        un aviso en nuestro sitio web. Le recomendamos que revise el Aviso de Privacidad cada vez que
+                        visite la aplicación web, debe mantenerse informado de nuestras prácticas de privacidad.</p>
+                    <p class="mb-4">No realizaremos ningún cambio material en nuestro Aviso de Privacidad que se
+                        relacione con la recopilación o el uso de los Datos Personales del Alumno sin notificar primero
+                        a la ESCOM o estancia educativa y proporcionar una opción antes de que los datos personales de
+                        los usuarios se utilicen de una manera materialmente diferente a la que se divulgó cuando se
+                        recopilaron los datos.</p>
+
+                    <p>Usted ha leído y acepta lo estipulado en estos Términos y Condiciones para hacer uso del sistema
+                        web "SWCAT".</p>
+
+                    <!-- Fin del contenido del Aviso de privacidad -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+
+    // Manejar la apertura del modal cuando se hace clic en el enlace
+    //Términos y condiciones
+    document.getElementById('terminos-link').addEventListener('click', function () {
+        $('#terminosModal').modal('show');
+    });
+
+    $(document).ready(function () {
+        $('#terminosModal').modal({
+            show: false
+        });
+    });
+
+
+    // Manejar la apertura del modal cuando se hace clic en el enlace
+    //Aviso de privacidad
+    document.getElementById('privacidad-link').addEventListener('click', function () {
+        $('#privacidadModal').modal('show');
+    });
+
+    $(document).ready(function () {
+        $('#privacidadModal').modal({
+            show: false
+        });
+    });
+</script>
+
+{% endblock %}

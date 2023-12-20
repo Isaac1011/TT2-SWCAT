@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Chatbot | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container-fluid">
+    <div class="row">
+
+        <!-- Bloque izquierdo (chatbot) -->
+        <div class="col-md-8 col-lg-9">
+            <div class="container-fluid custom-container-2">
+                <h1 class="text-primary mt-5 chatbot-title">Chatbot</h1>
+
+                <!-- Chat Container -->
+                <div id="chat-container" class="bg-light p-3 my-4 rounded">
+                    <div id="chat" style="max-height: 300px; overflow-y: auto;">
+                        {% for conversation in conversations %}
+                        <p><strong>Tú:</strong> {{ conversation.user_input|linebreaksbr }}</p>
+                        <p><strong>Chatbot:</strong> {{ conversation.bot_response|linebreaksbr }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- User Input Form -->
+                <form id="chatbot-form" method="post" action="{% url 'chatbot' %}" class="mb-4">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="user_input" id="user-input" class="form-control"
+                            placeholder="Escribe tu mensaje para el Chatbot" required>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary"
+                                style="background-color: #0047B6;">Enviar</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Botón de Regresar -->
+                <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()">
+                    Regresar
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Bloque derecho (preguntas frecuentes) -->
+        <div class="col-md-4 col-lg-3">
+            <div class="container-fluid custom-container-1">
+                <h3 class="text-primary mt-5 chatbot-title">Preguntas Frecuentes</h3>
+                <div class="list-group">
+                    {% for question, answer in faq.items %}
+                    <a href="#" class="list-group-item list-group-item-action faq-question"
+                        data-question="{{ question }}">
+                        {{ question }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+
+    function scrollToBottom() {
+        var chatDiv = document.getElementById("chat");
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    // Llama a scrollToBottom después de cargar la página para desplazarse al fondo del chat.
+    window.onload = scrollToBottom;
+
+    // También puedes llamar a scrollToBottom después de cada actualización del chat.
+
+    // Manejar clic en pregunta de FAQ
+    document.querySelectorAll('.faq-question').forEach(function (questionLink) {
+        questionLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            var clickedQuestion = this.getAttribute('data-question');
+            document.getElementById('user-input').value = clickedQuestion;
+
+            // Enviar automáticamente la pregunta de FAQ al servidor
+            var form = document.getElementById('chatbot-form');
+            var faqInput = document.createElement("input");
+            faqInput.setAttribute("type", "hidden");
+            faqInput.setAttribute("name", "faq_question");
+            faqInput.setAttribute("value", clickedQuestion);
+            form.appendChild(faqInput);
+
+            // Enviar el formulario
+            form.submit();
+        });
+    });
+</script>
+
+{% endblock %}

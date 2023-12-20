@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Mensajes | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container-fluid mt-5">
+
+    <div class="container-fluid custom-container-3" id="desplazar">
+        <!-- Chat Container -->
+        <div id="chat" class="overflow-auto">
+            <!-- Mensajes se cargarán dinámicamente aquí -->
+        </div>
+    </div>
+
+    <form id="mensaje-form" class="mt-3">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="text" name="contenido" id="user-input" class="form-control"
+                placeholder="Escribe tu mensaje (máximo 1000 caracteres)" required>
+            <div class="input-group-append">
+                <button type="button" class="btn btn-primary" style="background-color: #0047B6;"
+                    id="enviar-btn">Enviar</button>
+            </div>
+        </div>
+    </form>
+
+
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+
+    <script>
+        // Función para regresar a la página anterior
+        function goBack() {
+            window.history.back();
+        }
+
+
+        function cargarMensajes() {
+            $.ajax({
+                url: '{% url "obtener_mensajes" tutor_id=tutor.idTutor tutorado_id=tutorado.idTutorado %}',
+                method: 'GET',
+                success: function (data) {
+                    $('#chat').empty();
+                    data.mensajes.forEach(function (mensaje) {
+                        var claseMensaje = mensaje.tutorEnvia ? 'tutor' : 'tutorado';
+                        var contenido = mensaje.tutorEnvia ? '<strong>{{ tutor.nombre }} {{ tutor.apellidoPaterno }} {{ tutor.apellidoMaterno }}</strong>' : '<strong>{{ tutorado.nombre }} {{ tutorado.apellidoPaterno }} {{ tutorado.apellidoMaterno }}</strong>';
+                        contenido += ': ' + mensaje.contenido + '<div class="hora">' + mensaje.fecha_envio + '</div>'; // Agrega la hora
+                        $('#chat').append('<div class="message ' + claseMensaje + '">' + contenido + '</div>');
+                    });
+                    scrollToBottom();
+                },
+                error: function (error) {
+                    console.error('Error al cargar mensajes: ', error);
+                }
+            });
+        }
+
+        function enviarMensaje() {
+            var contenido = $('#user-input').val();
+            if (contenido) {
+                var csrf_token = $('input[name=csrfmiddlewaretoken]').val();  // Obtener el token CSRF del formulario
+                $.ajax({
+                    url: '{% url "enviar_mensaje" tutor_id=tutor.idTutor tutorado_id=tutorado.idTutorado %}',
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': csrf_token },  // Incluir el token CSRF en las cabeceras
+                    data: { contenido: contenido },
+                    success: function () {
+                        $('#user-input').val('');
+                        cargarMensajes();
+                    },
+                    error: function (error) {
+                        console.error('Error al enviar mensaje: ', error);
+                    }
+                });
+            }
+        }
+
+
+        $(document).ready(function () {
+            cargarMensajes();
+        });
+
+        setInterval(cargarMensajes, 5000);
+
+        $('#enviar-btn').on('click', function () {
+            enviarMensaje();
+        });
+
+        $('#mensaje-form').on('submit', function (event) {
+            event.preventDefault();
+            enviarMensaje();
+        });
+
+        function scrollToBottom() {
+            var chatContainer = document.getElementById('desplazar');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+
+</main>
+
+<style>
+    .message {
+        position: relative;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+
+    .hora {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        font-size: 12px;
+        color: #000000 !important;
+    }
+
+    .tutor {
+        background-color: #5797FF;
+        margin-left: auto;
+    }
+
+    .tutorado {
+        background-color: #e9ebee;
+        margin-right: auto;
+    }
+
+    #chat-container {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+</style>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Bitácoras Individuales Tutor | SWCAT{% endblock %}
+
+{% block content %}
+
+<main class="container-fluid mt-5 mb-5">
+
+    <h1 class="text-center">Bitácoras de Tutoría Individual</h1>
+
+    {% if messages %}
+    <div class="alert alert-danger">
+        <ul class="messages list-unstyled">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre Tutoría</th>
+                    <th>Tutor</th>
+                    <th>Tutorado</th>
+                    <th>Nota</th>
+                    <th>Área de intervención</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th> <!-- Nueva columna para acciones -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for nota in notas_tutor %}
+                <tr>
+                    <td>{{nota.idTutoriaIndividual.nombreTutoriaIndividual}}</td>
+                    <td>{{nota.idTutoriaIndividual.idTutor.nombre}} {{nota.idTutoriaIndividual.idTutor.apellidoPaterno}}
+                        {{nota.idTutoriaIndividual.idTutor.apellidoMaterno}}
+                    </td>
+                    <td>{{nota.idTutoriaIndividual.idTutorado.nombre}}
+                        {{nota.idTutoriaIndividual.idTutorado.apellidoPaterno}}
+                        {{nota.idTutoriaIndividual.idTutorado.apellidoMaterno}} -
+                        {{nota.idTutoriaIndividual.idTutorado.boletaTutorado}}
+                    </td>
+                    <td>{{nota.nota}}</td>
+                    <td class="areas-intervencion">
+                        {{ nota.intervencion|json_script:"areasIntervencionData" }}
+                        <div class="areasIntervencionOutput"></div>
+                    </td>
+                    <td>{{nota.fecha}}</td>
+                    <td>
+                        <a href="{% url 'eliminar_bitacora_tutoria_individual' id_tutor=tutoria_individual.idTutor.idTutor id_bitacora=nota.idBitacoraIndividual %}"
+                            class="btn btn-danger btn-sm">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{% url 'crear_bitacora_tutoriaIndividual' tutoria_individual.idTutoriaIndividual %}"
+        class="btn btn-primary mb-2 custom-link">
+        Agregar Bitácora
+    </a>
+
+    <!-- Botón de Regresar -->
+    <button type="button" class="btn btn-outline-secondary back-button" onclick="goBack()" style="margin-top: 20px;">
+        Regresar
+    </button>
+
+</main>
+
+<script>
+    // Función para regresar a la página anterior
+    function goBack() {
+        window.history.back();
+    }
+
+
+    // Acceder a todos los elementos con la clase "areas-intervencion"
+    var areasIntervencionElements = document.querySelectorAll(".areas-intervencion");
+
+    areasIntervencionElements.forEach(function (element) {
+        // Obtener el contenido del script dentro del elemento (que contiene datos en formato JSON)
+        var areasIntervencionDataScript = element.querySelector("script");
+        if (areasIntervencionDataScript) {
+            var areasIntervencionData = JSON.parse(areasIntervencionDataScript.textContent);
+
+            // Mostrar los valores en un div dentro del mismo elemento
+            var areasIntervencionOutputDiv = element.querySelector(".areasIntervencionOutput");
+            if (areasIntervencionOutputDiv) {
+                areasIntervencionOutputDiv.textContent = JSON.stringify(areasIntervencionData);
+            }
+        }
+    });
+</script>
+
+
+
+{% endblock %}
