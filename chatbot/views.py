@@ -123,3 +123,4 @@ def chatbot(request):
                                             'rol': rol,
                                             'conversations': conversations,
                                             'faq': faq, })
+
