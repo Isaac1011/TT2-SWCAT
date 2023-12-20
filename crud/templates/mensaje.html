@@ -16,8 +16,8 @@
     <form id="mensaje-form" class="mt-3">
         {% csrf_token %}
         <div class="input-group">
-            <input type="text" name="contenido" id="user-input" class="form-control" placeholder="Escribe tu mensaje..."
-                required>
+            <input type="text" name="contenido" id="user-input" class="form-control"
+                placeholder="Escribe tu mensaje (máximo 1000 caracteres)" required>
             <div class="input-group-append">
                 <button type="button" class="btn btn-primary" style="background-color: #0047B6;"
                     id="enviar-btn">Enviar</button>

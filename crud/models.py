@@ -21,6 +21,7 @@ class Tutor(models.Model):
     zoomUserID = models.CharField(
         max_length=30, default=None, null=True, blank=True)
     acepta_terminos = models.BooleanField(default=False)
+    acepta_privacidad = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # Antes de guardar, convierte la contraseña en un hash seguro
@@ -48,6 +49,7 @@ class Tutorado(models.Model):
     numTutoresAsignados = models.IntegerField(
         default=0, validators=[MinValueValidator(0), MaxValueValidator(3)])
     acepta_terminos = models.BooleanField(default=False)
+    acepta_privacidad = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # Antes de guardar, convierte la contraseña en un hash seguro
@@ -77,9 +79,11 @@ class BitacoraIndividualTutor(models.Model):
     idTutoriaIndividual = models.ForeignKey(
         TutoriaIndividual, on_delete=models.CASCADE)
     # Notas o contenido de la bitácora
-    nota = models.CharField(max_length=400)
+    nota = models.CharField(max_length=1000)
     # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
     fecha = models.DateTimeField(auto_now_add=True)
+    intervencion = models.CharField(
+        max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"idBitacoraIndividual: {self.idBitacoraIndividual} - idTutoriaIndividual: {self.idTutoriaIndividual}"
@@ -91,7 +95,7 @@ class NotasIndividualesTutorado(models.Model):
     idTutoriaIndividual = models.ForeignKey(
         TutoriaIndividual, on_delete=models.CASCADE)
     # Descripción de la nota
-    nota = models.CharField(max_length=400)
+    nota = models.CharField(max_length=1000)
     # Fecha y hora de la entrada de la bitácora
     fecha = models.DateTimeField(auto_now_add=True)
 
@@ -127,9 +131,11 @@ class BitacoraGrupalTutor(models.Model):
     idBitacoraGrupalTutor = models.AutoField(primary_key=True)
     idTutoriaGrupal = models.ForeignKey(
         TutoriaGrupal, on_delete=models.CASCADE)
-    nota = models.CharField(max_length=400)
+    nota = models.CharField(max_length=1000)
     # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
     fecha = models.DateTimeField(auto_now_add=True)
+    intervencion = models.CharField(
+        max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"idBitacoraGrupalTutor: {self.idBitacoraGrupalTutor} - idTutoriaGrupal: {self.idTutoriaGrupal}"
@@ -139,7 +145,7 @@ class AnunciosGrupalesTutor(models.Model):
     idAnunciosGrupalesTutor = models.AutoField(primary_key=True)
     idTutoriaGrupal = models.ForeignKey(
         TutoriaGrupal, on_delete=models.CASCADE)
-    nota = models.CharField(max_length=400)
+    nota = models.CharField(max_length=1000)
     # Fecha y hora de la entrada de la bitácora (se establece automáticamente con el parámetro auto_now_add en la creación de la bitácora)
     fecha = models.DateTimeField(auto_now_add=True)
 
@@ -194,8 +200,8 @@ class Mensaje(models.Model):
     idMensaje = models.AutoField(primary_key=True)
     idChat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     tutorEnvia = models.BooleanField(
-        default=False, null=False)  # Agregado null=False
-    contenido = models.TextField()
+        default=False, null=False)
+    contenido = models.TextField(max_length=1000)
     fecha_envio = models.DateTimeField(auto_now_add=True)
 
 

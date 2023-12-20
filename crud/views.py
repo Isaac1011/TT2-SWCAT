@@ -574,50 +574,58 @@ def registro_tutor(request):
     if request.method == 'POST':
         form = TutorRegistroForm(request.POST)
         if form.is_valid():
-            # Validar la estructura del email
-            email = form.cleaned_data['email']
-            if not email_valido(email):
-                messages.error(request, 'Ingrese un email válido.')
-            else:
-                # Validar que el número de teléfono solo contenga números
-                telefono = form.cleaned_data['telefono']
-                if not telefono.isdigit():
-                    messages.error(
-                        request, 'Ingrese un número de teléfono válido.')
+            # Validar la contraseña
+            password = form.cleaned_data['password']
+            es_valida, mensaje = validar_contrasena(password)
+            if es_valida:
+                # Validar la estructura del email
+                email = form.cleaned_data['email']
+                if not email_valido(email):
+                    messages.error(request, 'Ingrese un email válido.')
                 else:
-                    salon = form.cleaned_data['cubiculo']
-                    if not cadena_alphanumeric(salon):
+                    # Validar que el número de teléfono solo contenga números
+                    telefono = form.cleaned_data['telefono']
+                    if not telefono.isdigit():
                         messages.error(
-                            request, 'La sala no debe contener caracteres especiales.')
+                            request, 'Ingrese un número de teléfono válido.')
                     else:
-                        numeroEmpleado = form.cleaned_data['numeroEmpleado']
-                        if not numeroEmpleado.isdigit():
+                        salon = form.cleaned_data['cubiculo']
+                        if not cadena_alphanumeric(salon):
                             messages.error(
-                                request, 'Ingrese un Número de Empleado válido.')
+                                request, 'La sala no debe contener caracteres especiales.')
                         else:
-                            if form.cleaned_data['acepta_terminos']:
-                                nombre = form.cleaned_data['nombre']
-                                # Llamamos la función desde otra app
-                                user_id = Zoom.agregar_usuario_zoom(
-                                    nombre, email)
-
-                                if user_id:
-                                    numero_empleado = form.cleaned_data['numeroEmpleado']
-                                    tutor_instance = form.save(commit=False)
-                                    tutor_instance.zoomUserID = user_id
-                                    tutor_instance.save()
-                                    # Inicio de sesión exitoso
-                                    request.session['logged_in'] = True
-                                    request.session['rol'] = 'Tutor'
-                                    request.session['numero_empleado'] = numero_empleado
-                                    # Agrega el mensaje
-                                    # Agrega el mensaje
-                                    messages.success(
-                                        request, 'Se ha enviado un mensaje por parte de Zoom a su correo electrónico, favor de aceptar unirse a la cuenta principal de Zoom para tener acceso a crear videoconferencias')
-                                    return redirect('menu')
-                            else:
+                            numeroEmpleado = form.cleaned_data['numeroEmpleado']
+                            if not numeroEmpleado.isdigit():
                                 messages.error(
-                                    request, 'Debe aceptar los términos y condiciones para registrarse.')
+                                    request, 'Ingrese un Número de Empleado válido.')
+                            else:
+                                if form.cleaned_data['acepta_terminos'] and form.cleaned_data['acepta_privacidad']:
+                                    nombre = form.cleaned_data['nombre']
+                                    # Llamamos la función desde otra app
+                                    user_id = Zoom.agregar_usuario_zoom(
+                                        nombre, email)
+
+                                    if user_id:
+                                        numero_empleado = form.cleaned_data['numeroEmpleado']
+                                        tutor_instance = form.save(
+                                            commit=False)
+                                        tutor_instance.zoomUserID = user_id
+                                        tutor_instance.save()
+                                        # Inicio de sesión exitoso
+                                        request.session['logged_in'] = True
+                                        request.session['rol'] = 'Tutor'
+                                        request.session['numero_empleado'] = numero_empleado
+                                        # Agrega el mensaje
+                                        # Agrega el mensaje
+                                        messages.success(
+                                            request, 'Se ha enviado un mensaje por parte de Zoom a su correo electrónico, favor de aceptar unirse a la cuenta principal de Zoom para tener acceso a crear videoconferencias')
+                                        return redirect('menu')
+                                else:
+                                    messages.error(
+                                        request, 'Debe aceptar los Términos y condiciones, así como el Aviso de privacidad para registrarse.')
+
+            else:
+                messages.error(request, mensaje)
         else:
             # Agregar mensajes de error del formulario a messages
             for field, error_list in form.errors.items():
@@ -630,12 +638,38 @@ def registro_tutor(request):
     return render(request, 'tutor/registroTutor.html', {'form': form})
 
 
+def validar_contrasena(password):
+    # Verifica la longitud mínima de 8 caracteres
+    if len(password) < 8:
+        return False, "La contraseña debe tener al menos 8 caracteres."
+
+    # Verifica al menos un número
+    if not any(char.isdigit() for char in password):
+        return False, "La contraseña debe incluir al menos un número."
+
+    # Verifica al menos una letra mayúscula
+    if not any(char.isupper() for char in password):
+        return False, "La contraseña debe incluir al menos una letra mayúscula."
+
+    # Verifica al menos una letra minúscula
+    if not any(char.islower() for char in password):
+        return False, "La contraseña debe incluir al menos una letra minúscula."
+
+    # Verifica que no haya 4 caracteres consecutivos iguales
+    if re.search(r'(.)\1{3,}', password):
+        return False, "La contraseña no puede incluir 4 o más caracteres consecutivos iguales."
+
+    # Si todas las validaciones pasan, la contraseña es válida
+    return True, "Contraseña válida."
+
+
 def email_valido(email):
     from django.core.validators import validate_email
     from django.core.exceptions import ValidationError
 
     # Verificar si la dirección de correo electrónico termina con "@ipn.mx"
     if email.endswith("@ipn.mx"):
+        print("Entro")
         return True
 
     try:
@@ -656,33 +690,41 @@ def registro_tutorado(request):
     if request.method == 'POST':
         form = TutoradoRegistroForm(request.POST)
         if form.is_valid():
-            # Validar la estructura del email
-            email = form.cleaned_data['email']
-            if not email_valido(email):
-                messages.error(request, 'Ingrese un email válido.')
-            else:
-                # Validar que el número de teléfono solo contenga números
-                telefono = form.cleaned_data['telefono']
-                if not telefono.isdigit():
-                    messages.error(
-                        request, 'Ingrese un número de teléfono válido.')
+            # Validar la contraseña
+            password = form.cleaned_data['password']
+            es_valida, mensaje = validar_contrasena(password)
+            if es_valida:
+                # Validar la estructura del email
+                email = form.cleaned_data['email']
+                if not email_valido(email):
+                    messages.error(request, 'Ingrese un email válido.')
                 else:
-                    boletaTutorado = form.cleaned_data['boletaTutorado']
-                    if not boletaTutorado.isdigit():
+                    # Validar que el número de teléfono solo contenga números
+                    telefono = form.cleaned_data['telefono']
+                    if not telefono.isdigit():
                         messages.error(
-                            request, 'Ingrese un Número de Boleta válido.')
+                            request, 'Ingrese un número de teléfono válido.')
                     else:
-                        if form.cleaned_data['acepta_terminos']:
-                            boleta_tutorado = form.cleaned_data['boletaTutorado']
-                            form.save()
-                            # Inicio de sesión exitoso
-                            request.session['logged_in'] = True
-                            request.session['rol'] = 'Tutorado'
-                            request.session['boleta_tutorado'] = boleta_tutorado
-                            return redirect('menu')
-                        else:
+                        boletaTutorado = form.cleaned_data['boletaTutorado']
+                        if not boletaTutorado.isdigit():
                             messages.error(
-                                request, 'Debe aceptar los términos y condiciones para registrarse.')
+                                request, 'Ingrese un Número de Boleta válido.')
+                        else:
+                            if form.cleaned_data['acepta_terminos'] and form.cleaned_data['acepta_privacidad']:
+                                boleta_tutorado = form.cleaned_data['boletaTutorado']
+                                form.save()
+                                # Inicio de sesión exitoso
+                                request.session['logged_in'] = True
+                                request.session['rol'] = 'Tutorado'
+                                request.session['boleta_tutorado'] = boleta_tutorado
+                                return redirect('menu')
+                            else:
+                                messages.error(
+                                    request, 'Debe aceptar los Términos y condiciones, así como el Aviso de privacidad para registrarse.')
+
+            else:
+                messages.error(request, mensaje)
+
         else:
             # Agregar mensajes de error del formulario a messages
             for field, error_list in form.errors.items():
@@ -1602,7 +1644,7 @@ def anuncio_tutor_tutoriaGrupal(request, tutoria_id):
 
                 return redirect('detalle_tutoriaGrupal', tutoria_id=tutoria_id)
         else:
-            form = NotasIndividualesTutoradoForm()
+            form = AnunciosGrupalesTutorForm()
 
         context = {
             'form': form,

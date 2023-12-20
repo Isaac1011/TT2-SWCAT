@@ -388,6 +388,29 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             /* Añade una sombra suave */
         }
+
+        /* Estilo predeterminado para el mensaje */
+        .password-message {
+            display: none;
+            color: #8B0000;
+            /* Color rojo para resaltar el mensaje de error */
+            font-size: 16px;
+            /* Ajusta el tamaño de la fuente según sea necesario */
+        }
+
+        /* Estilo para mostrar el mensaje cuando el campo está enfocado */
+        .password-input:focus+.password-message {
+            display: block;
+        }
+
+        /* Estilo adicional para mejorar la visibilidad del mensaje */
+        .password-input:focus+.password-message,
+        .password-input:valid+.password-message,
+        .password-input:invalid+.password-message {
+            margin-top: 5px;
+            font-size: 16px;
+            /* Ajusta el tamaño de la fuente según sea necesario */
+        }
     </style>
 
 </head>

@@ -12,7 +12,7 @@
     <form method="get" action="{% url 'buscar_tutoria_grupal' %}" class="mb-4">
         <div class="form-group">
             <label for="id_tutoria">Buscar por ID:</label>
-            <input type="text" name="id_tutoria" class="form-control" placeholder="Ingrese el ID">
+            <input type="text" name="id_tutoria" class="form-control" placeholder="Ingrese el ID de la Tutoría Grupal">
         </div>
         <button type="submit" class="btn btn-primary" style="background-color: #0047B6;">Buscar</button>
     </form>
@@ -65,7 +65,8 @@
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="contrasena_grupo">Contraseña del Grupo:</label>
-                                <input type="password" name="contrasena_grupo" class="form-control" required>
+                                <input type="password" name="contrasena_grupo" class="form-control"
+                                    placeholder="Ingrese la contraseña" required>
                             </div>
                             <button type="submit" class="btn btn-primary btn-block mt-3"
                                 style="background-color: #0047B6;">Inscribirse</button>

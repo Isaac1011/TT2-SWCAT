@@ -770,6 +770,8 @@ def agregar_usuario_zoom(nombre_usuario, email_usuario):
     verificar_usuario_response = requests.get(
         verificar_usuario_url, headers=headers)
 
+    print(f"AAAA {verificar_usuario_response.status_code}")
+
     # Verifica si el usuario ya pertenece a la cuenta principal
     if verificar_usuario_response.status_code == 200:
         # El usuario ya existe
